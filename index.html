@@ -126,12 +126,13 @@
             try {
                 const device = await navigator.bluetooth.requestDevice({
                     // ************************************************************
-                    // <span style="color:red">แก้ไขชื่อบลูทูธของไอซ์ตรงนี้นะ:</span>
-                    filters: [{ name: '<span style="color:red">Ice_Sensor_Device</span>' }], 
-                    
-                    // <span style="color:red">หรือใส่รหัส Service UUID ตรงนี้:</span>
-                    optionalServices: ['<span style="color:red">0000180d-0000-1000-8000-00805f9b34fb</span>'] 
-                    // ************************************************************
+                 // ก๊อปไปวางเพื่อดูตัวอย่างตอนเชื่อมได้
+alert("เชื่อมต่อสำเร็จ! (จำลองสถานะ)");
+document.getElementById('statusTxt').innerText = "กำลังวัดค่าจากเหงื่อ...";
+setInterval(() => {
+    let mockValue = (Math.random() * 500 + 200).toFixed(2); // สุ่มเลขมาโชว์
+    autoAnalyze(mockValue); // ส่งไปวิเคราะห์ให้เปลี่ยนสี
+}, 3000);
                 });
 
                 const server = await device.gatt.connect();
