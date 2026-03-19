@@ -3,176 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H2O Analytics - สรุปผล</title>
+    <title>Dehydration Analysis</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #007AFF; --gray-bg: #f5f7fa; --shadow: rgba(0,0,0,0.1); }
-        body { font-family: 'Sarabun', sans-serif; background: linear-gradient(180deg, #d1e1f0 0%, #ffffff 100%); margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        :root { --primary: #4A90E2; --bg: linear-gradient(180deg, #d1e1f0 0%, #f5f7fa 100%); }
+        body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; min-height: 100vh; }
         
-        /* สไตล์หลักของการ์ดสรุปผล */
-        .summary-card { background: white; width: 90%; max-width: 500px; border-radius: 25px; box-shadow: 0 10px 30px var(--shadow); overflow: hidden; position: relative; border: 1px solid #e0e0e0; text-align: center; padding-bottom: 30px; }
-        .nav-header { padding: 20px; text-align: right; }
-        .reg-btn-top { background: #ff4d4f; color: white; border: none; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 14px; }
+        /* แถบเมนูด้านบน (ตามภาพ 195000.png) */
+        .top-nav { display: flex; justify-content: flex-end; padding: 20px 40px; }
+        .reg-btn-nav { background: #c52828; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+
+        /* คอนเทนเนอร์หลัก */
+        .container { display: flex; justify-content: center; align-items: flex-start; padding-top: 50px; }
+        .card { background: white; width: 90%; max-width: 500px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); padding: 40px; text-align: center; display: none; }
+        .active { display: block !important; }
+
+        h2 { font-size: 28px; margin-bottom: 25px; color: #333; }
         
-        /* แถบสีแสดงสถานะด้านบน */
-        .status-header { padding: 30px; color: white; font-size: 32px; font-weight: bold; position: relative; }
-        .status-danger { background-color: #f0aaaa; color: #721c24; } /* ขาดน้ำ */
-        .status-risk { background-color: #f7d7ac; color: #856404; }   /* เสี่ยง */
-        .status-normal { background-color: #58b682; color: white; }  /* ปกติ */
+        /* กล่องวิเคราะห์พื้นฐาน (แถบฟ้าด้านซ้าย) */
+        .info-box { background: #eef6ff; border-left: 5px solid var(--primary); padding: 20px; border-radius: 10px; text-align: left; margin-bottom: 30px; line-height: 1.6; }
+        .info-box b { color: #333; display: block; margin-bottom: 5px; }
 
-        .icon-alert { font-size: 40px; margin-left: 10px; vertical-align: middle; }
+        /* ส่วนกรอกข้อมูล */
+        .input-group { text-align: left; margin-bottom: 25px; }
+        label { font-weight: bold; display: block; margin-bottom: 10px; font-size: 15px; }
+        input[type="number"] { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #eee; background: #fafafa; font-size: 16px; box-sizing: border-box; }
+        .primary-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* ส่วนเนื้อหาภายใน */
-        .content-body { padding: 30px; text-align: left; color: #333; }
-        .advice-title { font-weight: bold; margin-bottom: 10px; }
-        .advice-text { margin-bottom: 25px; line-height: 1.6; }
+        /* ส่วนผลลัพธ์ (ตามภาพ 195020, 195030, 195042) */
+        .res-header { padding: 20px; border-radius: 15px; font-size: 32px; font-weight: bold; margin-bottom: 20px; color: #333; }
+        .bg-danger { background: #f0aaaa; } .bg-warning { background: #f7d7ac; } .bg-success { background: #58b682; color: white; }
+        
+        .checkbox-container { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin: 20px 0; }
+        .footer-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-footer { flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer; }
 
-        /* ส่วนตั้งค่าแจ้งเตือน (Checkbox กรอบเหลี่ยม) */
-        .notify-setting { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 25px; }
-        .notify-label { font-size: 16px; }
-        input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--primary); }
-
-        /* ปุ่มด้านล่าง */
-        .action-btns { display: flex; justify-content: space-around; gap: 15px; padding: 0 20px; }
-        .btn-bottom { flex: 1; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; transition: 0.2s; }
-        .btn-bottom:hover { opacity: 0.8; transform: translateY(-1px); }
-        .btn-danger { background-color: #ff4d4f; }
-        .btn-risk { background-color: #ff9f43; }
-        .btn-normal { background-color: #266c4a; }
-
-        /* --- สไตล์ Popup (Modal) สำหรับประวัติและสถิติ --- */
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 450px; position: relative; max-height: 80vh; overflow-y: auto; }
-        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
-        .history-list { list-style: none; padding: 0; text-align: left; }
-        .history-item { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; font-size: 14px; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; position: relative; }
     </style>
 </head>
 <body>
 
-<div class="summary-card">
-    <div class="nav-header">
-        <button class="reg-btn-top">ลงทะเบียน</button>
+    <div class="top-nav">
+        <button class="reg-btn-nav" onclick="location.reload()">ลงทะเบียน</button>
     </div>
 
-    <div id="statusHead" class="status-header status-danger">
-        <span id="statusTitle">ขาดน้ำ</span>
-        <span class="icon-alert">🚨</span>
-    </div>
+    <div class="container">
+        <div id="page-input" class="card active">
+            <h2 id="userName">ชื่อผู้ใช้</h2>
+            
+            <div class="info-box">
+                <b>วิเคราะห์พื้นฐาน:</b>
+                <span id="basicInfoText">ตามน้ำหนักตัว 67 กก. คุณควรดื่มน้ำวันละ 2211 มล.</span>
+            </div>
 
-    <div class="content-body">
-        <div class="advice-title">คำเตือน / คำแนะนำ</div>
-        <p class="advice-text">
-            ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ ผมเป็นกำลังใจให้คุณนะ! สู้ๆ!
-        </p>
+            <div class="input-group">
+                <label>วัดค่าเหงื่อรายบุคคล (ml)</label>
+                <input type="number" id="sweatInp" placeholder="กรอกค่าเหงื่อที่วัดได้">
+            </div>
 
-        <div class="notify-setting">
-            <span class="notify-label">เปิดระบบแจ้งเตือนดื่มน้ำ</span>
-            <input type="checkbox" id="notifyCheck" onchange="toggleNotification()">
+            <button class="primary-btn" onclick="analyze()">วิเคราะห์ผลลัพธ์</button>
         </div>
 
-        <div class="action-btns">
-            <button class="btn-bottom btn-danger" onclick="openModal('historyModal')">ประวัติการใช้งาน</button>
-            <button class="btn-bottom btn-danger" onclick="openModal('statsModal')">สถิติ</button>
+        <div id="page-result" class="card">
+            <div id="resColor" class="res-header">
+                <span id="resTitle">ขาดน้ำ</span> <span id="resEmoji">🚨</span>
+            </div>
+            
+            <div style="text-align: left; margin-bottom: 20px;">
+                <b id="adviceLabel">คำเตือน</b><br>
+                <span id="adviceText">ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ</span>
+            </div>
+
+            <div class="checkbox-container">
+                <span>เปิดระบบแจ้งเตือนดื่มน้ำ</span>
+                <input type="checkbox" id="notiCheck" style="width:20px; height:20px;" onchange="toggleNoti()">
+            </div>
+
+            <div class="footer-btns">
+                <button id="btnHist" class="btn-footer" onclick="openModal('modalHist')">ประวัติการใช้งาน</button>
+                <button id="btnStat" class="btn-footer" onclick="openModal('modalStat')">สถิติ</button>
+            </div>
+            <p style="color:var(--primary); cursor:pointer; margin-top:20px;" onclick="showInputPage()">← กลับไปวิเคราะห์ใหม่</p>
         </div>
     </div>
-</div>
 
-<div id="historyModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal('historyModal')">&times;</span>
-        <h3>ประวัติการตรวจเหงื่อ</h3>
-        <ul class="history-list" id="historyList">
-            <li class="history-item"><span>19/03/2026 - 10:00</span> <b style="color:#dc3545">ขาดน้ำ (900ml)</b></li>
-            <li class="history-item"><span>18/03/2026 - 15:30</span> <b style="color:#856404">เสี่ยง (500ml)</b></li>
-            <li class="history-item"><span>18/03/2026 - 09:15</span> <b style="color:#28a745">ปกติ (200ml)</b></li>
-        </ul>
+    <div id="modalHist" class="modal">
+        <div class="modal-content">
+            <h3>ประวัติการใช้งาน</h3>
+            <div id="histList">ไม่มีข้อมูลประวัติ</div>
+            <button class="primary-btn" onclick="closeModal('modalHist')">ปิด</button>
+        </div>
     </div>
-</div>
 
-<div id="statsModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal('statsModal')">&times;</span>
-        <h3>สถิติค่าเหงื่อ (ml)</h3>
-        <canvas id="sweatChart" width="400" height="250"></canvas>
+    <div id="modalStat" class="modal">
+        <div class="modal-content">
+            <h3>สถิติค่าเหงื่อ (ml)</h3>
+            <canvas id="myChart"></canvas>
+            <button class="primary-btn" onclick="closeModal('modalStat')">ปิด</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // 🔔 ฟังก์ชันเปิด/ปิดระบบแจ้งเตือน
-    function toggleNotification() {
-        const isChecked = document.getElementById('notifyCheck').checked;
-        if(isChecked) {
-            alert("✅ เปิดระบบแจ้งเตือนดื่มน้ำเรียบร้อย! (ระบบจะเตือนคุณในหน้าเว็บนี้)");
-            // ตัวอย่าง: แจ้งเตือนทุกๆ 3 วินาที (เพื่อทดสอบ)
-            // ในเครื่องจริงคุณต้องเปลี่ยน 3000 เป็นเวลาที่ต้องการ (นาที * 60000)
-            window.waterInterval = setInterval(() => {
-                alert("🔔 กริ๊งๆ! ได้เวลาดื่มน้ำเพื่อสุขภาพแล้วครับ");
-            }, 5000); 
-        } else {
-            alert("📴 ปิดระบบแจ้งเตือนเรียบร้อย");
-            clearInterval(window.waterInterval);
-        }
-    }
+    <script>
+        let historyData = [];
 
-    // 📦 ฟังก์ชันจัดการ Popup (Modal)
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = 'flex';
-        if(modalId === 'statsModal') {
-            renderChart(); // สร้างกราฟเมื่อเปิดหน้าสถิติ
-        }
-    }
+        function analyze() {
+            const val = document.getElementById('sweatInp').value;
+            if(!val) return alert("กรุณากรอกค่าเหงื่อ");
 
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
+            const head = document.getElementById('resColor');
+            const title = document.getElementById('resTitle');
+            const emoji = document.getElementById('resEmoji');
+            const advL = document.getElementById('adviceLabel');
+            const advT = document.getElementById('adviceText');
+            const btns = document.querySelectorAll('.btn-footer');
 
-    // 📈 ฟังก์ชันสร้างกราฟเส้น (Chart.js)
-    function renderChart() {
-        const ctx = document.getElementById('sweatChart').getContext('2d');
-        
-        // ถ้ามีกราฟเดิมอยู่แล้วให้ลบทิ้งก่อนสร้างใหม่
-        if(window.myChart instanceof Chart) {
-            window.myChart.destroy();
-        }
+            // ลบคลาสเก่าออกก่อน
+            head.className = "res-header";
+            btns.forEach(b => b.className = "btn-footer");
 
-        // ข้อมูลตัวอย่างสำหรับกราฟ
-        window.myChart = new Chart(ctx, {
-            type: 'line', // กำหนดเป็นกราฟเส้น
-            data: {
-                labels: ['ครั้งที่ 1', 'ครั้งที่ 2', 'ครั้งที่ 3', 'ครั้งที่ 4', 'ครั้งที่ 5'], // แกน X
-                datasets: [{
-                    label: 'ปริมาณเหงื่อ (ml)',
-                    data: [200, 500, 900, 400, 850], // ข้อมูลตัวอย่าง แกน Y
-                    borderColor: '#007AFF', // สีเส้น
-                    backgroundColor: 'rgba(0, 122, 255, 0.1)', // สีพื้นหลังใต้เส้น
-                    borderWidth: 3,
-                    tension: 0.4, // ความโค้งของเส้น
-                    pointRadius: 5,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#007AFF'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'มิลลิลิตร (ml)' }
-                    }
-                }
+            if(val > 700) {
+                head.classList.add('bg-danger');
+                title.innerText = "ขาดน้ำ"; emoji.innerText = "🚨";
+                advL.innerText = "คำเตือน"; advT.innerText = "ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ";
+                btns.forEach(b => b.classList.add('bg-danger'));
+            } else if(val > 300) {
+                head.classList.add('bg-warning');
+                title.innerText = "เสี่ยง"; emoji.innerText = "⚠️";
+                advL.innerText = "คำเตือน"; advT.innerText = "ร่างกายเสี่ยงขาดน้ำควรดื่มน้ำ";
+                btns.forEach(b => b.classList.add('bg-warning'));
+            } else {
+                head.classList.add('bg-success');
+                title.innerText = "ปกติ"; emoji.innerText = "✅";
+                advL.innerText = "คำแนะนำ"; advT.innerText = "ควรดื่มน้ำประมาณนี้";
+                btns.forEach(b => b.classList.add('bg-success'));
             }
-        });
-    }
 
-    // คลิกด้านนอก Popup เพื่อปิด
-    window.onclick = function(event) {
-        if (event.target.className === 'modal') {
-            event.target.style.display = "none";
+            historyData.push(val);
+            document.getElementById('page-input').classList.remove('active');
+            document.getElementById('page-result').classList.add('active');
         }
-    }
-</script>
 
+        function showInputPage() {
+            document.getElementById('page-result').classList.remove('active');
+            document.getElementById('page-input').classList.add('active');
+        }
+
+        function toggleNoti() {
+            if(document.getElementById('notiCheck').checked) {
+                alert("🔔 ระบบเริ่มแจ้งเตือนดื่มน้ำทุก 1 ชั่วโมง");
+            }
+        }
+
+        function openModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            if(id === 'modalStat') renderChart();
+        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function renderChart() {
+            const ctx = document.getElementById('myChart');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: historyData.map((_, i) => `ครั้งที่ ${i+1}`),
+                    datasets: [{ label: 'ค่าเหงื่อ (ml)', data: historyData, borderColor: '#4A90E2', tension: 0.3 }]
+                }
+            });
+        }
+    </script>
 </body>
 </html>
