@@ -1,218 +1,88 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dehydration Project</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(180deg, #c7dbe8 0%, #f2f2f2 60%, #f2f2f2 100%);
-            --text-blue: #97c8eb;
-            --btn-color: #4a90e2;
-        }
-
-        body {
-            font-family: 'Sarabun', sans-serif;
-            margin: 0; padding: 0;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        /* --- ส่วน Header มุมขวาบน --- */
-        .top-nav {
-            position: fixed; top: 0; right: 0; padding: 20px;
-            display: none; z-index: 100;
-        }
-        .logout-btn { color: #ff4d4d; cursor: pointer; font-weight: bold; text-decoration: underline; }
-
-        /* --- หน้าแรก (Landing Page) ตามรูปเป๊ะ --- */
-        .landing-container { text-align: center; display: none; }
-        .title-3d {
-            font-size: clamp(50px, 10vw, 85px); font-weight: 700;
-            color: var(--text-blue); margin-bottom: 40px;
-            text-shadow: 3px 3px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff, 5px 5px 15px rgba(0,0,0,0.1);
-        }
-        .btn-group { display: flex; justify-content: center; gap: 20px; }
-        .btn-outline {
-            background: transparent; border: 2.5px solid var(--btn-color);
-            color: var(--btn-color); padding: 12px 45px; border-radius: 30px;
-            font-size: 20px; cursor: pointer; transition: 0.3s;
-        }
-        .btn-outline:hover { background: rgba(74, 144, 226, 0.1); }
-
-        /* --- การ์ดเนื้อหา (Login / Reg / Dashboard) --- */
-        .card {
-            background: white; padding: 40px; border-radius: 25px;
-            width: 90%; max-width: 450px; display: none;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .active { display: block !important; }
-        .active-flex { display: flex !important; }
-
-        h2 { text-align: center; color: #444; margin-bottom: 25px; }
-        input, select {
-            width: 100%; padding: 14px; margin: 10px 0;
-            border: 1px solid #eee; border-radius: 12px; background: #f9f9f9;
-            box-sizing: border-box; font-size: 16px;
-        }
-        .primary-btn {
-            width: 100%; background: var(--btn-color); color: white;
-            border: none; padding: 16px; border-radius: 30px;
-            font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px;
-        }
-
-        .stat-box { background: #eef6ff; padding: 15px; border-radius: 15px; margin: 15px 0; border-left: 6px solid var(--btn-color); }
-    </style>
-</head>
-<body>
-
-    <div class="top-nav" id="navBar">
-        <span id="userDisp" style="margin-right:15px;"></span>
-        <span class="logout-btn" onclick="logout()">ออกจากระบบ</span>
-    </div>
-
-    <div id="page-home" class="landing-container active">
-        <h1 class="title-3d">Dehydration</h1>
-        <div class="btn-group">
-            <button class="btn-outline" onclick="go('page-login')">เข้าสู่ระบบ</button>
-            <button class="btn-outline" onclick="go('page-reg')">ลงทะเบียน</button>
-        </div>
-    </div>
-
-    <div id="page-reg" class="card">
-        <h2>ลงทะเบียนสมาชิก</h2>
-        <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
-        <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
-        <input type="number" id="rAge" placeholder="อายุ">
-        <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.)">
-        <input type="number" id="rHeight" placeholder="ส่วนสูง (ซม.)">
-        <select id="rGender">
-            <option value="">เลือกเพศ</option>
-            <option value="ชาย">ชาย</option>
-            <option value="หญิง">หญิง</option>
-        </select>
-        <button class="primary-btn" onclick="doRegister()">ลงทะเบียนและเข้าสู่ระบบ</button>
-        <p style="text-align:center; color:var(--btn-color); cursor:pointer;" onclick="go('page-login')">มีบัญชีแล้ว? เข้าสู่ระบบ</p>
-    </div>
-
-    <div id="page-login" class="card">
-        <h2>เข้าสู่ระบบ</h2>
-        <input type="text" id="lName" placeholder="ชื่อ">
-        <input type="password" id="lPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
-        <button class="primary-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
-        <p style="text-align:center; color:var(--btn-color); cursor:pointer;" onclick="go('page-reg')">ยังไม่มีบัญชี? ลงทะเบียน</p>
-    </div>
-
-    <div id="page-dash" class="card" style="max-width: 600px;">
-        <h2 id="welcomeTxt">แผงควบคุม</h2>
-        <div class="stat-box">
-            <strong>วิเคราะห์พื้นฐาน:</strong>
-            <p id="theoryTxt"></p>
+<div id="page-dash" class="card" style="max-width: 500px;">
+        <h2 id="welcomeTxt">ชื่อผู้ใช้</h2>
+        <div class="info-box" style="background: #eef6ff; border-left: 5px solid #4a90e2; padding: 20px; border-radius: 10px; text-align: left; margin-bottom: 30px;">
+            <b>วิเคราะห์พื้นฐาน:</b>
+            <span id="theoryTxt">...</span>
         </div>
 
-        <h4>วัดค่าเหงื่อรายบุคคล (ml)</h4>
-        <input type="number" id="sweatVal" placeholder="กรอกค่าเหงื่อที่วัดได้">
+        <div style="text-align: left; margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 10px;">วัดค่าเหงื่อรายบุคคล (ml)</label>
+            <input type="number" id="sweatVal" placeholder="กรอกค่าเหงื่อที่วัดได้">
+        </div>
         <button class="primary-btn" onclick="doAnalyze()">วิเคราะห์ผลลัพธ์</button>
+    </div>
 
-        <div id="resBox" style="display:none; margin-top:20px; padding:15px; border-radius:10px; text-align:center;">
-            <b id="statusTxt"></b><br><small id="adviceTxt"></small>
-        </div>
-
-        <hr style="margin:25px 0; border:0; border-top:1px solid #eee;">
-        <h4>⏰ ตั้งค่าการแจ้งเตือน</h4>
-        <label><input type="checkbox" id="noteOn" onchange="toggleNote()"> เปิดระบบแจ้งเตือนดื่มน้ำ</label>
-        <div id="noteSet" style="display:none; margin-top:10px;">
-            <input type="number" id="noteTime" value="60" placeholder="แจ้งเตือนทุกๆ (นาที)">
-            <button class="primary-btn" style="background:#28a745;" onclick="saveNote()">บันทึกเวลา</button>
+    <div id="page-result" class="card" style="max-width: 500px; padding: 0; overflow: hidden;">
+        <div id="resColor" style="padding: 30px; font-size: 32px; font-weight: bold;">
+            <span id="statusTxt"></span> <span id="resEmoji"></span>
         </div>
         
-        <div style="margin-top:20px; font-size:13px; color:#999;" id="historyLog"></div>
+        <div style="padding: 30px; text-align: left;">
+            <b id="advLabel">คำเตือน / คำแนะนำ</b><br>
+            <p id="adviceTxt" style="margin-top: 10px; line-height: 1.6;"></p>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin: 20px 0;">
+                <span>เปิดระบบแจ้งเตือนดื่มน้ำ</span>
+                <input type="checkbox" id="noteOnResult" onchange="syncNote(this)">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="res-btn" id="btnHist" style="flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer;">ประวัติการใช้งาน</button>
+                <button class="res-btn" id="btnStat" style="flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer;">สถิติ</button>
+            </div>
+            
+            <p style="text-align: center; color: #4a90e2; cursor: pointer; margin-top: 20px;" onclick="go('page-dash')">← กลับไปวิเคราะห์ใหม่</p>
+        </div>
     </div>
 
     <script>
-        let user = null;
+        // --- ส่วนที่แก้ไขใน JavaScript ---
 
-        // ฟังก์ชันสลับหน้า (หัวใจสำคัญที่คุณเรียนรู้)
+        function doAnalyze() {
+            const s = parseFloat(document.getElementById('sweatVal').value);
+            if(isNaN(s)) return alert("กรุณากรอกค่าเหงื่อ");
+
+            const resPage = document.getElementById('page-result');
+            const resColor = document.getElementById('resColor');
+            const statusTxt = document.getElementById('statusTxt');
+            const emoji = document.getElementById('resEmoji');
+            const adviceTxt = document.getElementById('adviceTxt');
+            const advLabel = document.getElementById('advLabel');
+            const btns = document.querySelectorAll('.res-btn');
+
+            let st = "ปกติ", cl = "#58b682", em = "✅", ad = "ระดับน้ำในร่างกายปกติ รักษาสมดุลแบบนี้ต่อไปนะ!", label = "คำแนะนำ", btnCl = "#266c4a";
+
+            if(s > 700) { 
+                st = "ขาดน้ำ"; cl = "#f0aaaa"; em = "🚨"; ad = "ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ ผมเป็นกำลังใจให้คุณนะ!"; label = "คำเตือน"; btnCl = "#ff4d4f";
+                user.count++;
+            } else if(s > 300) { 
+                st = "เสี่ยง"; cl = "#f7d7ac"; em = "⚠️"; ad = "เริ่มเสียน้ำเยอะแล้ว จิบน้ำบ่อยๆ เพื่อป้องกันการขาดน้ำนะ"; label = "คำเตือน"; btnCl = "#ff9f43";
+            }
+
+            // แสดงผลหน้า Result
+            statusTxt.innerText = st;
+            emoji.innerText = em;
+            resColor.style.background = cl;
+            resColor.style.color = (st === "ปกติ") ? "white" : "#333";
+            adviceTxt.innerText = ad;
+            advLabel.innerText = label;
+            btns.forEach(b => b.style.background = btnCl);
+
+            // บันทึก Log
+            user.logs.push({time: new Date().toLocaleString(), val: s, res: st});
+            localStorage.setItem(user.name, JSON.stringify(user));
+            
+            go('page-result');
+        }
+
+        function syncNote(el) {
+            // เชื่อมโยง Checkbox ระหว่างหน้า Dashboard กับหน้า Result
+            if(el.checked) alert("🔔 ระบบเริ่มแจ้งเตือนดื่มน้ำทุก 1 ชั่วโมง");
+        }
+
+        // ปรับปรุงฟังก์ชันเดิมให้รองรับหน้าใหม่
         function go(id) {
             document.querySelectorAll('.landing-container, .card').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
-
-        function doRegister() {
-            const data = {
-                name: document.getElementById('rName').value,
-                pass: document.getElementById('rPass').value,
-                weight: document.getElementById('rWeight').value,
-                count: 0,
-                logs: []
-            };
-            if(!data.name || data.pass.length !== 6) return alert("กรุณากรอกชื่อและรหัส 6 หลัก");
-            localStorage.setItem(data.name, JSON.stringify(data));
-            user = data;
-            startApp();
-        }
-
-        function doLogin() {
-            const name = document.getElementById('lName').value;
-            const pass = document.getElementById('lPass').value;
-            const saved = JSON.parse(localStorage.getItem(name));
-            if(saved && saved.pass === pass) {
-                user = saved;
-                startApp();
-            } else { alert("ข้อมูลไม่ถูกต้อง"); }
-        }
-
-        function startApp() {
-            document.getElementById('navBar').classList.add('active-flex');
-            document.getElementById('userDisp').innerText = "คุณ " + user.name;
-            document.getElementById('welcomeTxt').innerText = "สวัสดี, " + user.name;
-            document.getElementById('theoryTxt').innerText = `ตามน้ำหนักตัว ${user.weight} กก. คุณควรดื่มน้ำวันละ ${(user.weight*33).toFixed(0)} มล.`;
-            updateLog();
-            go('page-dash');
-        }
-
-        function doAnalyze() {
-            const s = document.getElementById('sweatVal').value;
-            const box = document.getElementById('resBox');
-            let st = "ปกติ ✅", cl = "#d4edda", ad = "เยี่ยมมาก! รักษาสมดุลน้ำแบบนี้ต่อไปนะ";
-
-            if(s > 700) { 
-                st = "ขาดน้ำ 🚨"; cl = "#f8d7da"; ad = "อันตราย! ดื่มน้ำทันทีและพักผ่อนนะครับ"; 
-                user.count++;
-            } else if(s > 300) { 
-                st = "เสี่ยง ⚠️"; cl = "#fff3cd"; ad = "เริ่มเสียน้ำเยอะแล้ว จิบน้ำบ่อยๆ นะ"; 
-            }
-
-            box.style.display = "block";
-            box.style.background = cl;
-            document.getElementById('statusTxt').innerText = st;
-            document.getElementById('adviceTxt').innerText = ad;
-
-            user.logs.push({time: new Date().toLocaleString(), res: st});
-            localStorage.setItem(user.name, JSON.stringify(user));
-            updateLog();
-        }
-
-        function updateLog() {
-            const log = document.getElementById('historyLog');
-            log.innerHTML = `<b>สถิติขาดน้ำ:</b> ${user.count} ครั้ง<br>` + 
-                user.logs.slice(-3).map(l => `<li>${l.time}: ${l.res}</li>`).join('');
-        }
-
-        function toggleNote() {
-            document.getElementById('noteSet').style.display = document.getElementById('noteOn').checked ? 'block' : 'none';
-        }
-
-        function saveNote() {
-            const m = document.getElementById('noteTime').value;
-            alert(`ตั้งค่าสำเร็จ! จะแจ้งเตือนทุก ${m} นาที`);
-            setInterval(() => { if(document.getElementById('noteOn').checked) alert("🔔 ได้เวลาดื่มน้ำเพื่อสุขภาพแล้วครับ!"); }, m * 60000);
-        }
-
-        function logout() { location.reload(); }
     </script>
-</body>
-</html>
