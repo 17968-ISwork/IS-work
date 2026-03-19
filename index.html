@@ -3,282 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dehydration Analytics - H2O Project</title>
+    <title>Dehydration Analytics</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        /* --- 🎨 สไตล์หลักเพื่อให้เหมือนรูปเป๊ะ --- */
         :root {
-            --bg-top: #c7dbe8;
-            --bg-bottom: #f2f2f2;
+            --bg-gradient: linear-gradient(180deg, #c7dbe8 0%, #f2f2f2 60%, #f2f2f2 100%);
             --text-blue: #97c8eb;
-            --button-border: #4a90e2;
-            --button-text: #4a90e2;
+            --btn-color: #4a90e2;
         }
 
         body {
             font-family: 'Sarabun', sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh;
-            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 60%, var(--bg-bottom) 100%);
+            background: var(--bg-gradient);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* กันสกอร์บาร์ขึ้นหน้าแรก */
-            position: relative;
+            color: #333;
         }
 
-        /* Container หลัก */
+        /* --- UI หน้าแรกตามรูป --- */
         .page-container {
             width: 100%;
             max-width: 1000px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
             position: relative;
         }
 
-        /* --- 📝 ข้อความ Dehydration ตัวนูนแบบ 3D --- */
-        .title-dehydration {
-            font-size: 80px;
+        .title-3d {
+            font-size: 85px;
             font-weight: 700;
             color: var(--text-blue);
-            text-transform: capitalize;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            /* เทคนิค CSS shadow หลายชั้นเพื่อให้ดูนูน */
+            margin-bottom: 40px;
             text-shadow: 
                 3px 3px 0px #fff,
                 -1px -1px 0px #fff,
                 1px -1px 0px #fff,
                 -1px 1px 0px #fff,
                 5px 5px 15px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 10;
         }
 
-        /* --- 🔘 กลุ่มปุ่มกด --- */
-        .button-group {
+        .nav-btn-group {
             display: flex;
-            gap: 25px;
-            margin-bottom: 50px;
-            position: relative;
-            z-index: 10;
+            justify-content: center;
+            gap: 20px;
         }
 
         .btn-outline {
             background: transparent;
-            border: 2px solid var(--button-border);
-            color: var(--button-text);
-            padding: 12px 40px;
-            border-radius: 25px;
-            font-size: 18px;
+            border: 2.5px solid var(--btn-color);
+            color: var(--btn-color);
+            padding: 12px 45px;
+            border-radius: 30px;
+            font-size: 20px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s;
+            text-decoration: none;
         }
 
-        .btn-outline:hover {
-            background: rgba(74, 144, 226, 0.1);
-            transform: translateY(-2px);
-        }
+        .btn-outline:hover { background: rgba(74, 144, 226, 0.1); }
 
-        /* --- 🧼 ตกแต่ง ฟองสบู่ (CSS Only) --- */
-        .bubbles {
-            position: absolute;
-            bottom: 15%;
-            left: 8%;
-            display: flex;
-            gap: 10px;
-            z-index: 5;
-        }
-
-        .bubble {
-            width: 30px; height: 30px;
-            background: rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            position: relative;
-            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        .bubble::after { /* จุดแววบนฟอง */
-            content: '';
-            position: absolute;
-            top: 5px; left: 5px;
-            width: 8px; height: 8px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-        }
-
-        .bubble-sm { width: 15px; height: 15px; margin-top: 15px; }
-        .bubble-md { width: 22px; height: 22px; margin-top: 5px; }
-
-        /* --- 💧 ตกแต่ง H2O 3D (CSS Only) --- */
-        .h2o-logo {
-            position: absolute;
-            bottom: 12%;
-            right: 8%;
-            font-size: 65px;
-            font-weight: 700;
-            color: var(--text-blue);
-            z-index: 5;
-            /* เทคนิค CSS shadow ขั้นสูงเพื่อให้ดูนูนและแวววาวเหมือนน้ำ/แก้ว */
-            text-shadow: 
-                2px 2px 0px rgba(255,255,255,0.8),
-                -1px -1px 0px rgba(255,255,255,0.8),
-                1px -1px 0px rgba(255,255,255,0.8),
-                -1px 1px 0px rgba(255,255,255,0.8),
-                5px 10px 20px rgba(0,0,0,0.15),
-                inset 0 0 15px rgba(255,255,255,0.5);
-        }
-
-        .h2o-logo sub {
-            font-size: 40px;
-            vertical-align: sub;
-        }
-
-        /* =========================================
-           🛠️ ส่วนของฟังก์ชัน (Login, Dashboard) 
-           ========================================= */
-        .app-overlay {
+        /* --- Header เมื่อ Login แล้ว --- */
+        .user-header {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none; /* ซ่อนไว้ก่อน */
-            justify-content: center;
+            top: 0;
+            width: 100%;
+            padding: 15px 30px;
+            display: none;
+            justify-content: flex-end;
             align-items: center;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.8);
             z-index: 100;
         }
 
-        .active-overlay { display: flex; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .logout-link {
+            color: #ff4d4d;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: underline;
+        }
 
-        .form-card {
+        /* --- ฟอร์มและหน้าเนื้อหา --- */
+        .content-card {
             background: white;
             padding: 30px;
             border-radius: 20px;
             width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            position: relative;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+            margin: 80px auto 20px;
         }
 
-        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; color: #aaa; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
 
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
-        .primary-btn { width: 100%; background: #4a90e2; color: white; border: none; padding: 12px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        
-        /* สไตล์หน้า Dashboard */
-        .dashboard { max-width: 600px; margin-top: 20px; text-align: left; background: white; padding: 20px; border-radius: 15px; display: none; }
-        .active-dash { display: block; }
+        .primary-btn {
+            width: 100%;
+            background: var(--btn-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .active { display: block !important; }
+        .flex-active { display: flex !important; }
+
+        .stat-box {
+            background: #f8fbff;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            border-left: 5px solid var(--btn-color);
+        }
     </style>
 </head>
 <body>
 
-    <div class="page-container" id="frontPage">
-        <h1 class="title-dehydration">Dehydration</h1>
-        
-        <div class="button-group">
-            <button class="btn-outline" onclick="openForm('loginForm')">เข้าสู่ระบบ</button>
-            <button class="btn-outline" onclick="openForm('regForm')">ลงทะเบียน</button>
-        </div>
-
-        <div class="bubbles">
-            <div class="bubble bubble-sm"></div>
-            <div class="bubble"></div>
-            <div class="bubble bubble-md"></div>
-        </div>
-
-        <div class="h2o-logo">H<sub>2</sub>O</div>
+    <div class="user-header" id="userHeader">
+        <span id="userNameDisplay" style="margin-right: 20px; font-weight: 500;"></span>
+        <span class="logout-link" onclick="logout()">ออกจากระบบ</span>
     </div>
 
-    <div class="container active-dash" id="dashboardPage" style="display:none; padding: 20px;">
-        <div class="dashboard active-dash">
-            <h2 id="helloUser">สวัสดีครับ</h2>
-            <button class="primary-btn" onclick="location.reload()">ออกจากระบบ</button>
-            <hr>
-            <h4>กรอกค่าเหงื่อ (ml)</h4>
-            <input type="number" id="sweatIn">
-            <button class="primary-btn" onclick="checkStatus()">วิเคราะห์ผล</button>
-            <p id="resultText"></p>
+    <div class="page-container" id="landingPage">
+        <h1 class="title-3d">Dehydration</h1>
+        <div class="nav-btn-group">
+            <button class="btn-outline" onclick="showSection('loginPage')">เข้าสู่ระบบ</button>
+            <button class="btn-outline" onclick="showSection('regPage')">ลงทะเบียน</button>
         </div>
     </div>
 
+    <div class="content-card" id="regPage">
+        <h2 style="text-align: center;">ลงทะเบียนสมาชิก</h2>
+        <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
+        <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
+        <input type="number" id="rAge" placeholder="อายุ">
+        <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.)">
+        <input type="number" id="rHeight" placeholder="ส่วนสูง (ซม.)">
+        <select id="rGender">
+            <option value="">เลือกเพศ</option>
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+        </select>
+        <button class="primary-btn" onclick="handleRegister()">ลงทะเบียนและเข้าสู่ระบบ</button>
+        <p style="text-align: center; cursor: pointer; color: var(--btn-color);" onclick="showSection('loginPage')">มีบัญชีแล้ว? เข้าสู่ระบบ</p>
+    </div>
 
-    <div class="app-overlay" id="formOverlay">
-        
-        <div class="form-card" id="regForm" style="display:none;">
-            <span class="close-btn" onclick="closeForm()">×</span>
-            <h3>ลงทะเบียน</h3>
-            <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
-            <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
-            <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.)">
-            <button class="primary-btn" onclick="register()">ตกลง</button>
+    <div class="content-card" id="loginPage">
+        <h2 style="text-align: center;">เข้าสู่ระบบ</h2>
+        <input type="text" id="lName" placeholder="ชื่อ">
+        <input type="password" id="lPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
+        <button class="primary-btn" onclick="handleLogin()">เข้าสู่ระบบ</button>
+        <p style="text-align: center; cursor: pointer; color: var(--btn-color);" onclick="showSection('regPage')">ยังไม่มีบัญชี? ลงทะเบียน</p>
+    </div>
+
+    <div class="content-card" id="dashboardPage">
+        <h3>Dashboard ของคุณ</h3>
+        <div class="stat-box">
+            <strong>วิเคราะห์น้ำพื้นฐานตามทฤษฎี:</strong>
+            <p id="theoryResult">กรุณากรอกข้อมูลส่วนตัว</p>
         </div>
 
-        <div class="form-card" id="loginForm" style="display:none;">
-            <span class="close-btn" onclick="closeForm()">×</span>
-            <h3>เข้าสู่ระบบ</h3>
-            <input type="text" id="lName" placeholder="ชื่อ">
-            <input type="password" id="lPass" placeholder="รหัสผ่าน">
-            <button class="primary-btn" onclick="login()">เข้าสู่ระบบ</button>
+        <h4>วัดค่าการสูญเสียน้ำรายบุคคล (Sweat Test)</h4>
+        <p style="font-size: 14px; color: #666;">กรอกปริมาณเหงื่อที่วัดได้หลังกิจกรรม (มิลลิลิตร):</p>
+        <input type="number" id="sweatInput" placeholder="ตัวอย่าง: 500">
+        <button class="primary-btn" onclick="analyzeSweat()">วิเคราะห์การสูญเสียน้ำ</button>
+
+        <div id="sweatResult" style="margin-top: 20px; display: none;">
+            <div id="statusAlert" style="padding: 15px; border-radius: 10px; font-weight: bold; text-align: center;"></div>
+            <p id="adviceText" style="margin-top: 10px; font-style: italic;"></p>
         </div>
+
+        <hr>
+        <h4>⏰ ตั้งค่าแจ้งเตือนดื่มน้ำ</h4>
+        <label><input type="checkbox" id="notifyToggle" onchange="toggleNotify()"> เปิดใช้งานการแจ้งเตือน</label>
+        <div id="notifySettings" style="display: none; margin-top: 10px;">
+            <p>แจ้งเตือนทุกๆ (นาที):</p>
+            <input type="number" id="notifyInterval" value="60">
+            <button class="primary-btn" style="background: #28a745;" onclick="setNotification()">บันทึกการตั้งค่า</button>
+        </div>
+
+        <hr>
+        <h4>📊 ประวัติและสถิติ</h4>
+        <div id="historyStats">ยังไม่มีข้อมูลการเข้าใช้งาน</div>
     </div>
 
     <script>
         let currentUser = null;
+        let historyData = [];
 
-        function openForm(formId) {
-            document.getElementById('formOverlay').classList.add('active-overlay');
-            document.getElementById('regForm').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById(formId).style.display = 'block';
+        function showSection(id) {
+            document.querySelectorAll('.content-card, .page-container').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (id === 'landingPage') {
+                document.getElementById('userHeader').classList.remove('flex-active');
+            }
         }
 
-        function closeForm() {
-            document.getElementById('formOverlay').classList.remove('active-overlay');
-        }
-
-        function register() {
-            const data = {
+        // ระบบสมัครสมาชิกและเข้าสู่ระบบอัตโนมัติ
+        function handleRegister() {
+            const user = {
                 name: document.getElementById('rName').value,
                 pass: document.getElementById('rPass').value,
-                weight: document.getElementById('rWeight').value
+                age: document.getElementById('rAge').value,
+                weight: document.getElementById('rWeight').value,
+                height: document.getElementById('rHeight').value,
+                gender: document.getElementById('rGender').value,
+                history: []
             };
-            if(!data.name || data.pass.length < 6) return alert("กรุณากรอกข้อมูลและรหัส 6 หลัก");
-            localStorage.setItem(data.name, JSON.stringify(data));
-            alert("สมัครสำเร็จ!");
-            openForm('loginForm');
+
+            if (!user.name || user.pass.length !== 6) {
+                alert("กรุณากรอกชื่อและรหัสผ่าน 6 หลัก");
+                return;
+            }
+
+            localStorage.setItem(user.name, JSON.stringify(user));
+            currentUser = user;
+            loginSuccess();
         }
 
-        function login() {
+        function handleLogin() {
             const name = document.getElementById('lName').value;
             const pass = document.getElementById('lPass').value;
-            const stored = JSON.parse(localStorage.getItem(name));
-            if(stored && stored.pass === pass) {
-                currentUser = stored;
+            const storedUser = JSON.parse(localStorage.getItem(name));
+
+            if (storedUser && storedUser.pass === pass) {
+                currentUser = storedUser;
                 loginSuccess();
-            } else { alert("รหัสผิด"); }
+            } else {
+                alert("ชื่อหรือรหัสผ่านไม่ถูกต้อง");
+            }
         }
 
         function loginSuccess() {
-            closeForm();
-            document.getElementById('frontPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
-            document.getElementById('helloUser').innerText = "สวัสดี, " + currentUser.name;
-            // เปิดแจ้งเตือนพื้นฐาน
-            setInterval(() => { alert("🔔 อย่าลืมดื่มน้ำนะครับ!"); }, 600000); // ทุก 10 นาที
+            document.getElementById('userNameDisplay').innerText = `คุณ ${currentUser.name}`;
+            document.getElementById('userHeader').classList.add('flex-active');
+            calculateTheory();
+            updateHistory();
+            showSection('dashboardPage');
+            
+            // บันทึกประวัติการเข้าใช้งาน
+            currentUser.history.push({ date: new Date().toLocaleString(), type: 'เข้าสู่ระบบ' });
+            saveData();
         }
 
-        function checkStatus() {
-            const sweat = document.getElementById('sweatIn').value;
-            let res = sweat > 500 ? "เสี่ยงขาดน้ำ 🚨" : "ปกติ ✅";
-            document.getElementById('resultText').innerHTML = `<b>ผลลัพธ์: ${res}</b><br>จิบน้ำบ่อยๆ นะคนเก่ง!`;
+        // วิเคราะห์น้ำตามทฤษฎี (น้ำหนัก x 33)
+        function calculateTheory() {
+            const waterNeeded = currentUser.weight * 33;
+            document.getElementById('theoryResult').innerText = 
+                `จากน้ำหนัก ${currentUser.weight} กก. ร่างกายคุณควรได้รับน้ำประมาณ ${waterNeeded.toFixed(0)} มล./วัน`;
         }
-    </style>
 
+        // วิเคราะห์การสูญเสียน้ำจากค่าเหงื่อ
+        function analyzeSweat() {
+            const sweat = parseFloat(document.getElementById('sweatInput').value);
+            const alertBox = document.getElementById('statusAlert');
+            const adviceBox = document.getElementById('adviceText');
+            document.getElementById('sweatResult').style.display = 'block';
+
+            let status = "";
+            let color = "";
+            let advice = "";
+
+            if (sweat < 300) {
+                status = "ปกติ ✅";
+                color = "#d4edda";
+                advice = "ร่างกายของคุณจัดการน้ำได้ดีเยี่ยม! รักษาสุขภาพแบบนี้ต่อไปนะครับ ผมเป็นกำลังใจให้!";
+            } else if (sweat >= 300 && sweat <= 700) {
+                status = "เสี่ยงภาวะขาดน้ำ ⚠️";
+                color = "#fff3cd";
+                advice = "คุณเสียเหงื่อค่อนข้างมาก ควรจิบน้ำเพิ่มทีละนิดนะครับ เพื่อให้ร่างกายสดชื่นอยู่เสมอ";
+            } else {
+                status = "ภาวะขาดน้ำ 🚨";
+                color = "#f8d7da";
+                advice = "อันตราย! ร่างกายเสียน้ำมากเกินไป กรุณาดื่มน้ำหรือน้ำแร่ทันที และพักผ่อนในที่ร่มนะครับ";
+            }
+
+            alertBox.innerText = `สถานะ: ${status}`;
+            alertBox.style.backgroundColor = color;
+            adviceBox.innerText = advice;
+
+            currentUser.history.push({ 
+                date: new Date().toLocaleString(), 
+                type: 'วิเคราะห์เหงื่อ', 
+                val: sweat, 
+                res: status 
+            });
+            saveData();
+            updateHistory();
+        }
+
+        function updateHistory() {
+            const historyDiv = document.getElementById('historyStats');
+            if (currentUser.history.length === 0) {
+                historyDiv.innerHTML = "ยังไม่มีประวัติการใช้งาน";
+                return;
+            }
+            let html = "<ul>";
+            currentUser.history.slice(-5).reverse().forEach(h => {
+                html += `<li><small>${h.date}</small> - ${h.type} ${h.res ? ': ' + h.res : ''}</li>`;
+            });
+            html += "</ul>";
+            historyDiv.innerHTML = html;
+        }
+
+        function toggleNotify() {
+            const isChecked = document.getElementById('notifyToggle').checked;
+            document.getElementById('notifySettings').style.display = isChecked ? 'block' : 'none';
+        }
+
+        function setNotification() {
+            const mins = document.getElementById('notifyInterval').value;
+            alert(`ตั้งค่าสำเร็จ! ระบบจะแจ้งเตือนให้คุณดื่มน้ำทุกๆ ${mins} นาที`);
+            
+            // จำลองระบบแจ้งเตือน (ในเบราว์เซอร์จริงต้องเปิดหน้าเว็บค้างไว้)
+            setInterval(() => {
+                if (document.getElementById('notifyToggle').checked) {
+                    alert("🔔 ถึงเวลาดื่มน้ำแล้วครับ! เพื่อร่างกายที่สดชื่น");
+                }
+            }, mins * 60000);
+        }
+
+        function saveData() {
+            localStorage.setItem(currentUser.name, JSON.stringify(currentUser));
+        }
+
+        function logout() {
+            if(confirm("ยืนยันการออกจากระบบ?")) {
+                location.reload();
+            }
+        }
+
+        function goToHome() {
+            showSection('dashboardPage');
+        }
+    </script>
 </body>
 </html>
