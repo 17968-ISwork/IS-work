@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>My Light Web App</title>
+    <style>
+        /* นี่คือ CSS: แต่งให้สวย */
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 15px; shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
+        button { background: #FF3B30; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>ยินดีต้อนรับสู่เว็บแอป! 🚀</h1>
+        <p>แอปนี้เบาหวิว ไม่กินเมมเครื่องแน่นอน</p>
+        <button onclick="sayHello()">ลองกดฉันสิ!</button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        /* นี่คือ JavaScript: สั่งให้ทำงาน */
+        function sayHello() {
+            document.getElementById("message").innerText = "เย้! คุณสั่งงานเว็บได้แล้ว 🎉";
+        }
+    </script>
+
+</body>
+</html>
