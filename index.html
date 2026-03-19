@@ -1,88 +1,150 @@
-<div id="page-dash" class="card" style="max-width: 500px;">
-        <h2 id="welcomeTxt">ชื่อผู้ใช้</h2>
-        <div class="info-box" style="background: #eef6ff; border-left: 5px solid #4a90e2; padding: 20px; border-radius: 10px; text-align: left; margin-bottom: 30px;">
-            <b>วิเคราะห์พื้นฐาน:</b>
-            <span id="theoryTxt">...</span>
-        </div>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2O Analytics - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary: #4A90E2; --bg: linear-gradient(180deg, #d1e1f0 0%, #f5f7fa 100%); }
+        body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; min-height: 100vh; }
+        
+        /* แถบเมนูด้านบน */
+        .top-nav { display: flex; justify-content: flex-end; padding: 20px 40px; }
+        .reg-btn-nav { background: #c52828; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
-        <div style="text-align: left; margin-bottom: 20px;">
-            <label style="font-weight: bold; display: block; margin-bottom: 10px;">วัดค่าเหงื่อรายบุคคล (ml)</label>
-            <input type="number" id="sweatVal" placeholder="กรอกค่าเหงื่อที่วัดได้">
-        </div>
-        <button class="primary-btn" onclick="doAnalyze()">วิเคราะห์ผลลัพธ์</button>
+        /* คอนเทนเนอร์หลักและการ์ด */
+        .container { display: flex; justify-content: center; align-items: flex-start; padding-top: 50px; }
+        .card { background: white; width: 90%; max-width: 500px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); padding: 40px; text-align: center; display: none; /* ซ่อนหน้าไว้ก่อน */ }
+        
+        /* คลาสสำหรับการเปิดแสดงหน้า */
+        .active { display: block !important; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        h2 { font-size: clamp(24px, 5vw, 28px); margin-bottom: 25px; color: #333; }
+        
+        /* กล่องวิเคราะห์พื้นฐาน (แถบฟ้าด้านซ้าย) */
+        .info-box { background: #eef6ff; border-left: 5px solid var(--primary); padding: 20px; border-radius: 10px; text-align: left; margin-bottom: 30px; line-height: 1.6; }
+        .info-box b { color: #333; display: block; margin-bottom: 5px; }
+
+        /* ส่วนกรอกข้อมูลและปุ่ม */
+        .input-group { text-align: left; margin-bottom: 25px; }
+        label { font-weight: bold; display: block; margin-bottom: 10px; font-size: 15px; }
+        input[type="number"] { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #eee; background: #fafafa; font-size: 16px; box-sizing: border-box; }
+        .primary-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        /* ========================================= */
+        /* 🎨 สไตล์หน้าแสดงผลตามที่คุณต้องการ      */
+        /* ========================================= */
+        .res-header { padding: 25px; border-radius: 15px; font-size: clamp(28px, 5vw, 32px); font-weight: bold; margin-bottom: 20px; color: #333; }
+        
+        /* สีตามสถานะ (Red, Orange, Green) */
+        .bg-danger { background: #f0aaaa; } 
+        .bg-warning { background: #f7d7ac; } 
+        .bg-success { background: #58b682; color: white; }
+        
+        /* กรอบเหลี่ยมตั้งค่าแจ้งเตือน */
+        .checkbox-container { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin: 25px 0; }
+        input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; }
+
+        /* ปุ่มด้านล่าง */
+        .footer-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-footer { flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-footer:hover { opacity: 0.8; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; position: relative; }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button class="reg-btn-nav" onclick="location.reload()">ลงทะเบียน</button>
     </div>
 
-    <div id="page-result" class="card" style="max-width: 500px; padding: 0; overflow: hidden;">
-        <div id="resColor" style="padding: 30px; font-size: 32px; font-weight: bold;">
-            <span id="statusTxt"></span> <span id="resEmoji"></span>
-        </div>
-        
-        <div style="padding: 30px; text-align: left;">
-            <b id="advLabel">คำเตือน / คำแนะนำ</b><br>
-            <p id="adviceTxt" style="margin-top: 10px; line-height: 1.6;"></p>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin: 20px 0;">
-                <span>เปิดระบบแจ้งเตือนดื่มน้ำ</span>
-                <input type="checkbox" id="noteOnResult" onchange="syncNote(this)">
+    <div class="container">
+        <div id="page-input" class="card active">
+            <h2 id="userName">ชื่อผู้ใช้</h2>
+            
+            <div class="info-box">
+                <b>วิเคราะห์พื้นฐาน:</b>
+                <span>ตามน้ำหนักตัว ${user.weight} กก. คุณควรดื่มน้ำวันละ ${(user.weight*33).toFixed(0)} มล.</span>
             </div>
 
-            <div style="display: flex; gap: 10px;">
-                <button class="res-btn" id="btnHist" style="flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer;">ประวัติการใช้งาน</button>
-                <button class="res-btn" id="btnStat" style="flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer;">สถิติ</button>
+            <div class="input-group">
+                <label>วัดค่าเหงื่อรายบุคคล (ml)</label>
+                <input type="number" id="sweatVal" placeholder="กรอกค่าเหงื่อที่วัดได้">
+            </div>
+
+            <button class="primary-btn" onclick="analyzeSweat()">วิเคราะห์ผลลัพธ์</button>
+        </div>
+
+        <div id="page-result" class="card">
+            <div id="resColor" class="res-header">
+                <span id="resTitle">ปกติ</span> <span id="resEmoji">✅</span>
             </div>
             
-            <p style="text-align: center; color: #4a90e2; cursor: pointer; margin-top: 20px;" onclick="go('page-dash')">← กลับไปวิเคราะห์ใหม่</p>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <b id="adviceLabel">คำเตือน / คำแนะนำ</b><br>
+                <span id="adviceText"></span>
+            </div>
+
+            <div class="checkbox-container">
+                <span>เปิดระบบแจ้งเตือนดื่มน้ำ</span>
+                <input type="checkbox" id="notiCheck" onchange="toggleNoti()">
+            </div>
+
+            <div class="footer-btns">
+                <button id="btnHist" class="btn-footer" onclick="openModal('modalHist')">ประวัติการใช้งาน</button>
+                <button id="btnStat" class="btn-footer" onclick="openModal('modalStat')">สถิติ</button>
+            </div>
+            <p style="color:var(--primary); cursor:pointer; margin-top:25px;" onclick="backToInput()">← กลับไปวิเคราะห์ใหม่</p>
+        </div>
+    </div>
+
+    <div id="modalHist" class="modal">
+        <div class="modal-content">
+            <h3>ประวัติการใช้งาน</h3>
+            <div id="histLog" style="text-align: left; max-height: 200px; overflow-y: auto;"></div>
+            <button class="primary-btn" onclick="closeModal('modalHist')">ปิด</button>
+        </div>
+    </div>
+
+    <div id="modalStat" class="modal">
+        <div class="modal-content">
+            <h3>สถิติค่าเหงื่อ (ml)</h3>
+            <canvas id="myChart"></canvas>
+            <button class="primary-btn" onclick="closeModal('modalStat')">ปิด</button>
         </div>
     </div>
 
     <script>
-        // --- ส่วนที่แก้ไขใน JavaScript ---
+        // สมมติข้อมูลผู้ใช้ (ในระบบจริงต้องดึงมา)
+        let user = { name: "ชื่อผู้ใช้", weight: 67, logs: [] };
+        document.getElementById('userName').innerText = user.name;
 
-        function doAnalyze() {
-            const s = parseFloat(document.getElementById('sweatVal').value);
-            if(isNaN(s)) return alert("กรุณากรอกค่าเหงื่อ");
+        // --- 🧠 ฟังก์ชันสลับหน้าและวิเคราะห์ผล ---
+        function analyzeSweat() {
+            const sweat = parseFloat(document.getElementById('sweatVal').value);
+            if(isNaN(sweat)) return alert("กรุณากรอกค่าเหงื่อ");
 
-            const resPage = document.getElementById('page-result');
-            const resColor = document.getElementById('resColor');
-            const statusTxt = document.getElementById('statusTxt');
+            const head = document.getElementById('resColor');
+            const title = document.getElementById('resTitle');
             const emoji = document.getElementById('resEmoji');
-            const adviceTxt = document.getElementById('adviceTxt');
-            const advLabel = document.getElementById('advLabel');
-            const btns = document.querySelectorAll('.res-btn');
+            const advL = document.getElementById('adviceLabel');
+            const advT = document.getElementById('adviceText');
+            const btns = document.querySelectorAll('.btn-footer');
 
-            let st = "ปกติ", cl = "#58b682", em = "✅", ad = "ระดับน้ำในร่างกายปกติ รักษาสมดุลแบบนี้ต่อไปนะ!", label = "คำแนะนำ", btnCl = "#266c4a";
+            // เคลียร์คลาสเก่า
+            head.className = "res-header";
+            btns.forEach(b => b.className = "btn-footer");
 
-            if(s > 700) { 
-                st = "ขาดน้ำ"; cl = "#f0aaaa"; em = "🚨"; ad = "ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ ผมเป็นกำลังใจให้คุณนะ!"; label = "คำเตือน"; btnCl = "#ff4d4f";
-                user.count++;
-            } else if(s > 300) { 
-                st = "เสี่ยง"; cl = "#f7d7ac"; em = "⚠️"; ad = "เริ่มเสียน้ำเยอะแล้ว จิบน้ำบ่อยๆ เพื่อป้องกันการขาดน้ำนะ"; label = "คำเตือน"; btnCl = "#ff9f43";
-            }
-
-            // แสดงผลหน้า Result
-            statusTxt.innerText = st;
-            emoji.innerText = em;
-            resColor.style.background = cl;
-            resColor.style.color = (st === "ปกติ") ? "white" : "#333";
-            adviceTxt.innerText = ad;
-            advLabel.innerText = label;
-            btns.forEach(b => b.style.background = btnCl);
-
-            // บันทึก Log
-            user.logs.push({time: new Date().toLocaleString(), val: s, res: st});
-            localStorage.setItem(user.name, JSON.stringify(user));
-            
-            go('page-result');
-        }
-
-        function syncNote(el) {
-            // เชื่อมโยง Checkbox ระหว่างหน้า Dashboard กับหน้า Result
-            if(el.checked) alert("🔔 ระบบเริ่มแจ้งเตือนดื่มน้ำทุก 1 ชั่วโมง");
-        }
-
-        // ปรับปรุงฟังก์ชันเดิมให้รองรับหน้าใหม่
-        function go(id) {
-            document.querySelectorAll('.landing-container, .card').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-    </script>
+            // วิเคราะห์ตามค่า (Logic คุณสามารถปรับได้ตามต้องการ)
+            if(sweat > 700) { // ขาดน้ำ (🚨)
+                head.classList.add('bg-danger');
+                title.innerText = "ขาดน้ำ"; emoji.innerText = "🚨";
+                advL.innerText = "คำเตือน"; advT.innerText = "ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ! สู้ๆ!";
+                btns.forEach(b => b.classList.add('bg-danger'));
+            } else if(swe
