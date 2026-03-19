@@ -3,113 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H2O Analytics - ระบบวิเคราะห์ภาวะน้ำในร่างกาย</title>
+    <title>H2O Analytics & Tracking</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0056b3; --secondary: #00a8e8; --danger: #dc3545; --success: #28a745; --gray: #6c757d; }
-        body { font-family: 'Sarabun', sans-serif; background-color: #f4f7f9; margin: 0; color: #333; }
+        :root { --main-blue: #58a6ff; --dark-blue: #0056b3; --soft-bg: #f5f9fc; }
+        body { font-family: 'Sarabun', sans-serif; background: linear-gradient(180deg, #d1e1f0 0%, #ffffff 100%); margin: 0; min-height: 100vh; color: #333; }
         
-        /* Navigation Bar */
-        nav { background: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-weight: 700; color: var(--primary); font-size: 20px; }
-        .nav-auth button { margin-left: 10px; padding: 8px 18px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; }
-        .btn-login { background: transparent; color: var(--primary); border: 1px solid var(--primary) !important; }
-        .btn-reg { background: var(--primary); color: white; }
-        .btn-logout { background: var(--danger); color: white; display: none; }
+        /* Navigation */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .nav-right button { margin-left: 10px; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--main-blue); cursor: pointer; transition: 0.3s; }
+        .btn-filled { background: var(--main-blue); color: white; }
+        .btn-outline { background: white; color: var(--main-blue); }
 
         /* Container */
-        .main-content { max-width: 900px; margin: 30px auto; padding: 20px; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px; display: none; }
-        .active { display: block; }
+        .container { max-width: 500px; margin: 40px auto; padding: 20px; box-sizing: border-box; }
+        .card { background: white; border-radius: 25px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #e0e0e0; display: none; text-align: center; }
+        .active { display: block; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* Form Styling */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button.primary-btn { width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 10px; font-size: 16px; margin-top: 20px; cursor: pointer; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; }
+        .primary-btn { width: 100%; background: var(--main-blue); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         
-        /* Dashboard & Stats */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .stat-box { padding: 20px; border-radius: 12px; text-align: center; color: white; }
-        .bg-blue { background: var(--secondary); }
-        .bg-red { background: var(--danger); }
-        .bg-green { background: var(--success); }
+        /* Stats & Result */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .stat-item { background: #f0f7ff; padding: 15px; border-radius: 15px; }
+        .result-box { padding: 20px; border-radius: 15px; margin-top: 20px; line-height: 1.6; }
 
         /* History Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        
-        .alert-box { padding: 20px; border-radius: 10px; margin-top: 20px; line-height: 1.6; }
+        .history-table { width: 100%; margin-top: 20px; font-size: 14px; border-collapse: collapse; }
+        .history-table th, .history-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">🌐 H2O Analytics</div>
-    <div class="nav-auth" id="navAuth">
-        <button class="btn-login" onclick="showSection('loginSection')">เข้าสู่ระบบ</button>
-        <button class="btn-reg" onclick="showSection('regSection')">ลงทะเบียน</button>
-        <span id="userDisplay" style="margin-right:15px; font-weight:bold; color:var(--primary);"></span>
-        <button class="btn-logout" id="logoutBtn" onclick="logout()">ออกจากระบบ</button>
+    <div style="font-weight: bold; color: var(--dark-blue);">H2O PROJECT</div>
+    <div class="nav-right" id="navActions">
+        <button class="btn-outline" onclick="showPage('loginPage')">เข้าสู่ระบบ</button>
+        <button class="btn-filled" onclick="showPage('regPage')">ลงทะเบียน</button>
     </div>
 </nav>
 
-<div class="main-content">
-
-    <div id="homeSection" class="card active text-center">
-        <h2>ยินดีต้อนรับสู่ระบบวิเคราะห์สุขภาพน้ำ</h2>
-        <p>กรุณาเข้าสู่ระบบเพื่อเริ่มการวิเคราะห์การสูญเสียน้ำในร่างกายและดูสถิติส่วนบุคคลของคุณ</p>
-        <img src="https://img5.pic.in.th/file/secure-sv1/water-health.png" alt="Health" style="width:100%; max-width:400px; border-radius:10px; margin:20px 0;">
-    </div>
-
-    <div id="regSection" class="card">
-        <h3>สร้างบัญชีผู้ใช้งานใหม่</h3>
-        <div class="form-grid">
-            <input type="text" id="regName" placeholder="ชื่อ-นามสกุล">
-            <input type="password" id="regPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
-            <input type="number" id="regAge" placeholder="อายุ">
-            <select id="regGender">
-                <option value="ชาย">ชาย</option>
-                <option value="หญิง">หญิง</option>
-            </select>
-            <input type="number" id="regHeight" placeholder="ส่วนสูง (ซม.)">
-            <input type="number" id="regWeight" placeholder="น้ำหนัก (กก.)">
+<div class="container">
+    
+    <div id="homePage" class="card active">
+        <h1 id="homeTitle">ชื่อโครงงาน</h1>
+        <p>ระบบวิเคราะห์และติดตามภาวะการขาดน้ำรายบุคคล</p>
+        <div id="userInfoShort" style="display:none; margin-bottom: 20px;">
+            <div class="stat-grid">
+                <div class="stat-item"><small>สถิติขาดน้ำ</small><br><b id="countVal">0</b> ครั้ง</div>
+                <div class="stat-item"><small>สถานะล่าสุด</small><br><b id="statusVal">-</b></div>
+            </div>
+            <button class="primary-btn" onclick="showPage('analysisPage')">เริ่มการวิเคราะห์ใหม่</button>
+            <button class="primary-btn" style="background: #6c757d;" onclick="showPage('settingPage')">ตั้งค่าการแจ้งเตือน</button>
         </div>
-        <button class="primary-btn" onclick="handleRegister()">ลงทะเบียนสมาชิก</button>
-    </div>
-
-    <div id="loginSection" class="card">
-        <h3>เข้าสู่ระบบ</h3>
-        <input type="text" id="logName" placeholder="ชื่อผู้ใช้งาน" style="margin-bottom:15px;">
-        <input type="password" id="logPass" placeholder="รหัสผ่าน" maxlength="6">
-        <button class="primary-btn" onclick="handleLogin()">เข้าสู่ระบบ</button>
-    </div>
-
-    <div id="dashSection" class="card">
-        <h3 id="welcomeUser">แผงควบคุมสุขภาพของคุณ</h3>
-        
-        <div class="stats-grid">
-            <div class="stat-box bg-blue">
-                <small>น้ำที่ควรดื่ม/วัน</small>
-                <div id="waterNeeded" style="font-size:24px; font-weight:bold;">0 ml</div>
-            </div>
-            <div class="stat-box bg-red">
-                <small>สถิติขาดน้ำ</small>
-                <div id="dehydrationCount" style="font-size:24px; font-weight:bold;">0 ครั้ง</div>
-            </div>
-            <div class="stat-box bg-green">
-                <small>สถานะล่าสุด</small>
-                <div id="lastStatus" style="font-size:18px; font-weight:bold;">-</div>
-            </div>
+        <div id="guestInfo">
+            <button class="primary-btn" onclick="showPage('loginPage')">เข้าสู่ระบบเพื่อเริ่มใช้งาน</button>
         </div>
+    </div>
 
-        <hr style="margin:30px 0; border:0; border-top:1px solid #eee;">
-        
-        <h4>เริ่มการวิเคราะห์การสูญเสียน้ำ (Sweat Test)</h4>
-        <input type="number" id="sweatInput" placeholder="ค่าปริมาณเหงื่อที่วัดได้ (ml)">
-        <button class="primary-btn" onclick="runAnalysis()">วิเคราะห์ผลทันที</button>
+    <div id="regPage" class="card">
+        <h2>ลงทะเบียนสมาชิก</h2>
+        <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
+        <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
+        <input type="number" id="rAge" placeholder="อายุ">
+        <select id="rGender">
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+        </select>
+        <input type="number" id="rHeight" placeholder="ส่วนสูง (ซม.)">
+        <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.)">
+        <button class="primary-btn" onclick="register()">ตกลง</button>
+    </div>
 
-        <div id="analysisResult" class="alert-box" style="display:none;"></div>
+    <div id="loginPage" class="card">
+        <h2>เข้าสู่ระบบ</h2>
+        <input type="text" id="lName" placeholder="ชื่อผู้ใช้งาน">
+        <input type="password" id="lPass" placeholder="รหัสผ่าน" maxlength="6">
+        <button class="primary-btn" onclick="login()">เข้าสู่ระบบ</button>
+    </div>
 
-        <hr style="margin:30px 0; border:0; border-top:1px solid #eee;">
+    <div id="analysisPage" class="card">
+        <h2>วิเคราะห์การสูญเสียน้ำ</h2>
+        <p style="font-size: 14px; color: gray;">กรอกค่าเหงื่อที่วัดได้รายบุคคล (ml)</p>
+        <input type="number" id="sweatVal" placeholder="เช่น 500">
+        <button class="primary-btn" onclick="processAnalysis()">วิเคราะห์ผล</button>
+    </div>
 
-        <h4>⚙️ ตั้งค่าการแจ้งเตือน
+    <div id="resultPage" class="card">
+        <h2 id="finalStatus">สถานะของคุณ</h2>
+        <div id="adviceBox" class="result-box"></div>
+        <button class="primary-btn" onclick="showPage('homePage')">กลับไปหน้าหลัก</button>
+    </div>
+
+    <div id="settingPage" class="card">
+        <h2>ตั้งค่าการแจ้งเตือน</h2>
+        <div style="text-align: left; margin-bottom: 20px;">
+            <label><input type="checkbox" id="notifyOn"> เปิดใช้งานระบบแจ้งเตือน</label>
+        </div>
+        <input type="number" id="notifyTime" placeholder="แจ้งเตือนทุกๆ (นาที)" value="60">
+        <button class="primary-btn" onclick="saveSettings()">บันทึกและเริ่มแจ้งเตือน</button>
+        <button class="primary-btn" style="background:#ccc;" onclick="showPage('homePage')">ข้ามไปก่อน</button>
+    </div>
+
+</div>
+
+<script>
+    let user = null;
+    let history = [];
+
+    function showPage(id) {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function register() {
+        const data = {
+            name: document.getElementById('rName').value,
+            pass: document.getElementById('rPass').value,
+            age: document.getElementById('rAge').value,
+            weight: document.getElementById('rWeight').value,
+            height: document.getElementById('rHeight').value,
+            gender: document.getElementById('rGender').value,
+            dehydrationCount: 0
+        };
+        if(!data.name || data.pass.length < 6) return alert("กรุณากรอกข้อมูลให้ครบและรหัส 6 หลัก");
+        localStorage.setItem(data.name, JSON.stringify(data));
+        alert("ลงทะเบียนสำเร็จ!");
+        showPage('loginPage');
+    }
+
+    function login() {
+        const name = document.getElementById('lName').value;
+        const pass = document.getElementById('lPass').value;
+        const stored = JSON.parse(localStorage.getItem(name));
+        if(stored && stored.pass === pass) {
+            user = stored;
+            document.getElementById('navActions').innerHTML = `<span style='font-size:12px;'>${user.name}</span> <button class='btn-outline' style='border-color:red; color:red;' onclick='location.reload()'>ออก</button>`;
+            document.getElementById('homeTitle').innerText = "สวัสดี, " + user.name;
+            document.getElementById('userInfoShort').style.display = "block";
+            document.getElementById('guestInfo').style.display = "none";
+            showPage('homePage');
+        } else {
+            alert("ชื่อหรือรหัสผ่านผิด");
+        }
+    }
+
+    function processAnalysis() {
+        const sweat = parseFloat(document.getElementById('sweatVal').value);
+        let status = "ปกติ ✅";
+        let color = "#d4edda";
+        let msg = "ร่างกายสมบูรณ์ดีมากครับ ดื่มน้ำตามปกติได้เลย เป็นกำลังใจให้ครับ!";
+
+        if(sweat > 800) {
+            status = "ขาดน้ำ 🚨";
+            color = "#f8d7da";
+            msg = "คุณขาดน้ำรุนแรง! กรุณาพักและดื่มน้ำทันที ร่างกายคุณต้องการการดูแลด่วนครับ สู้ๆ!";
+            user.dehydrationCount++;
+        } else if(sweat > 400) {
+            status = "เสี่ยง ⚠️";
+            color = "#fff3cd";
+            msg = "เริ่มมีสัญญาณการเสียน้ำ ควรจิบน้ำเพิ่มขึ้นนะครับ ร่างกายจะได้สดชื่น";
+        }
+
+        document.getElementById('finalStatus').innerText = status;
+        document.getElementById('adviceBox').style.background = color;
+        document.getElementById('adviceBox').innerText = msg;
+        document.getElementById('countVal').innerText = user.dehydrationCount;
+        document.getElementById('statusVal').innerText = status;
+        showPage('resultPage');
+    }
+
+    function saveSettings() {
+        const isOn = document.getElementById('notifyOn').checked;
+        const time = document.getElementById('notifyTime').value;
+        if(isOn) {
+            alert("ระบบจะแจ้งเตือนคุณทุกๆ " + time + " นาที");
+            setInterval(() => { alert("🔔 ถึงเวลาดื่มน้ำเพื่อสุขภาพของคุณแล้วครับ!"); }, time * 60000);
+        }
+        showPage('homePage');
+    }
+</script>
+
+</body>
+</html>
