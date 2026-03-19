@@ -3,188 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H2O Analytics & Tracking</title>
+    <title>Dehydration Analytics - H2O Project</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --main-blue: #58a6ff; --dark-blue: #0056b3; --soft-bg: #f5f9fc; }
-        body { font-family: 'Sarabun', sans-serif; background: linear-gradient(180deg, #d1e1f0 0%, #ffffff 100%); margin: 0; min-height: 100vh; color: #333; }
+        /* --- 🎨 สไตล์หลักเพื่อให้เหมือนรูปเป๊ะ --- */
+        :root {
+            --bg-top: #c7dbe8;
+            --bg-bottom: #f2f2f2;
+            --text-blue: #97c8eb;
+            --button-border: #4a90e2;
+            --button-text: #4a90e2;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 60%, var(--bg-bottom) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* กันสกอร์บาร์ขึ้นหน้าแรก */
+            position: relative;
+        }
+
+        /* Container หลัก */
+        .page-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- 📝 ข้อความ Dehydration ตัวนูนแบบ 3D --- */
+        .title-dehydration {
+            font-size: 80px;
+            font-weight: 700;
+            color: var(--text-blue);
+            text-transform: capitalize;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            /* เทคนิค CSS shadow หลายชั้นเพื่อให้ดูนูน */
+            text-shadow: 
+                3px 3px 0px #fff,
+                -1px -1px 0px #fff,
+                1px -1px 0px #fff,
+                -1px 1px 0px #fff,
+                5px 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- 🔘 กลุ่มปุ่มกด --- */
+        .button-group {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--button-border);
+            color: var(--button-text);
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(74, 144, 226, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* --- 🧼 ตกแต่ง ฟองสบู่ (CSS Only) --- */
+        .bubbles {
+            position: absolute;
+            bottom: 15%;
+            left: 8%;
+            display: flex;
+            gap: 10px;
+            z-index: 5;
+        }
+
+        .bubble {
+            width: 30px; height: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .bubble::after { /* จุดแววบนฟอง */
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px;
+            width: 8px; height: 8px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+
+        .bubble-sm { width: 15px; height: 15px; margin-top: 15px; }
+        .bubble-md { width: 22px; height: 22px; margin-top: 5px; }
+
+        /* --- 💧 ตกแต่ง H2O 3D (CSS Only) --- */
+        .h2o-logo {
+            position: absolute;
+            bottom: 12%;
+            right: 8%;
+            font-size: 65px;
+            font-weight: 700;
+            color: var(--text-blue);
+            z-index: 5;
+            /* เทคนิค CSS shadow ขั้นสูงเพื่อให้ดูนูนและแวววาวเหมือนน้ำ/แก้ว */
+            text-shadow: 
+                2px 2px 0px rgba(255,255,255,0.8),
+                -1px -1px 0px rgba(255,255,255,0.8),
+                1px -1px 0px rgba(255,255,255,0.8),
+                -1px 1px 0px rgba(255,255,255,0.8),
+                5px 10px 20px rgba(0,0,0,0.15),
+                inset 0 0 15px rgba(255,255,255,0.5);
+        }
+
+        .h2o-logo sub {
+            font-size: 40px;
+            vertical-align: sub;
+        }
+
+        /* =========================================
+           🛠️ ส่วนของฟังก์ชัน (Login, Dashboard) 
+           ========================================= */
+        .app-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none; /* ซ่อนไว้ก่อน */
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .active-overlay { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; color: #aaa; }
+
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        .primary-btn { width: 100%; background: #4a90e2; color: white; border: none; padding: 12px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         
-        /* Navigation */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .nav-right button { margin-left: 10px; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--main-blue); cursor: pointer; transition: 0.3s; }
-        .btn-filled { background: var(--main-blue); color: white; }
-        .btn-outline { background: white; color: var(--main-blue); }
-
-        /* Container */
-        .container { max-width: 500px; margin: 40px auto; padding: 20px; box-sizing: border-box; }
-        .card { background: white; border-radius: 25px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #e0e0e0; display: none; text-align: center; }
-        .active { display: block; animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* Form Styling */
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; }
-        .primary-btn { width: 100%; background: var(--main-blue); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        
-        /* Stats & Result */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .stat-item { background: #f0f7ff; padding: 15px; border-radius: 15px; }
-        .result-box { padding: 20px; border-radius: 15px; margin-top: 20px; line-height: 1.6; }
-
-        /* History Table */
-        .history-table { width: 100%; margin-top: 20px; font-size: 14px; border-collapse: collapse; }
-        .history-table th, .history-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        /* สไตล์หน้า Dashboard */
+        .dashboard { max-width: 600px; margin-top: 20px; text-align: left; background: white; padding: 20px; border-radius: 15px; display: none; }
+        .active-dash { display: block; }
     </style>
 </head>
 <body>
 
-<nav>
-    <div style="font-weight: bold; color: var(--dark-blue);">H2O PROJECT</div>
-    <div class="nav-right" id="navActions">
-        <button class="btn-outline" onclick="showPage('loginPage')">เข้าสู่ระบบ</button>
-        <button class="btn-filled" onclick="showPage('regPage')">ลงทะเบียน</button>
-    </div>
-</nav>
-
-<div class="container">
-    
-    <div id="homePage" class="card active">
-        <h1 id="homeTitle">ชื่อโครงงาน</h1>
-        <p>ระบบวิเคราะห์และติดตามภาวะการขาดน้ำรายบุคคล</p>
-        <div id="userInfoShort" style="display:none; margin-bottom: 20px;">
-            <div class="stat-grid">
-                <div class="stat-item"><small>สถิติขาดน้ำ</small><br><b id="countVal">0</b> ครั้ง</div>
-                <div class="stat-item"><small>สถานะล่าสุด</small><br><b id="statusVal">-</b></div>
-            </div>
-            <button class="primary-btn" onclick="showPage('analysisPage')">เริ่มการวิเคราะห์ใหม่</button>
-            <button class="primary-btn" style="background: #6c757d;" onclick="showPage('settingPage')">ตั้งค่าการแจ้งเตือน</button>
+    <div class="page-container" id="frontPage">
+        <h1 class="title-dehydration">Dehydration</h1>
+        
+        <div class="button-group">
+            <button class="btn-outline" onclick="openForm('loginForm')">เข้าสู่ระบบ</button>
+            <button class="btn-outline" onclick="openForm('regForm')">ลงทะเบียน</button>
         </div>
-        <div id="guestInfo">
-            <button class="primary-btn" onclick="showPage('loginPage')">เข้าสู่ระบบเพื่อเริ่มใช้งาน</button>
+
+        <div class="bubbles">
+            <div class="bubble bubble-sm"></div>
+            <div class="bubble"></div>
+            <div class="bubble bubble-md"></div>
+        </div>
+
+        <div class="h2o-logo">H<sub>2</sub>O</div>
+    </div>
+
+    <div class="container active-dash" id="dashboardPage" style="display:none; padding: 20px;">
+        <div class="dashboard active-dash">
+            <h2 id="helloUser">สวัสดีครับ</h2>
+            <button class="primary-btn" onclick="location.reload()">ออกจากระบบ</button>
+            <hr>
+            <h4>กรอกค่าเหงื่อ (ml)</h4>
+            <input type="number" id="sweatIn">
+            <button class="primary-btn" onclick="checkStatus()">วิเคราะห์ผล</button>
+            <p id="resultText"></p>
         </div>
     </div>
 
-    <div id="regPage" class="card">
-        <h2>ลงทะเบียนสมาชิก</h2>
-        <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
-        <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
-        <input type="number" id="rAge" placeholder="อายุ">
-        <select id="rGender">
-            <option value="ชาย">ชาย</option>
-            <option value="หญิง">หญิง</option>
-        </select>
-        <input type="number" id="rHeight" placeholder="ส่วนสูง (ซม.)">
-        <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.)">
-        <button class="primary-btn" onclick="register()">ตกลง</button>
-    </div>
 
-    <div id="loginPage" class="card">
-        <h2>เข้าสู่ระบบ</h2>
-        <input type="text" id="lName" placeholder="ชื่อผู้ใช้งาน">
-        <input type="password" id="lPass" placeholder="รหัสผ่าน" maxlength="6">
-        <button class="primary-btn" onclick="login()">เข้าสู่ระบบ</button>
-    </div>
-
-    <div id="analysisPage" class="card">
-        <h2>วิเคราะห์การสูญเสียน้ำ</h2>
-        <p style="font-size: 14px; color: gray;">กรอกค่าเหงื่อที่วัดได้รายบุคคล (ml)</p>
-        <input type="number" id="sweatVal" placeholder="เช่น 500">
-        <button class="primary-btn" onclick="processAnalysis()">วิเคราะห์ผล</button>
-    </div>
-
-    <div id="resultPage" class="card">
-        <h2 id="finalStatus">สถานะของคุณ</h2>
-        <div id="adviceBox" class="result-box"></div>
-        <button class="primary-btn" onclick="showPage('homePage')">กลับไปหน้าหลัก</button>
-    </div>
-
-    <div id="settingPage" class="card">
-        <h2>ตั้งค่าการแจ้งเตือน</h2>
-        <div style="text-align: left; margin-bottom: 20px;">
-            <label><input type="checkbox" id="notifyOn"> เปิดใช้งานระบบแจ้งเตือน</label>
+    <div class="app-overlay" id="formOverlay">
+        
+        <div class="form-card" id="regForm" style="display:none;">
+            <span class="close-btn" onclick="closeForm()">×</span>
+            <h3>ลงทะเบียน</h3>
+            <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
+            <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
+            <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.)">
+            <button class="primary-btn" onclick="register()">ตกลง</button>
         </div>
-        <input type="number" id="notifyTime" placeholder="แจ้งเตือนทุกๆ (นาที)" value="60">
-        <button class="primary-btn" onclick="saveSettings()">บันทึกและเริ่มแจ้งเตือน</button>
-        <button class="primary-btn" style="background:#ccc;" onclick="showPage('homePage')">ข้ามไปก่อน</button>
+
+        <div class="form-card" id="loginForm" style="display:none;">
+            <span class="close-btn" onclick="closeForm()">×</span>
+            <h3>เข้าสู่ระบบ</h3>
+            <input type="text" id="lName" placeholder="ชื่อ">
+            <input type="password" id="lPass" placeholder="รหัสผ่าน">
+            <button class="primary-btn" onclick="login()">เข้าสู่ระบบ</button>
+        </div>
     </div>
 
-</div>
+    <script>
+        let currentUser = null;
 
-<script>
-    let user = null;
-    let history = [];
-
-    function showPage(id) {
-        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    function register() {
-        const data = {
-            name: document.getElementById('rName').value,
-            pass: document.getElementById('rPass').value,
-            age: document.getElementById('rAge').value,
-            weight: document.getElementById('rWeight').value,
-            height: document.getElementById('rHeight').value,
-            gender: document.getElementById('rGender').value,
-            dehydrationCount: 0
-        };
-        if(!data.name || data.pass.length < 6) return alert("กรุณากรอกข้อมูลให้ครบและรหัส 6 หลัก");
-        localStorage.setItem(data.name, JSON.stringify(data));
-        alert("ลงทะเบียนสำเร็จ!");
-        showPage('loginPage');
-    }
-
-    function login() {
-        const name = document.getElementById('lName').value;
-        const pass = document.getElementById('lPass').value;
-        const stored = JSON.parse(localStorage.getItem(name));
-        if(stored && stored.pass === pass) {
-            user = stored;
-            document.getElementById('navActions').innerHTML = `<span style='font-size:12px;'>${user.name}</span> <button class='btn-outline' style='border-color:red; color:red;' onclick='location.reload()'>ออก</button>`;
-            document.getElementById('homeTitle').innerText = "สวัสดี, " + user.name;
-            document.getElementById('userInfoShort').style.display = "block";
-            document.getElementById('guestInfo').style.display = "none";
-            showPage('homePage');
-        } else {
-            alert("ชื่อหรือรหัสผ่านผิด");
-        }
-    }
-
-    function processAnalysis() {
-        const sweat = parseFloat(document.getElementById('sweatVal').value);
-        let status = "ปกติ ✅";
-        let color = "#d4edda";
-        let msg = "ร่างกายสมบูรณ์ดีมากครับ ดื่มน้ำตามปกติได้เลย เป็นกำลังใจให้ครับ!";
-
-        if(sweat > 800) {
-            status = "ขาดน้ำ 🚨";
-            color = "#f8d7da";
-            msg = "คุณขาดน้ำรุนแรง! กรุณาพักและดื่มน้ำทันที ร่างกายคุณต้องการการดูแลด่วนครับ สู้ๆ!";
-            user.dehydrationCount++;
-        } else if(sweat > 400) {
-            status = "เสี่ยง ⚠️";
-            color = "#fff3cd";
-            msg = "เริ่มมีสัญญาณการเสียน้ำ ควรจิบน้ำเพิ่มขึ้นนะครับ ร่างกายจะได้สดชื่น";
+        function openForm(formId) {
+            document.getElementById('formOverlay').classList.add('active-overlay');
+            document.getElementById('regForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById(formId).style.display = 'block';
         }
 
-        document.getElementById('finalStatus').innerText = status;
-        document.getElementById('adviceBox').style.background = color;
-        document.getElementById('adviceBox').innerText = msg;
-        document.getElementById('countVal').innerText = user.dehydrationCount;
-        document.getElementById('statusVal').innerText = status;
-        showPage('resultPage');
-    }
-
-    function saveSettings() {
-        const isOn = document.getElementById('notifyOn').checked;
-        const time = document.getElementById('notifyTime').value;
-        if(isOn) {
-            alert("ระบบจะแจ้งเตือนคุณทุกๆ " + time + " นาที");
-            setInterval(() => { alert("🔔 ถึงเวลาดื่มน้ำเพื่อสุขภาพของคุณแล้วครับ!"); }, time * 60000);
+        function closeForm() {
+            document.getElementById('formOverlay').classList.remove('active-overlay');
         }
-        showPage('homePage');
-    }
-</script>
+
+        function register() {
+            const data = {
+                name: document.getElementById('rName').value,
+                pass: document.getElementById('rPass').value,
+                weight: document.getElementById('rWeight').value
+            };
+            if(!data.name || data.pass.length < 6) return alert("กรุณากรอกข้อมูลและรหัส 6 หลัก");
+            localStorage.setItem(data.name, JSON.stringify(data));
+            alert("สมัครสำเร็จ!");
+            openForm('loginForm');
+        }
+
+        function login() {
+            const name = document.getElementById('lName').value;
+            const pass = document.getElementById('lPass').value;
+            const stored = JSON.parse(localStorage.getItem(name));
+            if(stored && stored.pass === pass) {
+                currentUser = stored;
+                loginSuccess();
+            } else { alert("รหัสผิด"); }
+        }
+
+        function loginSuccess() {
+            closeForm();
+            document.getElementById('frontPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+            document.getElementById('helloUser').innerText = "สวัสดี, " + currentUser.name;
+            // เปิดแจ้งเตือนพื้นฐาน
+            setInterval(() => { alert("🔔 อย่าลืมดื่มน้ำนะครับ!"); }, 600000); // ทุก 10 นาที
+        }
+
+        function checkStatus() {
+            const sweat = document.getElementById('sweatIn').value;
+            let res = sweat > 500 ? "เสี่ยงขาดน้ำ 🚨" : "ปกติ ✅";
+            document.getElementById('resultText').innerHTML = `<b>ผลลัพธ์: ${res}</b><br>จิบน้ำบ่อยๆ นะคนเก่ง!`;
+        }
+    </style>
 
 </body>
 </html>
