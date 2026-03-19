@@ -3,295 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dehydration Project</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(180deg, #c7dbe8 0%, #f2f2f2 60%, #f2f2f2 100%);
-            --text-blue: #97c8eb;
-            --btn-color: #4a90e2;
-        }
-
-        body {
-            font-family: 'Sarabun', sans-serif;
-            margin: 0; padding: 0;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        /* --- ส่วน Header มุมขวาบน --- */
-        .top-nav {
-            position: fixed; top: 0; right: 0; padding: 20px;
-            display: none; z-index: 100;
-        }
-        .logout-btn { color: #ff4d4d; cursor: pointer; font-weight: bold; text-decoration: underline; }
-
-        /* --- หน้าแรก (Landing Page) ตามรูปเป๊ะ --- */
-        .landing-container { text-align: center; display: none; }
-        .title-3d {
-            font-size: clamp(50px, 10vw, 85px); font-weight: 700;
-            color: var(--text-blue); margin-bottom: 40px;
-            text-shadow: 3px 3px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff, 5px 5px 15px rgba(0,0,0,0.1);
-        }
-        .btn-group { display: flex; justify-content: center; gap: 20px; }
-        .btn-outline {
-            background: transparent; border: 2.5px solid var(--btn-color);
-            color: var(--btn-color); padding: 12px 45px; border-radius: 30px;
-            font-size: 20px; cursor: pointer; transition: 0.3s;
-        }
-        .btn-outline:hover { background: rgba(74, 144, 226, 0.1); }
-
-        /* --- การ์ดเนื้อหา (Login / Reg / Dashboard) --- */
-        .card {
-            background: white; padding: 40px; border-radius: 25px;
-            width: 90%; max-width: 450px; display: none;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .active { display: block !important; }
-        .active-flex { display: flex !important; }
-
-        h2 { text-align: center; color: #444; margin-bottom: 25px; }
-        input, select {
-            width: 100%; padding: 14px; margin: 10px 0;
-            border: 1px solid #eee; border-radius: 12px; background: #f9f9f9;
-            box-sizing: border-box; font-size: 16px;
-        }
-        .primary-btn {
-            width: 100%; background: var(--btn-color); color: white;
-            border: none; padding: 16px; border-radius: 30px;
-            font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px;
-        }
-
-        .stat-box { background: #eef6ff; padding: 15px; border-radius: 15px; margin: 15px 0; border-left: 6px solid var(--btn-color); }
-    </style>
-</head>
-<body>
-
-    <div class="top-nav" id="navBar">
-        <span id="userDisp" style="margin-right:15px;"></span>
-        <span class="logout-btn" onclick="logout()">ออกจากระบบ</span>
-    </div>
-
-    <div id="page-home" class="landing-container active">
-        <h1 class="title-3d">Dehydration</h1>
-        <div class="btn-group">
-            <button class="btn-outline" onclick="go('page-login')">เข้าสู่ระบบ</button>
-            <button class="btn-outline" onclick="go('page-reg')">ลงทะเบียน</button>
-        </div>
-    </div>
-
-    <div id="page-reg" class="card">
-        <h2>ลงทะเบียนสมาชิก</h2>
-        <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
-        <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
-        <input type="number" id="rAge" placeholder="อายุ">
-        <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.)">
-        <input type="number" id="rHeight" placeholder="ส่วนสูง (ซม.)">
-        <select id="rGender">
-            <option value="">เลือกเพศ</option>
-            <option value="ชาย">ชาย</option>
-            <option value="หญิง">หญิง</option>
-        </select>
-        <button class="primary-btn" onclick="doRegister()">ลงทะเบียนและเข้าสู่ระบบ</button>
-        <p style="text-align:center; color:var(--btn-color); cursor:pointer;" onclick="go('page-login')">มีบัญชีแล้ว? เข้าสู่ระบบ</p>
-    </div>
-
-    <div id="page-login" class="card">
-        <h2>เข้าสู่ระบบ</h2>
-        <input type="text" id="lName" placeholder="ชื่อ">
-        <input type="password" id="lPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
-        <button class="primary-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
-        <p style="text-align:center; color:var(--btn-color); cursor:pointer;" onclick="go('page-reg')">ยังไม่มีบัญชี? ลงทะเบียน</p>
-    </div>
-
-    <div id="page-dash" class="card" style="max-width: 600px;">
-        <h2 id="welcomeTxt">แผงควบคุม</h2>
-        <div class="stat-box">
-            <strong>วิเคราะห์พื้นฐาน:</strong>
-            <p id="theoryTxt"></p>
-        </div>
-
-        <h4>วัดค่าเหงื่อรายบุคคล (ml)</h4>
-        <input type="number" id="sweatVal" placeholder="กรอกค่าเหงื่อที่วัดได้">
-        <button class="primary-btn" onclick="doAnalyze()">วิเคราะห์ผลลัพธ์</button>
-
-          
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dehydration Analysis</title>
+    <title>Dehydration Analytics - H2O</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #4A90E2; --bg: linear-gradient(180deg, #d1e1f0 0%, #f5f7fa 100%); }
-        body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; min-height: 100vh; }
+        :root { 
+            --primary: #4A90E2; 
+            --bg-gradient: linear-gradient(180deg, #c7dbe8 0%, #f2f2f2 60%, #f2f2f2 100%);
+            --text-blue: #97c8eb;
+        }
+        body { font-family: 'Sarabun', sans-serif; background: var(--bg-gradient); margin: 0; min-height: 100vh; }
         
-        /* แถบเมนูด้านบน (ตามภาพ 195000.png) */
-        .top-nav { display: flex; justify-content: flex-end; padding: 20px 40px; }
-        .reg-btn-nav { background: #c52828; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        /* --- Navigation --- */
+        .top-nav { display: flex; justify-content: flex-end; padding: 20px 40px; position: fixed; width: 100%; box-sizing: border-box; z-index: 100; }
+        .reg-btn-nav { background: #c52828; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .reg-btn-nav:hover { background: #a02020; }
 
-        /* คอนเทนเนอร์หลัก */
-        .container { display: flex; justify-content: center; align-items: flex-start; padding-top: 50px; }
-        .card { background: white; width: 90%; max-width: 500px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); padding: 40px; text-align: center; display: none; }
+        /* --- Layout Containers --- */
+        .container { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        .card { background: white; width: 90%; max-width: 500px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); padding: 40px; text-align: center; display: none; animation: fadeIn 0.5s; }
         .active { display: block !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { font-size: 28px; margin-bottom: 25px; color: #333; }
+        /* --- Landing Page Style --- */
+        .title-3d {
+            font-size: clamp(40px, 8vw, 80px); font-weight: 700; color: var(--text-blue); margin-bottom: 40px;
+            text-shadow: 3px 3px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff, 5px 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn-outline {
+            background: transparent; border: 2.5px solid var(--primary); color: var(--primary);
+            padding: 12px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-outline:hover { background: rgba(74, 144, 226, 0.1); }
+
+        /* --- Dashboard Elements --- */
+        .info-box { background: #eef6ff; border-left: 5px solid var(--primary); padding: 20px; border-radius: 10px; text-align: left; margin-bottom: 30px; }
+        .info-box b { display: block; margin-bottom: 5px; color: #333; }
         
-        /* กล่องวิเคราะห์พื้นฐาน (แถบฟ้าด้านซ้าย) */
-        .info-box { background: #eef6ff; border-left: 5px solid var(--primary); padding: 20px; border-radius: 10px; text-align: left; margin-bottom: 30px; line-height: 1.6; }
-        .info-box b { color: #333; display: block; margin-bottom: 5px; }
-
-        /* ส่วนกรอกข้อมูล */
         .input-group { text-align: left; margin-bottom: 25px; }
-        label { font-weight: bold; display: block; margin-bottom: 10px; font-size: 15px; }
-        input[type="number"] { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #eee; background: #fafafa; font-size: 16px; box-sizing: border-box; }
-        .primary-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-        /* ส่วนผลลัพธ์ (ตามภาพ 195020, 195030, 195042) */
-        .res-header { padding: 20px; border-radius: 15px; font-size: 32px; font-weight: bold; margin-bottom: 20px; color: #333; }
-        .bg-danger { background: #f0aaaa; } .bg-warning { background: #f7d7ac; } .bg-success { background: #58b682; color: white; }
+        label { font-weight: bold; display: block; margin-bottom: 10px; }
+        input, select { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #f9f9f9; box-sizing: border-box; font-size: 16px; margin-bottom: 15px; }
         
-        .checkbox-container { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin: 20px 0; }
-        .footer-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-footer { flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer; }
+        .primary-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; }
 
-        /* Modal */
+        /* --- Result Page Elements --- */
+        .res-header { padding: 20px; border-radius: 15px; font-size: 32px; font-weight: bold; margin-bottom: 20px; }
+        .bg-danger { background: #f0aaaa; color: #721c24; }
+        .bg-warning { background: #f7d7ac; color: #856404; }
+        .bg-success { background: #58b682; color: white; }
+
+        .checkbox-container { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin: 20px 0; }
+        .footer-btns { display: flex; gap: 10px; }
+        .btn-footer { flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 14px; }
+
+        /* --- Modals --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; position: relative; }
     </style>
 </head>
 <body>
 
-    <div class="top-nav">
-        <button class="reg-btn-nav" onclick="location.reload()">ลงทะเบียน</button>
+    <div class="top-nav" id="mainNav" style="display: none;">
+        <button class="reg-btn-nav" onclick="logout()">ออกจากระบบ</button>
     </div>
 
     <div class="container">
-        <div id="page-input" class="card active">
-            <h2 id="userName">ชื่อผู้ใช้</h2>
-            
-            <div class="info-box">
-                <b>วิเคราะห์พื้นฐาน:</b>
-                <span id="basicInfoText">ตามน้ำหนักตัว 67 กก. คุณควรดื่มน้ำวันละ 2211 มล.</span>
-            </div>
-
-            <div class="input-group">
-                <label>วัดค่าเหงื่อรายบุคคล (ml)</label>
-                <input type="number" id="sweatInp" placeholder="กรอกค่าเหงื่อที่วัดได้">
-            </div>
-
-            <button class="primary-btn" onclick="analyze()">วิเคราะห์ผลลัพธ์</button>
-        </div>
-
-        <div id="page-result" class="card">
-            <div id="resColor" class="res-header">
-                <span id="resTitle">ขาดน้ำ</span> <span id="resEmoji">🚨</span>
-            </div>
-            
-            <div style="text-align: left; margin-bottom: 20px;">
-                <b id="adviceLabel">คำเตือน</b><br>
-                <span id="adviceText">ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ</span>
-            </div>
-
-            <div class="checkbox-container">
-                <span>เปิดระบบแจ้งเตือนดื่มน้ำ</span>
-                <input type="checkbox" id="notiCheck" style="width:20px; height:20px;" onchange="toggleNoti()">
-            </div>
-
-            <div class="footer-btns">
-                <button id="btnHist" class="btn-footer" onclick="openModal('modalHist')">ประวัติการใช้งาน</button>
-                <button id="btnStat" class="btn-footer" onclick="openModal('modalStat')">สถิติ</button>
-            </div>
-            <p style="color:var(--primary); cursor:pointer; margin-top:20px;" onclick="showInputPage()">← กลับไปวิเคราะห์ใหม่</p>
-        </div>
-    </div>
-
-    <div id="modalHist" class="modal">
-        <div class="modal-content">
-            <h3>ประวัติการใช้งาน</h3>
-            <div id="histList">ไม่มีข้อมูลประวัติ</div>
-            <button class="primary-btn" onclick="closeModal('modalHist')">ปิด</button>
-        </div>
-    </div>
-
-    <div id="modalStat" class="modal">
-        <div class="modal-content">
-            <h3>สถิติค่าเหงื่อ (ml)</h3>
-            <canvas id="myChart"></canvas>
-            <button class="primary-btn" onclick="closeModal('modalStat')">ปิด</button>
-        </div>
-    </div>
-
-    <script>
-        let historyData = [];
-
-        function analyze() {
-            const val = document.getElementById('sweatInp').value;
-            if(!val) return alert("กรุณากรอกค่าเหงื่อ");
-
-            const head = document.getElementById('resColor');
-            const title = document.getElementById('resTitle');
-            const emoji = document.getElementById('resEmoji');
-            const advL = document.getElementById('adviceLabel');
-            const advT = document.getElementById('adviceText');
-            const btns = document.querySelectorAll('.btn-footer');
-
-            // ลบคลาสเก่าออกก่อน
-            head.className = "res-header";
-            btns.forEach(b => b.className = "btn-footer");
-
-            if(val > 700) {
-                head.classList.add('bg-danger');
-                title.innerText = "ขาดน้ำ"; emoji.innerText = "🚨";
-                advL.innerText = "คำเตือน"; advT.innerText = "ร่างกายขาดน้ำควรดื่มน้ำทันทีนะครับ";
-                btns.forEach(b => b.classList.add('bg-danger'));
-            } else if(val > 300) {
-                head.classList.add('bg-warning');
-                title.innerText = "เสี่ยง"; emoji.innerText = "⚠️";
-                advL.innerText = "คำเตือน"; advT.innerText = "ร่างกายเสี่ยงขาดน้ำควรดื่มน้ำ";
-                btns.forEach(b => b.classList.add('bg-warning'));
-            } else {
-                head.classList.add('bg-success');
-                title.innerText = "ปกติ"; emoji.innerText = "✅";
-                advL.innerText = "คำแนะนำ"; advT.innerText = "ควรดื่มน้ำประมาณนี้เพื่อรักษาสมดุลน้ำในร่างกาย";
-                btns.forEach(b => b.classList.add('bg-success'));
-            }
-
-            historyData.push(val);
-            document.getElementById('page-input').classList.remove('active');
-            document.getElementById('page-result').classList.add('active');
-        }
-
-        function showInputPage() {
-            document.getElementById('page-result').classList.remove('active');
-            document.getElementById('page-input').classList.add('active');
-        }
-
-        function toggleNoti() {
-            if(document.getElementById('notiCheck').checked) {
-                alert("🔔 ระบบเริ่มแจ้งเตือนดื่มน้ำทุก 1 ชั่วโมง");
-            }
-        }
-
-        function openModal(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-            if(id === 'modalStat') renderChart();
-        }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function renderChart() {
-            const ctx = document.getElementById('myChart');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: historyData.map((_, i) => `ครั้งที่ ${i+1}`),
-                    datasets: [{ label: 'ค่าเหงื่อ (ml)', data: historyData, borderColor: '#4A90E2', tension: 0.3 }]
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+        <div
