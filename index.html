@@ -3,53 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Web App</title>
+    <title>H2O Tracker - วิเคราะห์การสูญเสียน้ำ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        /* สไตล์แบบแอปมือถือ ทันสมัยและเบา */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; padding: 20px; }
-        .app-container { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; text-align: center; padding-bottom: 30px; }
-        .header-bg { background: linear-gradient(135deg, #007AFF, #00C6FF); height: 120px; }
-        .profile-img { width: 100px; height: 100px; border-radius: 50%; border: 5px solid white; margin-top: -50px; background: #ddd; object-fit: cover; }
-        h1 { margin: 15px 0 5px; color: #333; font-size: 24px; }
-        p { color: #666; padding: 0 30px; line-height: 1.6; }
-        .links-container { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .link-btn { background: #f8f9fa; color: #333; text-decoration: none; padding: 15px; border-radius: 12px; font-weight: bold; transition: 0.3s; border: 1px solid #eee; }
-        .link-btn:hover { background: #007AFF; color: white; transform: translateY(-2px); }
-        .footer { font-size: 12px; color: #999; margin-top: 20px; }
+        :root { --main-blue: #007AFF; --bg-color: #f0f4f8; }
+        body { font-family: 'Kanit', sans-serif; background: var(--bg-color); margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        .app-card { background: white; width: 100%; max-width: 450px; min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; }
+        .page { display: none; animation: fadeIn 0.5s; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h2 { color: var(--main-blue); text-align: center; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--main-blue); color: white; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .logout-btn { background: #ff4d4d; margin-top: 20px; }
+        
+        .result-card { background: #e3f2fd; padding: 20px; border-radius: 15px; border-left: 5px solid var(--main-blue); margin-top: 20px; }
+        .status-normal { color: #2e7d32; font-weight: bold; }
+        .status-risk { color: #ef6c00; font-weight: bold; }
+        .status-danger { color: #c62828; font-weight: bold; }
+        
+        .notification-settings { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px dashed #ccc; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div class="header-bg"></div>
-        
-        <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img">
-
-        <h1>ยินดีต้อนรับสู่พื้นที่ของฉัน! 🌟</h1>
-        <p>นี่คือเว็บแอปที่สร้างขึ้นเพื่อทดแทนแอปแบบติดตั้ง ประหยัดพื้นที่เครื่องไปได้เยอะเลยล่ะ!</p>
-
-        <div class="links-container">
-            <a href="https://facebook.com" class="link-btn">Facebook ของฉัน</a>
-            <a href="https://github.com/17968-Iswork" class="link-btn">ดูโปรเจกต์ใน GitHub</a>
-            <a href="mailto:example@email.com" class="link-btn">ส่งอีเมลหาฉัน</a>
-            <button class="link-btn" onclick="shareApp()" style="cursor:pointer; width:100%;">แชร์แอปนี้ให้เพื่อน</button>
+<div class="app-card">
+    
+    <div id="loginPage" class="page active">
+        <h2>เข้าสู่ระบบส่วนบุคคล</h2>
+        <div class="input-group">
+            <label>ชื่อผู้ใช้งาน</label>
+            <input type="text" id="username" placeholder="กรอกชื่อของคุณ">
         </div>
-
-        <div class="footer">© 2026 Create by Me | No Install Required</div>
+        <div class="input-group">
+            <label>รหัสผ่าน</label>
+            <input type="password" id="password" placeholder="กรอกรหัสผ่าน">
+        </div>
+        <button onclick="showPage('profilePage')">เข้าสู่ระบบ</button>
     </div>
 
-    <script>
-        function shareApp() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'เว็บแอปของฉัน',
-                    url: window.location.href
-                }).catch(console.error);
-            } else {
-                alert("ก๊อปปี้ลิงก์นี้ไปส่งให้เพื่อนได้เลย: " + window.location.href);
-            }
+    <div id="profilePage" class="page">
+        <h2>ข้อมูลสุขภาพเบื้องต้น</h2>
+        <div class="input-group">
+            <label>อายุ (ปี)</label>
+            <input type="number" id="age">
+        </div>
+        <div class="input-group">
+            <label>เพศ</label>
+            <select id="gender">
+                <option value="male">ชาย</option>
+                <option value="female">หญิง</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>ส่วนสูง (ซม.)</label>
+            <input type="number" id="height">
+        </div>
+        <div class="input-group">
+            <label>น้ำหนัก (กก.)</label>
+            <input type="number" id="weight">
+        </div>
+        <button onclick="calculateBaseWater()">วิเคราะห์ขั้นต่อไป</button>
+    </div>
+
+    <div id="sweatPage" class="page">
+        <h2>วิเคราะห์การสูญเสียน้ำ</h2>
+        <p style="font-size: 14px; color: #666;">กรอกปริมาณเหงื่อที่วัดได้จากอุปกรณ์ หรือประเมินจากการทำกิจกรรม (มิลลิลิตร)</p>
+        <div class="input-group">
+            <label>ค่าเหงื่อที่วัดได้ (ml)</label>
+            <input type="number" id="sweatValue" placeholder="ตัวอย่าง: 500">
+        </div>
+        <button onclick="analyzeWaterLoss()">แสดงผลการวิเคราะห์</button>
+    </div>
+
+    <div id="resultPage" class="page">
+        <h2>สรุปผลสุขภาพ</h2>
+        <div class="result-card" id="resultDisplay">
+            </div>
+
+        <div class="notification-settings">
+            <label>
+                <input type="checkbox" id="notifyToggle" style="width: auto;"> เปิดแจ้งเตือนการดื่มน้ำ
+            </label>
+            <div id="timeSetting" style="margin-top:10px;">
+                <label>ตั้งเวลาดื่มน้ำทุกๆ (นาที)</label>
+                <input type="number" id="notifyInterval" value="60" style="width: 80px;">
+            </div>
+            <button onclick="saveSettings()" style="padding: 8px; font-size: 14px;">บันทึกการตั้งค่า</button>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+    </div>
+
+</div>
+
+<script>
+    let userData = {};
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    function calculateBaseWater() {
+        userData.weight = document.getElementById('weight').value;
+        if(!userData.weight) return alert("กรุณากรอกน้ำหนัก");
+        // ทฤษฎีพื้นฐาน: น้ำหนัก x 33 = ปริมาณน้ำที่ควรดื่มต่อวัน (ml)
+        userData.baseRequirement = userData.weight * 33;
+        showPage('sweatPage');
+    }
+
+    function analyzeWaterLoss() {
+        let sweat = parseFloat(document.getElementById('sweatValue').value) || 0;
+        let totalLoss = (userData.baseRequirement / 4) + sweat; // คำนวณการเสียน้ำระหว่างวัน + เหงื่อ
+        
+        let status = "";
+        let advice = "";
+        let statusClass = "";
+
+        if (sweat < 300) {
+            status = "ปกติ ✅";
+            statusClass = "status-normal";
+            advice = "ร่างกายของคุณยังมีความชุ่มชื้นดีครับ รักษามาตรฐานนี้ไว้คนเก่ง!";
+        } else if (sweat >= 300 && sweat < 800) {
+            status = "เริ่มมีความเสี่ยง ⚠️";
+            statusClass = "status-risk";
+            advice = "คุณเสียเหงื่อค่อนข้างมาก ควรจิบน้ำเพิ่มทีละนิด อย่าปล่อยให้คอแห้งนะครับ";
+        } else {
+            status = "ภาวะขาดน้ำ 🚨";
+            statusClass = "status-danger";
+            advice = "คำเตือน! ร่างกายเสียน้ำมากเกินไป รีบดื่มน้ำหรือน้ำแร่ และพักผ่อนในที่เย็นทันทีครับ";
         }
-    </script>
+
+        document.getElementById('resultDisplay').innerHTML = `
+            <p>ความต้องการน้ำพื้นฐาน: <b>${userData.baseRequirement.toFixed(0)} ml/วัน</b></p>
+            <p>สถานะปัจจุบัน: <span class="${statusClass}">${status}</span></p>
+            <hr>
+            <p><b>คำแนะนำ:</b> ${advice}</p>
+            <p style="font-style: italic; font-size: 13px;">"สุขภาพดีเริ่มที่ตัวคุณ ผมเป็นกำลังใจให้เสมอครับ! ✨"</p>
+        `;
+        showPage('resultPage');
+    }
+
+    function saveSettings() {
+        let isNotify = document.getElementById('notifyToggle').checked;
+        let interval = document.getElementById('notifyInterval').value;
+        if(isNotify) {
+            alert(`ตั้งค่าสำเร็จ! เราจะแจ้งเตือนคุณทุกๆ ${interval} นาที (ต้องเปิดหน้าเว็บนี้ค้างไว้)`);
+            // ในเครื่องจริงต้องใช้ Service Worker สำหรับ PWA แต่เบื้องต้นใช้ setInterval
+            setInterval(() => {
+                if(Notification.permission === "granted") {
+                    new Notification("ได้เวลาดื่มน้ำแล้ว!", { body: "เพื่อสุขภาพที่ดี จิบน้ำสักนิดนะครับ" });
+                } else {
+                    alert("กริ๊งๆ! ได้เวลาดื่มน้ำแล้วครับ 💧");
+                }
+            }, interval * 60000);
+        } else {
+            alert("ปิดการแจ้งเตือนแล้ว");
+        }
+    }
+
+    function logout() {
+        if(confirm("ยืนยันการออกจากระบบ?")) {
+            location.reload();
+        }
+    }
+
+    // ขออนุญาตแจ้งเตือน
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+</script>
 
 </body>
 </html>
