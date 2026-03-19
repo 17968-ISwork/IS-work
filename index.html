@@ -3,181 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H2O Tracker - วิเคราะห์การสูญเสียน้ำ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500&display=swap" rel="stylesheet">
+    <title>H2O Insight - ระบบวิเคราะห์การสูญเสียน้ำอัจฉริยะ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&family=Kanit:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --main-blue: #007AFF; --bg-color: #f0f4f8; }
-        body { font-family: 'Kanit', sans-serif; background: var(--bg-color); margin: 0; display: flex; justify-content: center; min-height: 100vh; }
-        .app-card { background: white; width: 100%; max-width: 450px; min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; }
-        .page { display: none; animation: fadeIn 0.5s; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        :root {
+            --primary: #0056b3;
+            --secondary: #00a8e8;
+            --accent: #ffcc00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
 
-        h2 { color: var(--main-blue); text-align: center; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 14px; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--main-blue); color: white; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        .logout-btn { background: #ff4d4d; margin-top: 20px; }
-        
-        .result-card { background: #e3f2fd; padding: 20px; border-radius: 15px; border-left: 5px solid var(--main-blue); margin-top: 20px; }
-        .status-normal { color: #2e7d32; font-weight: bold; }
-        .status-risk { color: #ef6c00; font-weight: bold; }
-        .status-danger { color: #c62828; font-weight: bold; }
-        
-        .notification-settings { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px dashed #ccc; }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            background-color: #f4f7f9;
+            color: var(--dark);
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Kanit', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .nav-auth button {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Kanit', sans-serif;
+            margin-left: 10px;
+        }
+
+        .btn-login { background: var(--primary); color: white; }
+        .btn-logout { background: var(--danger); color: white; display: none; }
+
+        /* Main Container */
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+
+        /* Sections */
+        section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h1, h2, h3 { font-family: 'Kanit', sans-serif; color: var(--primary); }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .project-img {
+            width: 100%;
+            border-radius: 15px;
+            background: #eee;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #ccc;
+        }
+
+        /* Form Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Result Display */
+        #analysisResult {
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        /* Modal Auth */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="app-card">
-    
-    <div id="loginPage" class="page active">
-        <h2>เข้าสู่ระบบส่วนบุคคล</h2>
-        <div class="input-group">
-            <label>ชื่อผู้ใช้งาน</label>
-            <input type="text" id="username" placeholder="กรอกชื่อของคุณ">
+    <nav>
+        <div class="logo">H2O Insight</div>
+        <div class="nav-auth" id="navAuth">
+            <span id="userDisplay" style="margin-right: 15px; font-weight: bold;"></span>
+            <button class="btn-login" id="loginBtn" onclick="toggleModal('authModal')">เข้าสู่ระบบ / ลงทะเบียน</button>
+            <button class="btn-logout" id="logoutBtn" onclick="handleLogout()">ออกจากระบบ</button>
         </div>
-        <div class="input-group">
-            <label>รหัสผ่าน</label>
-            <input type="password" id="password" placeholder="กรอกรหัสผ่าน">
-        </div>
-        <button onclick="showPage('profilePage')">เข้าสู่ระบบ</button>
-    </div>
+    </nav>
 
-    <div id="profilePage" class="page">
-        <h2>ข้อมูลสุขภาพเบื้องต้น</h2>
-        <div class="input-group">
-            <label>อายุ (ปี)</label>
-            <input type="number" id="age">
-        </div>
-        <div class="input-group">
-            <label>เพศ</label>
-            <select id="gender">
-                <option value="male">ชาย</option>
-                <option value="female">หญิง</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label>ส่วนสูง (ซม.)</label>
-            <input type="number" id="height">
-        </div>
-        <div class="input-group">
-            <label>น้ำหนัก (กก.)</label>
-            <input type="number" id="weight">
-        </div>
-        <button onclick="calculateBaseWater()">วิเคราะห์ขั้นต่อไป</button>
-    </div>
-
-    <div id="sweatPage" class="page">
-        <h2>วิเคราะห์การสูญเสียน้ำ</h2>
-        <p style="font-size: 14px; color: #666;">กรอกปริมาณเหงื่อที่วัดได้จากอุปกรณ์ หรือประเมินจากการทำกิจกรรม (มิลลิลิตร)</p>
-        <div class="input-group">
-            <label>ค่าเหงื่อที่วัดได้ (ml)</label>
-            <input type="number" id="sweatValue" placeholder="ตัวอย่าง: 500">
-        </div>
-        <button onclick="analyzeWaterLoss()">แสดงผลการวิเคราะห์</button>
-    </div>
-
-    <div id="resultPage" class="page">
-        <h2>สรุปผลสุขภาพ</h2>
-        <div class="result-card" id="resultDisplay">
+    <div class="container">
+        <section id="project-info">
+            <div class="hero-grid">
+                <div>
+                    <h1>ระบบวิเคราะห์การสูญเสียน้ำในร่างกายรายบุคคล</h1>
+                    <p><b>ที่มา:</b> การสูญเสียน้ำระหว่างวันและกิจกรรมส่งผลต่อประสิทธิภาพของร่างกายและสมอง หลายคนละเลยการดื่มน้ำที่เพียงพอตามสภาพร่างกายจริง</p>
+                    <p><b>จุดประสงค์:</b> เพื่อประเมินสภาวะขาดน้ำจากการวัดค่าเหงื่อและข้อมูลทางกายภาพ เพื่อแจ้งเตือนและส่งเสริมสุขภาพอย่างมีประสิทธิภาพ</p>
+                </div>
+                <div class="project-img">
+                    <span>[พื้นที่ใส่รูปสิ่งประดิษฐ์]</span>
+                </div>
             </div>
-
-        <div class="notification-settings">
-            <label>
-                <input type="checkbox" id="notifyToggle" style="width: auto;"> เปิดแจ้งเตือนการดื่มน้ำ
-            </label>
-            <div id="timeSetting" style="margin-top:10px;">
-                <label>ตั้งเวลาดื่มน้ำทุกๆ (นาที)</label>
-                <input type="number" id="notifyInterval" value="60" style="width: 80px;">
+            <div style="margin-top: 20px;">
+                <h3>จุดเด่นของผลงาน:</h3>
+                <ul>
+                    <li>วิเคราะห์เฉพาะบุคคลตามน้ำหนักและส่วนสูง</li>
+                    <li>คำนวณร่วมกับค่าเหงื่อจริงที่วัดได้</li>
+                    <li>ระบบแจ้งเตือนดื่มน้ำอัจฉริยะ</li>
+                </ul>
             </div>
-            <button onclick="saveSettings()" style="padding: 8px; font-size: 14px;">บันทึกการตั้งค่า</button>
-        </div>
-
-        <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
-    </div>
-
-</div>
-
-<script>
-    let userData = {};
-
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        window.scrollTo(0,0);
-    }
-
-    function calculateBaseWater() {
-        userData.weight = document.getElementById('weight').value;
-        if(!userData.weight) return alert("กรุณากรอกน้ำหนัก");
-        // ทฤษฎีพื้นฐาน: น้ำหนัก x 33 = ปริมาณน้ำที่ควรดื่มต่อวัน (ml)
-        userData.baseRequirement = userData.weight * 33;
-        showPage('sweatPage');
-    }
-
-    function analyzeWaterLoss() {
-        let sweat = parseFloat(document.getElementById('sweatValue').value) || 0;
-        let totalLoss = (userData.baseRequirement / 4) + sweat; // คำนวณการเสียน้ำระหว่างวัน + เหงื่อ
-        
-        let status = "";
-        let advice = "";
-        let statusClass = "";
-
-        if (sweat < 300) {
-            status = "ปกติ ✅";
-            statusClass = "status-normal";
-            advice = "ร่างกายของคุณยังมีความชุ่มชื้นดีครับ รักษามาตรฐานนี้ไว้คนเก่ง!";
-        } else if (sweat >= 300 && sweat < 800) {
-            status = "เริ่มมีความเสี่ยง ⚠️";
-            statusClass = "status-risk";
-            advice = "คุณเสียเหงื่อค่อนข้างมาก ควรจิบน้ำเพิ่มทีละนิด อย่าปล่อยให้คอแห้งนะครับ";
-        } else {
-            status = "ภาวะขาดน้ำ 🚨";
-            statusClass = "status-danger";
-            advice = "คำเตือน! ร่างกายเสียน้ำมากเกินไป รีบดื่มน้ำหรือน้ำแร่ และพักผ่อนในที่เย็นทันทีครับ";
-        }
-
-        document.getElementById('resultDisplay').innerHTML = `
-            <p>ความต้องการน้ำพื้นฐาน: <b>${userData.baseRequirement.toFixed(0)} ml/วัน</b></p>
-            <p>สถานะปัจจุบัน: <span class="${statusClass}">${status}</span></p>
-            <hr>
-            <p><b>คำแนะนำ:</b> ${advice}</p>
-            <p style="font-style: italic; font-size: 13px;">"สุขภาพดีเริ่มที่ตัวคุณ ผมเป็นกำลังใจให้เสมอครับ! ✨"</p>
-        `;
-        showPage('resultPage');
-    }
-
-    function saveSettings() {
-        let isNotify = document.getElementById('notifyToggle').checked;
-        let interval = document.getElementById('notifyInterval').value;
-        if(isNotify) {
-            alert(`ตั้งค่าสำเร็จ! เราจะแจ้งเตือนคุณทุกๆ ${interval} นาที (ต้องเปิดหน้าเว็บนี้ค้างไว้)`);
-            // ในเครื่องจริงต้องใช้ Service Worker สำหรับ PWA แต่เบื้องต้นใช้ setInterval
-            setInterval(() => {
-                if(Notification.permission === "granted") {
-                    new Notification("ได้เวลาดื่มน้ำแล้ว!", { body: "เพื่อสุขภาพที่ดี จิบน้ำสักนิดนะครับ" });
-                } else {
-                    alert("กริ๊งๆ! ได้เวลาดื่มน้ำแล้วครับ 💧");
-                }
-            }, interval * 60000);
-        } else {
-            alert("ปิดการแจ้งเตือนแล้ว");
-        }
-    }
-
-    function logout() {
-        if(confirm("ยืนยันการออกจากระบบ?")) {
-            location.reload();
-        }
-    }
-
-    // ขออนุญาตแจ้งเตือน
-    if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-    }
-</script>
-
-</body>
-</html>
+        </section>
