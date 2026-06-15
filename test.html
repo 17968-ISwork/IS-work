@@ -150,12 +150,12 @@
 
 <div class="container">
     <div id="category-screen">
-        <h1>เลือกประเภทข้อสอบจำลอง</h1>
-        <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">📝 ชุดละ 30 ข้อ = 1 ครั้ง | ทำครั้งที่ 1-10 (ระดับกลาง) ➡️ ครั้งที่ 11 ขึ้นไปปรับเป็น (ระดับยาก) อัตโนมัติ</p>
+        <h1>ระบบคลังข้อสอบจำลอง TCAS</h1>
+        <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">📝 ชุดละ 30 ข้อ | ครั้งที่ 1-10 (ระดับกลาง) ➡️ ครั้งที่ 11 ขึ้นไปปรับเป็น (ระดับยาก) อัตโนมัติเพื่อพัฒนาฝีมือเด็กๆ</p>
         <button class="btn btn-center" onclick="showSubCategory('gat')">TGAT (GAT)</button>
         <button class="btn btn-center" onclick="showSubCategory('pat')">TPAT (PAT 1)</button>
-        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level</button>
-        <button class="btn btn-center choice-btn" style="text-align: center; margin-top: 20px; font-size: 12px;" onclick="resetHistory()">🗑️ ล้างประวัติจำนวนครั้งการทำใหม่ทั้งหมด</button>
+        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level (สายศิลป์-คำนวณ)</button>
+        <button class="btn btn-center choice-btn" style="text-align: center; margin-top: 20px; font-size: 12px;" onclick="resetHistory()">🗑️ ล้างประวัติเพื่อเริ่มนับรอบที่ 1 ใหม่</button>
     </div>
 
     <div id="sub-category-screen" class="hidden">
@@ -187,244 +187,59 @@
     </div>
 
     <div id="result-screen" class="hidden">
-        <h2>🎉 สรุปผลการทำข้อสอบ (นับเป็น 1 ครั้งสำเร็จ!)</h2>
+        <h2>🎉 สรุปผลการทำข้อสอบ (บันทึกสถิติสำเร็จ!)</h2>
         <div class="score-text" id="final-score">0 / 30 คะแนน</div>
         <p id="evaluation-text" style="text-align: center; margin-bottom: 20px; font-weight: bold;"></p>
-        <button class="btn btn-center" onclick="restartQuiz()">🔄 เริ่มทำรอบถัดไป (สุ่มโจทย์ใหม่)</button>
+        <button class="btn btn-center" onclick="restartQuiz()">🔄 ทำรอบถัดไป (ระบบสุ่มโจทย์ชุดใหม่)</button>
         <button class="btn btn-center choice-btn" onclick="goBack('category-screen')">🏠 กลับหน้าหลัก</button>
     </div>
 </div>
 
 <script>
-// คลังข้อสอบคัดกรองแล้ว (ตัดแพควิทย์ออกทั้งหมด เหลือเฉพาะวิชาที่คุณสอบ)
+// คลังข้อสอบคุณภาพคัดกรองแนวข้อสอบจริง (ตัดหมวดวิทยาศาสตร์ออกตามสั่งเรียบร้อยจ้า)
 const quizData = {
     gat_eng: {
         medium: [
-            { q: "TGAT ภาษาอังกฤษ (กลาง): If I _______ wings, I would fly to school.", c: ["have", "had", "have had", "having"], a: 1, exp: "เป็นโครงสร้าง If-Clause Type 2 ใช้คู่กับช่อง 2 (had)" }
+            { q: "Situation: At a coffee shop.\nBarista: What can I get for you today?\nCustomer: __________. Can I get an iced Americano, please?", c: ["I’m not sure yet.", "I’d like to sit inside.", "Just a moment, please.", "Give me the usual."], a: 2, exp: "Customer สั่งกาแฟต่อทันที การพูดว่า Just a moment, please. (ขอเวลาสักครู่ครับ) จึงเป็นบริบทที่สุภาพและเหมาะสมที่สุดในการเริ่มสั่ง" },
+            { q: "Situation: Two friends talking about a movie.\nJane: I thought the new sci-fi movie was a bit overrated.\nMark: __________. The plot didn't make any sense at all.", c: ["I couldn't agree more.", "I beg to differ.", "That’s not the case.", "You must be joking."], a: 0, exp: "Mark ขยายความเชิงลบเกี่ยวกับหนัง แสดงว่าเห็นด้วยกับ Jane ที่บอกว่าหนังถูกอวยเกินจริง สำนวน I couldn't agree more แปลว่า เห็นด้วยอย่างยิ่ง" },
+            { q: "The manager decided to _________ the weekly meeting due to the power outage.", c: ["cancel", "postpone", "resume", "organize"], a: 1, exp: "จากบริบทเพราะไฟดับจึงต้อง เลื่อน (postpone) การประชุมออกไป ส่วน cancel แปลว่ายกเลิก" },
+            { q: "The presentation _________ by the marketing team before the CEO arrived.", c: ["had been completed", "has completed", "was completing", "completes"], a: 0, exp: "ใช้ Past Perfect เพราะเหตุการณ์ทำสไลด์เสร็จเกิดก่อน CEO มา (Past Simple) และเป็นประธานถูกกระทำต้องใช้รูป Passive Voice" }
         ],
         hard: [
-            { q: "TGAT ภาษาอังกฤษ (ยาก): [Reading Comprehension] จากบทความข้างต้น ผู้เขียนมีวัตถุประสงค์หลักอย่างไร?", c: ["To inform", "To persuade", "To criticize", "To entertain"], a: 2, exp: "ผู้เขียนใช้คำศัพท์เชิงติเตียนระบบและนโยบายตลอดทั้งเรื่อง วัตถุประสงค์หลักจึงเป็น To criticize (วิพากษ์วิจารณ์)" }
+            { q: "In a business negotiation, if a party is described as 'adamant', it means they are _________.", c: ["flexible and open to compromises", "refusing to change their mind", "incapable of understanding terms", "indifferent to the final outcome"], a: 1, exp: "Adamant เป็นคำศัพท์ระดับสูง แปลว่า ยืนกราน มั่นคง ไม่ยอมเปลี่ยนใจเด็ดขาด ตรงกับ refusing to change their mind" },
+            { q: "Not only _________ the prestigious award, but she also donated the entire prize money to charity.", c: ["she won", "did she win", "she had won", "has she won"], a: 1, exp: "ตามหลักไวยากรณ์ขั้นสูง (Inversion) เมื่อขึ้นต้นประโยคด้วย Not only ต้องสลับกริยาช่วยมาไว้หน้าประธาน ในอดีตจึงใช้ did she win" }
         ]
-    }
-};
-
-// สคริปต์ช่วยจำลองโจทย์วิชาอื่นๆ เติมให้เต็มโครงสร้างระบบโดยไม่มีเอเรอร์
-const subjects = ['gat_reasoning', 'gat_work', 'pat_1', 'alevel_math_basic', 'alevel_math_advance', 'alevel_thai', 'alevel_eng', 'alevel_social'];
-subjects.forEach(sub => {
-    if(!quizData[sub]) {
-        quizData[sub] = {
-            medium: [
-                { q: `วิชา ${sub} (ระดับกลาง): โจทย์จำลองข้อที่ 1 ของการฝึกครั้งที่ 1-10`, c: ["ข้อนี้ผิด", "ข้อนี้ถูกจ้า", "ช้อยส์สามผิด", "ช้อยส์สี่ผิด"], a: 1, exp: "คำอธิบายคำตอบข้อที่ถูกต้องระดับกลาง" }
-            ],
-            hard: [
-                { q: `วิชา ${sub} (ระดับยากมาก): โจทย์แนวประยุกต์ขั้นสูงสำหรับคนฝึกครั้งที่ 11 เป็นต้นไป`, c: ["ตัวเลือก 1", "ตัวเลือก 2", "ตัวเลือกนี้ถูกต้องที่สุด", "ตัวเลือก 4"], a: 2, exp: "วิเคราะห์เจาะลึกทฤษฎีซับซ้อนสเต็ปขั้นสูง" }
-            ]
-        };
-    }
-});
-
-let currentQuestions = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let selectedPart = '';
-
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function showSubCategory(category) {
-    document.getElementById('category-screen').classList.add('hidden');
-    const subScreen = document.getElementById('sub-category-screen');
-    const title = document.getElementById('sub-title');
-    const options = document.getElementById('sub-options');
-    
-    subScreen.classList.remove('hidden');
-    options.innerHTML = '';
-
-    if (category === 'gat') {
-        title.innerText = "TGAT (GAT) - เลือกพาร์ทข้อสอบ (ชุดละ 30 ข้อ)";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('gat_eng', 'TGAT1: การสื่อสารภาษาอังกฤษ')">พาร์ท 1: การสื่อสารภาษาอังกฤษ</button>
-            <button class="btn" onclick="startQuiz('gat_reasoning', 'TGAT2: การคิดอย่างมีเหตุผล')">พาร์ท 2: การคิดอย่างมีเหตุผล</button>
-            <button class="btn" onclick="startQuiz('gat_work', 'TGAT3: สมรรถนะการทำงาน')">พาร์ท 3: สมรรถนะการทำงานอนาคต</button>
-        `;
-    } else if (category === 'pat') {
-        title.innerText = "TPAT (PAT 1) - ชุดละ 30 ข้อ";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('pat_1', 'TPAT: PAT 1 ความถนัดทางคณิตศาสตร์')">⭐ PAT 1: ความถนัดทางคณิตศาสตร์</button>
-        `;
-    } else if (category === 'alevel') {
-        title.innerText = "A-Level - เลือกวิชาที่สอบ (ชุดละ 30 ข้อ)";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('alevel_math_basic', 'A-Level: คณิตศาสตร์ (พื้นฐาน)')">1. คณิตศาสตร์ (พื้นฐาน)</button>
-            <button class="btn" onclick="startQuiz('alevel_math_advance', 'A-Level: คณิตศาสตร์ (เพิ่มเติม)')">2. คณิตศาสตร์ (เพิ่มเติม)</button>
-            <button class="btn" onclick="startQuiz('alevel_thai', 'A-Level: ภาษาไทย')">3. ภาษาไทย</button>
-            <button class="btn" onclick="startQuiz('alevel_eng', 'A-Level: ภาษาอังกฤษ')">4. ภาษาอังกฤษ</button>
-            <button class="btn" onclick="startQuiz('alevel_social', 'A-Level: สังคมศึกษา')">5. สังคมศึกษา</button>
-        `;
-    }
-}
-
-function startQuiz(partKey, partName) {
-    selectedPart = partKey;
-    document.getElementById('sub-category-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    document.getElementById('quiz-info-title').innerText = partName;
-    
-    // 🧠 ดึงข้อมูลจำนวนครั้งที่เคยทำ "สำเร็จจนจบ 30 ข้อ" มาเช็กระดับความยาก
-    let playCount = parseInt(localStorage.getItem('completed_count_' + partKey)) || 0;
-    let displayRound = playCount + 1; // รอบปัจจุบันที่กำลังจะลงมือทำ
-    
-    document.getElementById('history-counter-text').innerText = `ประวัติวิชานี้ทำสำเร็จแล้ว: ${playCount} ครั้ง (คุณกำลังทำครั้งที่ ${displayRound})`;
-
-    const db = quizData[partKey];
-    let pool = [];
-    let currentLevel = 'medium';
-
-    if (displayRound <= 10) {
-        // ครั้งที่ 1 - 10 ดึงโจทย์ระดับ "กลาง" เท่านั้นมาสุ่ม
-        pool = JSON.parse(JSON.stringify(db.medium || []));
-        currentLevel = 'medium';
-    } else {
-        // ครั้งที่ 11 เป็นต้นไป อัปเกรดเป็นระดับ "ยาก" ทันที
-        pool = JSON.parse(JSON.stringify(db.hard || []));
-        currentLevel = 'hard';
-    }
-
-    // ขยายโจทย์ด้วยการโคลนและสุ่มเพื่อให้ได้ข้อสอบเต็มจำนวน 30 ข้อ
-    let finalSet = [];
-    if(pool.length > 0) {
-        while(finalSet.length < 30) {
-            let shuffledPool = shuffle([...pool]);
-            finalSet = finalSet.concat(shuffledPool);
-        }
-        finalSet = finalSet.slice(0, 30); // ตัดเป๊ะๆ ที่ 30 ข้อ
-    }
-    
-    finalSet.forEach(q => q.level = currentLevel);
-    currentQuestions = finalSet;
-    
-    if (currentQuestions.length === 0) {
-        alert("ขออภัย ข้อมูลข้อสอบวิชานี้กำลังจัดทำจ้า");
-        goBack('category-screen');
-        return;
-    }
-
-    currentQuestionIndex = 0;
-    score = 0;
-    showQuestion();
-}
-
-function showQuestion() {
-    document.getElementById('next-btn').classList.add('hidden');
-    document.getElementById('explanation-container').classList.add('hidden');
-    
-    const qData = currentQuestions[currentQuestionIndex];
-    document.getElementById('question-number').innerText = `ข้อที่ ${currentQuestionIndex + 1}/${currentQuestions.length}`;
-    
-    const badge = document.getElementById('difficulty-badge');
-    badge.className = "badge";
-    if (qData.level === 'medium') {
-        badge.innerText = "ระดับ: กลาง 🟡 (ครั้งที่ 1-10)";
-        badge.classList.add('bg-medium');
-    } else {
-        badge.innerText = "ระดับ: ยาก 🔴 (ครั้งที่ 11+)";
-        badge.classList.add('bg-hard');
-    }
-    
-    const progressPercent = ((currentQuestionIndex) / currentQuestions.length) * 100;
-    document.getElementById('progress').style.width = `${progressPercent}%`;
-
-    document.getElementById('question-text').innerText = qData.q;
-    
-    const choicesContainer = document.getElementById('choices-container');
-    choicesContainer.innerHTML = '';
-    
-    qData.c.forEach((choice, index) => {
-        const button = document.createElement('button');
-        button.className = 'btn choice-btn';
-        button.innerText = `${index + 1}. ${choice}`;
-        button.onclick = () => checkAnswer(index, button);
-        choicesContainer.appendChild(button);
-    });
-}
-
-function checkAnswer(selectedIndex, selectedButton) {
-    const qData = currentQuestions[currentQuestionIndex];
-    const choicesContainer = document.getElementById('choices-container');
-    const buttons = choicesContainer.getElementsByClassName('choice-btn');
-    
-    for (let btn of buttons) {
-        btn.disabled = true;
-    }
-    
-    if (selectedIndex === qData.a) {
-        selectedButton.classList.add('correct');
-        score++;
-    } else {
-        selectedButton.classList.add('wrong');
-        buttons[qData.a].classList.add('correct');
-    }
-    
-    document.getElementById('explanation-text').innerText = qData.exp || "ไม่มีคำอธิบายเพิ่มเติม";
-    document.getElementById('explanation-container').classList.remove('hidden');
-    
-    document.getElementById('next-btn').classList.remove('hidden');
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < currentQuestions.length) {
-        showQuestion();
-    } else {
-        // ทำครบ 30 ข้อสมบูรณ์ -> บันทึกประวัติครั้งที่สำเร็จเพิ่มลงเครื่องเลยจ้า
-        let playCount = parseInt(localStorage.getItem('completed_count_' + selectedPart)) || 0;
-        playCount++;
-        localStorage.setItem('completed_count_' + selectedPart, playCount);
-        
-        showResult(playCount);
-    }
-}
-
-function showResult(updatedPlayCount) {
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.remove('hidden');
-    
-    document.getElementById('final-score').innerText = `${score} / 30 คะแนน`;
-    
-    let evalText = "";
-    if(updatedPlayCount <= 10) {
-        evalText = `📊 ยินดีด้วยจ้า! ทำสำเร็จครบ 30 ข้อไปแล้วทั้งหมด ${updatedPlayCount} ครั้ง (ทำสะสมให้ครบ 10 ครั้งเพื่อเลื่อนสู่ระดับโหมดยากน้า)`;
-    } else {
-        evalText = `🔥 สุดยอด! คุณก้าวสู่ระดับท็อป (ทำจบไปแล้ว ${updatedPlayCount} ครั้ง) โหมดนี้จะคัดเฉพาะโจทย์ระดับยากมาให้ทำเท่านั้นเพื่อคว้าคะแนนเต็ม!`;
-    }
-    
-    document.getElementById('evaluation-text').innerText = evalText;
-}
-
-function restartQuiz() {
-    document.getElementById('result-screen').classList.add('hidden');
-    startQuiz(selectedPart, document.getElementById('quiz-info-title').innerText);
-}
-
-function goBack(screenId) {
-    document.getElementById('sub-category-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.add('hidden');
-    document.getElementById(screenId).classList.remove('hidden');
-}
-
-function resetHistory() {
-    if(confirm("คุณต้องการล้างสถิติจำนวนครั้งสะสมทั้งหมด เพื่อกลับไปเริ่มนับครั้งที่ 1 (ระดับกลาง) ใหม่ใช่หรือไม่?")) {
-        localStorage.clear();
-        alert("ล้างประวัติสำเร็จแล้วจ้า! รอบทำกลับไปเริ่มนับ 1 ใหม่เรียบร้อยแล้วน้า");
-    }
-}
-</script>
-
-</body>
-</html>
+    },
+    gat_reasoning: {
+        medium: [
+            { q: "ถ้าหากกำหนดให้ 'นักเรียนทุกคนที่ขยันจะสอบผ่าน' และ 'สมชายสอบไม่ผ่าน' ข้อใดสรุปได้ถูกต้องตามหลักตรรกศาสตร์?", c: ["สมชายไม่ขยัน", "สมชายขยันแต่ประมาท", "ข้อสอบยากเกินไป", "สรุปไม่ได้"], a: 0, exp: "ถ้าขยันแล้วต้องสอบผ่าน แต่สมชายไม่ผ่าน แสดงว่าสมชายไม่ได้อยู่ในกลุ่มคนขยันตามเงื่อนไขที่กำหนด" }
+        ],
+        hard: [
+            { q: "พิจารณาเงื่อนไข: สาร A มีพิษร้ายแรงกว่าสาร B, สาร C มีพิษน้อยกว่าสาร B แต่ร้ายแรงกว่าสาร D ข้อใดคือสารที่มีพิษน้อยที่สุด?", c: ["สาร A", "สาร B", "สาร C", "สาร D"], a: 3, exp: "เรียงลำดับจากพิษมากไปน้อยจะได้: A > B > C > D ดังนั้นสาร D มีพิษน้อยที่สุด" }
+        ]
+    },
+    gat_work: {
+        medium: [
+            { q: "หากคุณพบว่าเพื่อนร่วมงานแอบนำข้อมูลลับของบริษัทไปเผยแพร่ สิ่งแรกที่คุณควรทำตามสมรรถนะการทำงานในอนาคตคืออะไร?", c: ["แจ้งหัวหน้างานพร้อมหลักฐาน", "โพสต์เตือนภัยในโซเชียล", "ไปต่อว่าเพื่อนร่วมงานทันที", "นิ่งเฉยเพราะไม่ใช่เรื่องของเรา"], a: 0, exp: "การแก้ปัญหาอย่างเป็นมืออาชีพและถูกต้องตามสมรรถนะการทำงานคือตรวจสอบ รวบรวมหลักฐาน และแจ้งผู้บังคับบัญชาตามขั้นตอน" }
+        ],
+        hard: [
+            { q: "ในฐานะหัวหน้าทีม เมื่อเกิดความขัดแย้งอย่างรุนแรงระหว่างสมาชิกร่วมทีม 2 คนเกี่ยวกับแนวทางการทำโปรเจกต์ คุณจะจัดการอย่างไรเพื่อให้เกิดประสิทธิภาพสูงสุด?", c: ["ตัดสินใจเลือกแนวทางคนใดคนหนึ่งทันที", "จัดประชุมด่วนให้ทั้งคู่เคลียร์และร่วมกันหาจุดกึ่งกลางที่ผสานจุดเด่นของทั้งสองแนวทาง", "ย้ายคนใดคนหนึ่งออกจากทีม", "ปล่อยให้สู้กันเองจนกว่าจะได้ข้อสรุป"], a: 1, exp: "สมรรถนะการบริหารคนขั้นสูงเน้นการจัดการความขัดแย้งเชิงบวก (Conflict Management) โดยดึงจุดเด่นของทั้งสองฝ่ายมาบูรณาการ" }
+        ]
+    },
+    pat_1: {
+        medium: [
+            { q: "กำหนดให้เซต A มีสมาชิก 4 ตัว จำนวนสับเซตทั้งหมดของเซต A มีค่าเท่ากับเท่าใด?", c: ["4", "8", "16", "32"], a: 2, exp: "สูตรจำนวนสับเซตทั้งหมดคือ 2^n โดยที่ n คือจำนวนสมาชิก จะได้ 2^4 = 16" }
+        ],
+        hard: [
+            { q: "ถ้าเส้นตรง y = mx + c ขนานกับเส้นตรง 2x - y + 5 = 0 และผ่านจุด (1, 3) แล้วค่าของ c เท่ากับเท่าใด?", c: ["1", "2", "3", "5"], a: 0, exp: "เส้นตรงขนานกันความชัน (m) จะเท่ากัน จาก 2x - y + 5 = 0 จัดรูปได้ y = 2x + 5 แปลว่า m = 2 แทนจุด (1,3) ใน y = 2x + c จะได้ 3 = 2(1) + c ดังนั้น c = 1" }
+        ]
+    },
+    alevel_math_basic: {
+        medium: [
+            { q: "ค่าสถิติตัวใดต่อไปนี้ ที่มีค่าน้อยที่สุดหรือมากที่สุดได้ โดยไม่จำเป็นต้องอยู่กึ่งกลางข้อมูลเสมอไป?", c: ["มัธยฐาน", "ฐานนิยม", "เปอร์เซ็นไทล์ที่ 50", "ควอไทล์ที่ 2"], a: 1, exp: "ฐานนิยม (Mode) คือข้อมูลที่มีความถี่ซ้ำกันมากที่สุด ซึ่งอาจจะเป็นเลขคณิตค่าที่มากสุดหรือน้อยสุดก็ได้ แตกต่างจากตัวอื่นที่เป็นค่าวัดตำแหน่งกึ่งกลาง" }
+        ],
+        hard: [
+            { q: "กล่องใบหนึ่งมีลูกบอลสีแดง 3 ลูก สีขาว 2 ลูก สุ่มหยิบลูกบอลพร้อมกัน 2 ลูก ความน่าจะเป็นที่จะได้ลูกบอลสีเดียวกันเท่ากับเท่าใด?", c: ["2/5", "3/10", "4/10", "1/2"], a: 2, exp: "วิธีทั้งหมด = 5C2 = 10 วิธี, ได้สีเดียวกันคือ แดงคู่ (3C2 = 3) หรือ ขาวคู่ (2C2 = 1) รวมเป็น 3 + 1 = 4 วิธี ความน่าจะเป็นคือ 4/10" }
+        ]
+    },
+    alevel_
