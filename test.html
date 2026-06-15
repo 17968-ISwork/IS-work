@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2O Analytics & AI Exam Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { 
+            --primary: #4A90E2; 
+            --bg: linear-gradient(180deg, #d1e1f0 0%, #f5f7fa 100%);
+        }
+        body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* แถบเมนูด้านบน */
+        .top-nav { display: none; justify-content: flex-end; align-items: center; padding: 20px 40px; gap: 15px; }
+        .logout-btn { color: #ff4d4d; cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+        /* คอนเทนเนอร์และการ์ด */
+        .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .card { background: white; width: 100%; max-width: 600px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); padding: 40px; text-align: center; display: none; box-sizing: border-box; }
+        
+        /* เปิดใช้งานหน้า */
+        .active { display: block !important; animation: slideUp 0.4s ease; }
+        .active-flex { display: flex !important; }
+        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* หน้าแรกสุดต้อนรับ */
+        .title-3d { font-size: clamp(36px, 8vw, 60px); font-weight: 700; color: #97c8eb; margin-bottom: 40px; text-shadow: 2px 2px 0px #fff, 4px 4px 10px rgba(0,0,0,0.1); }
+        .btn-outline { background: transparent; border: 2.5px solid var(--primary); color: var(--primary); padding: 12px 35px; border-radius: 30px; font-size: 18px; cursor: pointer; transition: 0.3s; margin: 5px; }
+        .btn-outline:hover { background: rgba(74, 144, 226, 0.1); }
+
+        /* ฟอร์มและปุ่มกด */
+        h2 { font-size: 26px; margin-bottom: 25px; color: #333; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; background: #fafafa; font-size: 16px; box-sizing: border-box; }
+        .primary-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+
+        /* แถบเมนูเลือกประเภทข้อสอบ */
+        .exam-menu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .exam-menu-btn { background: #eef6ff; border: 2px solid var(--primary); color: var(--primary); padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .exam-menu-btn:hover, .exam-menu-btn.selected { background: var(--primary); color: white; }
+
+        /* ส่วนของการทำข้อสอบ */
+        .question-box { text-align: left; background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px; border-radius: 15px; margin-top: 25px; }
+        .choice-option { display: block; background: white; border: 1px solid #ddd; padding: 12px 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; text-align: left; font-size: 15px; }
+        .choice-option:hover { background: #f3f4f6; }
+        .choice-option input { width: auto; margin-right: 10px; }
+
+        /* กล่องวิเคราะห์แถบสี */
+        .res-header { padding: 25px; border-radius: 15px; font-size: 30px; font-weight: bold; margin-bottom: 20px; }
+        .bg-danger { background: #f0aaaa; color: #333; } 
+        .bg-warning { background: #f7d7ac; color: #333; } 
+        .bg-success { background: #58b682; color: white; }
+        
+        .footer-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-footer { flex: 1; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer; }
+
+        /* หน้าต่างป๊อปอัป (Modal) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- แถบผู้ใช้งานด้านบน -->
+    <div class="top-nav" id="navBar">
+        <span id="userDisp" style="font-weight: 500;"></span>
+        <span class="logout-btn" onclick="logout()">ออกจากระบบ</span>
+    </div>
+
+    <div class="container">
+        
+        <!-- หน้าแรก (Landing) -->
+        <div id="page-home" class="card active" style="background:transparent; box-shadow:none;">
+            <h1 class="title-3d">TGAT/ALevel</h1>
+            <div class="btn-group">
+                <button class="btn-outline" onclick="go('page-login')">เข้าสู่ระบบ</button>
+                <button class="btn-outline" onclick="go('page-reg')">ลงทะเบียน</button>
+            </div>
+        </div>
+
+        <!-- หน้าลงทะเบียน -->
+        <div id="page-reg" class="card">
+            <h2>ลงทะเบียนนักเรียน</h2>
+            <input type="text" id="rName" placeholder="ชื่อ-นามสกุล">
+            <input type="password" id="rPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
+            <input type="number" id="rAge" placeholder="อายุ">
+            <input type="number" id="rWeight" placeholder="น้ำหนัก (กก.) *ใช้วิเคราะห์สุขภาพด้วย">
+            <button class="primary-btn" onclick="doRegister()">ลงทะเบียนและเริ่มใช้งาน</button>
+            <p style="color:var(--primary); cursor:pointer; margin-top: 15px;" onclick="go('page-login')">มีบัญชีแล้ว? เข้าสู่ระบบ</p>
+        </div>
+
+        <!-- หน้าเข้าสู่ระบบ -->
+        <div id="page-login" class="card">
+            <h2>เข้าสู่ระบบ</h2>
+            <input type="text" id="lName" placeholder="ชื่อ">
+            <input type="password" id="lPass" placeholder="รหัสผ่าน (6 หลัก)" maxlength="6">
+            <button class="primary-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+            <p style="color:var(--primary); cursor:pointer; margin-top: 15px;" onclick="go('page-reg')">ยังไม่มีบัญชี? ลงทะเบียน</p>
+        </div>
+
+        <!-- หน้าแผงควบคุมหลัก + เมนูเลือกข้อสอบ -->
+        <div id="page-dash" class="card">
+            <h2 id="welcomeTxt">ชื่อผู้ใช้</h2>
+            
+            <p style="text-align: left; font-weight: bold; margin-bottom: 5px;">เลือกประเภทข้อสอบที่ต้องการฝึกฝน:</p>
+            <div class="exam-menu">
+                <button class="exam-menu-btn" id="btn-tgat" onclick="selectExamType('TGAT')">TGAT</button>
+                <button class="exam-menu-btn" id="btn-tpat" onclick="selectExamType('TPAT')">TPAT</button>
+                <button class="exam-menu-btn" id="btn-alevel" onclick="selectExamType('A-Level')">A-Level</button>
+            </div>
+
+            <!-- กล่องแสดงข้อสอบแบบสุ่มสร้างเสมือนจริง -->
+            <div class="question-box" id="questionBox">
+                <b id="examTitle" style="color: var(--primary);">ข้อสอบวิชา: TGAT (การคิดอย่างมีเหตุผล)</b>
+                <p id="questionText" style="font-size: 16px; margin: 15px 0; font-weight: bold;"></p>
+                
+                <div id="choicesArea">
+                    <!-- ตัวเลือกจะถูกสร้างขึ้นมาตรงนี้แบบอัตโนมัติ -->
+                </div>
+            </div>
+
+            <button class="primary-btn" style="background: #28a745;" onclick="submitAnswer()">ส่งคำตอบและดูเฉลย</button>
+            <button class="primary-btn" style="background: #6c757d; margin-top: 5px;" onclick="generateNewQuestion()">สุ่มสร้างข้อสอบใหม่ 🔄</button>
+        </div>
+
+        <!-- หน้าแสดงผลลัพธ์หลังทำข้อสอบ / ตรวจคำตอบละเอียด -->
+        <div id="page-result" class="card">
+            <div id="resColor" class="res-header">
+                <span id="statusTxt">ถูกต้อง</span> <span id="resEmoji">✅</span>
+            </div>
+            
+            <div style="text-align: left; margin-bottom: 20px;">
+                <b style="font-size: 18px;">เฉลยและวิธีคิดอย่างละเอียด:</b><br>
+                <p id="explanationTxt" style="margin-top: 10px; line-height: 1.6; background: #f9fafb; padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary);"></p>
+            </div>
+
+            <div class="footer-btns">
+                <button class="btn-footer" style="background: var(--primary)" onclick="go('page-dash'); generateNewQuestion();">ทำข้อสอบข้อต่อไป 🚀</button>
+                <button class="btn-footer" style="background: #6c757d" onclick="openModal('modalHist')">ประวัติคะแนน</button>
+            </div>
+            
+            <p style="color: var(--primary); cursor: pointer; margin-top: 25px; font-weight: bold;" onclick="go('page-dash')">← กลับไปที่เมนูหลัก</p>
+        </div>
+
+    </div>
+
+    <!-- หน้าต่างป๊อปอัปประวัติคะแนนสอบ -->
+    <div id="modalHist" class="modal" onclick="closeModal('modalHist')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3>📝 สถิติการทำข้อสอบของคุณ</h3>
+            <div id="historyLog" style="text-align: left; max-height: 250px; overflow-y: auto; margin: 15px 0;"></div>
+            <button class="primary-btn" onclick="closeModal('modalHist')">ปิดหน้าต่าง</button>
+        </div>
+    </div>
+
+    <script>
+        let user = null;
+        let currentExamType = 'TGAT';
+        let currentQuestionObj = null;
+
+        // 🧠 คลังข้อมูลดิบสำหรับนำมาจัดชุดและ "สุ่มสร้างแนวข้อสอบใหม่เสมือนจริง" แบบไม่จำกัด
+        const examDatabase = {
+            'TGAT': [
+                {
+                    q: "ถ้า 'วันใดฝนตก วันนั้นรถจะติด' และวันนี้พบว่า 'รถไม่ติด' จะสรุปได้อย่างไรตามหลักเหตุผล?",
+                    choices: ["วันนี้ฝนตก", "วันนี้ฝนไม่ตก", "วันนี้ฝนอาจจะตกหรือไม่ตกก็ได้", "สรุปไม่ได้"],
+                    answer: 1,
+                    explain: "ตอบข้อ 2 (วันนี้ฝนไม่ตก) - เนื่องจากเงื่อนไขตั้งต้นบอกว่าถ้าฝนตกต้องรถติดเสมอ เมื่อผลลัพธ์คือรถไม่ติด แปลว่าเหตุ (ฝนตก) จะต้องไม่เกิดขึ้นแน่นอน (Modus Tollens)"
+                },
+                {
+                    q: "บริษัทแห่งหนึ่งมีพนักงาน 50 คน พบว่า 30 คนชอบดื่มกาแฟ, 25 คนชอบดื่มชา และ 10 คนชอบดื่มทั้งสองอย่าง มีกี่คนที่ไม่ชอบดื่มทั้งกาแฟและชา?",
+                    choices: ["5 คน", "10 คน", "15 คน", "20 คน"],
+                    answer: 0,
+                    explain: "ตอบข้อ 1 (5 คน) - ใช้สูตรเซต: ชอบอย่างใดอย่างหนึ่งหรือทั้งสองอย่าง = 30 + 25 - 10 = 45 คน ดังนั้น พนักงานที่ไม่ชอบเลยคิดจากพนักงานทั้งหมด 50 - 45 = 5 คน"
+                }
+            ],
+            'TPAT': [
+                {
+                    q: "ในฐานะแพทย์หรือวิชาชีพชั้นสูง หากคนไข้ปฏิเสธการรักษาที่จำเป็นต่อชีวิตเนื่องจากความเชื่อส่วนบุคคล ข้อใดเป็นแนวทางที่เหมาะสมที่สุด?",
+                    choices: ["บังคับรักษาทันทีเพื่อช่วยชีวิต", "ตามใจคนไข้โดยไม่ชี้แจงเพิ่มเติม", "อธิบายความเสี่ยงอย่างรอบด้านและเคารพการตัดสินใจที่ผ่านการไตร่ตรอง", "แจ้งญาติให้มาลงชื่อยินยอมแทนพนักงาน"],
+                    answer: 2,
+                    explain: "ตอบข้อ 3 - หลักจริยธรรมทางการแพทย์ยึดถือ 'การเคารพในสิทธิและเอกสิทธิ์ของผู้ป่วย (Autonomy)' ตราบใดที่ผู้ป่วยมีสติสัมปชัญญะสมบูรณ์และได้รับข้อมูลที่ครบถ้วนแล้ว"
+                },
+                {
+                    q: "หากต้องการสร้างนวัตกรรมแอปพลิเคชันแก้ไขปัญหารถสาธารณะในเมืองหลวง ขั้นตอนแรกตามหลักกระบวนการคิดเชิงออกแบบ (Design Thinking) ควรเริ่มจากสิ่งใด?",
+                    choices: ["เขียนโค้ดและพัฒนาแอปทันที", "ระดมสมองคิดฟีเจอร์แปลกใหม่", "ลงพื้นที่สัมภาษณ์ผู้โดยสารเพื่อทำความเข้าใจปัญหา (Empathize)", "ทำแบบจำลองความคุ้มค่าเชิงธุรกิจ"],
+                    answer: 2,
+                    explain: "ตอบข้อ 3 - Design Thinking ต้องเริ่มต้นด้วยความเข้าใจมนุษย์และปัญหาที่แท้จริง (Empathize) ก่อนจะระบุปัญหาหรือสร้างต้นแบบเสมอ"
+                }
+            ],
+            'A-Level': [
+                {
+                    q: "กำหนดให้ f(x) = 3x² - 5x + 2 จงหาค่าของลิมิตเมื่อ h เข้าใกล้ 0 ของ [f(x+h) - f(x)] / h (หรือการหาอนุพันธ์ f'(x))",
+                    choices: ["6x", "6x - 5", "3x - 5", "6x² - 5"],
+                    answer: 1,
+                    explain: "ตอบข้อ 2 (6x - 5) - การใช้สูตรดิฟเฟอเรนเชียล (Derivative) ของ 3x² ได้ 6x และของ -5x ได้ -5 ส่วนค่าคงที่ดึงออกเป็น 0 จะได้ผลลัพธ์เป็น f'(x) = 6x - 5"
+                },
+                {
+                    q: "เอนไซม์ชนิดหนึ่งทำงานได้ดีที่สุดที่อุณหภูมิ 37°C หากนำเอนไซม์นี้ไปต้มที่อุณหภูมิ 100°C แล้วลดอุณหภูมิกลับมาที่ 37°C เอนไซม์จะยังทำงานได้หรือไม่เพราะเหตุใด?",
+                    choices: ["ทำงานได้ปกติเพราะอุณหภูมิกลับมาเท่าเดิมแล้ว", "ทำงานได้ดีขึ้นเพราะกระตุ้นด้วยความร้อนมาแล้ว", "ทำงานไม่ได้เนื่องจากสูญเสียสภาพธรรมชาติ (Denaturation)", "ทำงานได้แต่ช้าลงครึ่งหนึ่ง"],
+                    answer: 2,
+                    explain: "ตอบข้อ 3 - โปรตีนที่เป็นโครงสร้างของเอนไซม์จะเสียสภาพ (Denature) อย่างถาวรเมื่อโดนความร้อนสูงเกินไป ทำให้รูปร่างของสารเร่งปฏิกิริยาเปลี่ยนไปจนไม่สามารถจับกับสารตั้งต้นได้อีก"
+                }
+            ]
+        };
+
+        function go(id) {
+            document.querySelectorAll('.card').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function doRegister() {
+            const name = document.getElementById('rName').value.trim();
+            const pass = document.getElementById('rPass').value;
+            
+            if(!name || pass.length !== 6) {
+                return alert("กรุณากรอกชื่อและรหัสผ่าน 6 หลักด้วยนะครับ");
+            }
+
+            const data = {
+                name: name,
+                pass: pass,
+                logs: [] // เก็บประวัติสอบคะแนน
+            };
+
+            localStorage.setItem(name, JSON.stringify(data));
+            user = data;
+            startApp();
+        }
+
+        function doLogin() {
+            const name = document.getElementById('lName').value.trim();
+            const pass = document.getElementById('lPass').value;
+            const saved = JSON.parse(localStorage.getItem(name));
+
+            if(saved && saved.pass === pass) {
+                user = saved;
+                startApp();
+            } else { 
+                alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"); 
+            }
+        }
+
+        function startApp() {
+            document.getElementById('navBar').classList.add('active-flex');
+            document.getElementById('userDisp').innerText = "👨‍🎓 นักเรียน: " + user.name;
+            document.getElementById('welcomeTxt').innerText = "ยินดีต้อนรับ, " + user.name;
+            
+            selectExamType('TGAT'); // เริ่มต้นที่ข้อสอบ TGAT
+            go('page-dash');
+        }
+
+        // เลือกประเภทของข้อสอบ
+        function selectExamType(type) {
+            currentExamType = type;
+            document.querySelectorAll('.exam-menu-btn').forEach(btn => btn.classList.remove('selected'));
+            
+            if(type === 'TGAT') document.getElementById('btn-tgat').classList.add('selected');
+            if(type === 'TPAT') document.getElementById('btn-tpat').classList.add('selected');
+            if(type === 'A-Level') document.getElementById('btn-alevel').classList.add('selected');
+
+            generateNewQuestion();
+        }
+
+        // ฟังก์ชันหัวใจสำคัญ: สุ่มคิดแนวข้อสอบเสมือนจริงขึ้นมาใหม่
+        function generateNewQuestion() {
+            const pool = examDatabase[currentExamType];
+            // ทำการสุ่มเลือกโจทย์จากคลังข้อมูล
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            currentQuestionObj = pool[randomIndex];
+
+            // อัปเดตข้อมูลบนหน้าจอ
+            document.getElementById('examTitle').innerText = `แนวข้อสอบระดับชาติเสมือนจริง: ${currentExamType}`;
+            document.getElementById('questionText').innerText = currentQuestionObj.style = currentQuestionObj.q;
+
+            // ล้างตัวเลือกเดิมและสร้างตัวเลือกข้อใหม่
+            const choicesArea = document.getElementById('choicesArea');
+            choicesArea.innerHTML = '';
+            
+            currentQuestionObj.choices.forEach((choice, index) => {
+                choicesArea.innerHTML += `
+                    <label class="choice-option">
+                        <input type="radio" name="examChoice" value="${index}">
+                        ${index + 1}. ${choice}
+                    </label>
+                `;
+            });
+        }
+
+        // ส่งคำตอบเพื่อตรวจข้อสอบทันที
+        function submitAnswer() {
+            const selected = document.querySelector('input[name="examChoice"]:checked');
+            if(!selected) return alert("กรุณาเลือกคำตอบก่อนส่งนะครับ!");
+
+            const userAnswer = parseInt(selected.value);
+            const isCorrect = (userAnswer === currentQuestionObj.answer);
+
+            const head = document.getElementById('resColor');
+            const statusTxt = document.getElementById('statusTxt');
+            const emoji = document.getElementById('resEmoji');
+            const explanationTxt = document.getElementById('explanationTxt');
+
+            head.className = "res-header";
+
+            if(isCorrect) {
+                statusTxt.innerText = "ตอบถูกต้อง! 🎉";
+                emoji.innerText = "✅";
+                head.classList.add('bg-success');
+            } else {
+                statusTxt.innerText = "ตอบยังไม่ถูกนะ";
+                emoji.innerText = "❌";
+                head.classList.add('bg-danger');
+            }
+
+            // แสดงคำอธิบายแบบละเอียดขั้นสุด
+            explanationTxt.innerHTML = `<b>โจทย์:</b> ${currentQuestionObj.q}<br><br>${currentQuestionObj.explain}`;
+
+            // บันทึกสถิติคะแนนลงหน่วยความจำ
+            user.logs.push({
+                time: new Date().toLocaleTimeString(),
+                type: currentExamType,
+                result: isCorrect ? "ผ่าน (ถูกต้อง)" : "ไม่ผ่าน (ผิด)"
+            });
+            localStorage.setItem(user.name, JSON.stringify(user));
+
+            go('page-result');
+        }
+
+        // ระบบกล่องข้อความเด้งประวัติ
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+            if(id === 'modalHist') {
+                const logBox = document.getElementById('historyLog');
+                if(user.logs.length === 0) {
+                    logBox.innerHTML = "<p style='color:#888; text-align:center;'>ยังไม่มีสถิติการทำข้อสอบ</p>";
+                } else {
+                    logBox.innerHTML = user.logs.map((l, i) => `<li>ครั้งที่ ${i+1} [${l.time}] - <b>${l.type}</b>: ${l.result}</li>`).join('');
+                }
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function logout() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
