@@ -132,14 +132,14 @@
         <h1>เลือกประเภทข้อสอบจำลอง</h1>
         <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">ไม่ต้องลงทะเบียน คลิกเลือกเพื่อเริ่มทำได้ทันที</p>
         <button class="btn btn-center" onclick="showSubCategory('gat')">TGAT (GAT)</button>
-        <button class="btn btn-center" onclick="showSubCategory('pat')">TPAT (PAT)</button>
-        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level</button>
+        <button class="btn btn-center" onclick="showSubCategory('pat')">TPAT (PAT / PAT 1)</button>
+        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level (7 วิชาหลัก)</button>
     </div>
 
     <div id="sub-category-screen" class="hidden">
         <h2 id="sub-title">เลือกพาร์ทข้อสอบ</h2>
         <div id="sub-options"></div>
-        <button class="btn btn-center choice-btn" onclick="goBack('category-screen')">⬅️ ย้อนกลับ</button>
+        <button class="btn btn-center choice-btn" onclick="goBack('category-screen')">⬅️ ย้อนกลับหน้าหลัก</button>
     </div>
 
     <div id="quiz-screen" class="hidden">
@@ -170,185 +170,31 @@
 </div>
 
 <script>
-// คลังข้อสอบ (สามารถเพิ่มโจทย์ให้ครบ 60 ข้อต่อพาร์ทได้ที่นี่เลยจ้า)
+// คลังข้อสอบสำหรับทุกพาร์ทและทุกวิชา (สามารถก๊อปวางเพิ่มโจทย์ให้ครบพาร์ทละ 60 ข้อได้เลยนะจ๊ะ)
 const quizData = {
     gat_eng: [
         { q: "Choose the best answer: If I _______ wings, I would fly to school.", c: ["have", "had", "have had", "having"], a: 1, exp: "เป็นโครงสร้าง Conditional Sentence Type 2 (Unreal Present) ใช้คู่กับ Verb ช่อง 2 (had)" },
-        { q: "Which word has the closest meaning to 'Generous'?", c: ["Selfish", "Kind / Giving", "Greedy", "Cruel"], a: 1, exp: "Generous แปลว่า ใจกว้าง โอบอ้อมอารี ตรงกับคำว่า Kind / Giving" },
-        { q: "Situation: At a restaurant. Waiter: 'Are you ready to order?' Customer: '_______'", c: ["Yes, please.", "No, I am not.", "Yes, I'd like a steak.", "It's none of your business."], a: 2, exp: "เมื่อบริกรบริกรถามว่าพร้อมสั่งอาหารหรือยัง ควรตอบเมนูอาหารที่ต้องการ เช่น Yes, I'd like a steak." }
+        { q: "Which word has the closest meaning to 'Generous'?", c: ["Selfish", "Kind / Giving", "Greedy", "Cruel"], a: 1, exp: "Generous แปลว่า ใจกว้าง โอบอ้อมอารี ตรงกับคำว่า Kind / Giving" }
     ],
     gat_reasoning: [
-        { q: "ถ้า 'นกทุกตัวบินได้' และ 'เพนกวินเป็นนก' ข้อใดสรุปได้ถูกต้องที่สุด?", c: ["เพนกวินบินได้ตามหลักตรรกศาสตร์", "เพนกวินบินไม่ได้ในความเป็นจริง", "สรุปไม่ได้", "นกบางตัวบินไม่ได้"], a: 0, exp: "ตามหลักตรรกศาสตร์ถ้านกทุกตัวบินได้ และเพนกวินเป็นนก เพนกวินก็ต้องบินได้" },
-        { q: "อนุกรมตัวเลข: 2, 4, 8, 16, ... ตัวเลขถัดไปคืออะไร?", c: ["20", "24", "32", "64"], a: 2, exp: "ตัวเลขเพิ่มขึ้นโดยการคูณ 2 ไปเรื่อยๆ ดังนั้น 16 x 2 = 32" },
-        { q: "แดง สูงกว่า ดำ แต่ ดำ สูงกว่า ขาว ใครเตี้ยที่สุด?", c: ["แดง", "ดำ", "ขาว", "เท่ากันทุกคน"], a: 2, exp: "แดง > ดำ > ขาว ลำดับความสูง ขาวอยู่ท้ายสุดจึงเตี้ยที่สุด" }
+        { q: "ถ้า 'นกทุกตัวบินได้' และ 'เพนกวินเป็นนก' ข้อใดสรุปได้ถูกต้องที่สุด?", c: ["เพนกวินบินได้ตามหลักตรรกศาสตร์", "เพนกวินบินไม่ได้ในความเป็นจริง", "สรุปไม่ได้", "นกบางตัวบินไม่ได้"], a: 0, exp: "ตามหลักตรรกศาสตร์ถ้านกทุกตัวบินได้ และเพนกวินเป็นนก เพนกวินก็ต้องบินได้" }
     ],
     gat_work: [
-        { q: "หากคุณพบว่าเพื่อนร่วมงานโกงเงินบริษัท คุณจะทำอย่างไรเป็นสิ่งแรก?", c: ["ไปบอกพนักงานคนอื่น", "โพสต์ลงโซเชียลมีเดีย", "รวบรวมหลักฐานและรายงานหัวหน้า", "แกล้งทำเป็นไม่รู้ไม่เห็น"], a: 2, exp: "การแก้ปัญหาอย่างเป็นมืออาชีพและถูกต้องตามสมรรถนะการทำงานคือรวบรวมหลักฐานและแจ้งผู้มีอำนาจตรวจสอบตามขั้นตอน" },
-        { q: "ทักษะใดสำคัญที่สุดในการทำงานเป็นทีมเพื่อให้งานสำเร็จลุล่วง?", c: ["การเอาชนะความเห็นผู้อื่น", "การสื่อสารและรับฟังเปิดใจ", "การทำงานคนเดียวเงียบๆ", "การรอสั่งการอย่างเดียว"], a: 1, exp: "การสื่อสารและการรับฟังเปิดใจเป็นหัวใจหลักของสมรรถนะการทำงานร่วมกับผู้อื่น (Teamwork)" },
-        { q: "เมื่อเจอปัญหาหน้างานที่เกินความรับผิดชอบของคุณ ควรปฏิบัติอย่างไร?", c: ["หยุดทำทันที", "ตัดสินใจเองเลย", "ปรึกษาและขอคำแนะนำจากหัวหน้างาน", "โยนงานให้คนอื่น"], a: 2, exp: "หากเกินหน้าที่ควรรายงานผู้บังคับบัญชาเพื่อหาแนวทางแก้ไขร่วมกันอย่างเป็นระบบ" }
+        { q: "หากคุณพบว่าเพื่อนร่วมงานโกงเงินบริษัท คุณจะทำอย่างไรเป็นสิ่งแรก?", c: ["ไปบอกพนักงานคนอื่น", "โพสต์ลงโซเชียลมีเดีย", "รวบรวมหลักฐานและรายงานหัวหน้า", "แกล้งทำเป็นไม่รู้ไม่เห็น"], a: 2, exp: "การแก้ปัญหาอย่างเป็นมืออาชีพและถูกต้องตามสมรรถนะการทำงานคือรวบรวมหลักฐานและแจ้งผู้มีอำนาจตรวจสอบตามขั้นตอน" }
+    ],
+    pat_1: [
+        { q: "PAT 1: กำหนดให้เซต A มีสมาชิก 3 ตัว จำนวนสับเซตทั้งหมดของเซต A เท่ากับเท่าใด?", c: ["3", "6", "8", "9"], a: 2, exp: "สูตรจำนวนสับเซตคือ 2^n ดังนั้น 2^3 = 8 สับเซต" }
     ],
     pat_engineering: [
         { q: "หน่วยของความต้านทานไฟฟ้าคืออะไร?", c: ["โวลต์", "แอมแปร์", "โอห์ม", "วัตต์"], a: 2, exp: "ความต้านทานไฟฟ้ามีหน่วยเป็น โอห์ม (Ω)" }
     ],
-    alevel_math: [
-        { q: "ค่าของ 2^3 + 5 มีค่าเท่ากับเท่าใด?", c: ["11", "13", "21", "30"], a: 1, exp: "2^3 = 8 จากนั้นนำ 8 + 5 = 13" }
-    ]
-};
-
-let currentQuestions = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let selectedPart = '';
-
-// ฟังก์ชันสลับ/สุ่มโจทย์ (Shuffle)
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function showSubCategory(category) {
-    document.getElementById('category-screen').classList.add('hidden');
-    const subScreen = document.getElementById('sub-category-screen');
-    const title = document.getElementById('sub-title');
-    const options = document.getElementById('sub-options');
-    
-    subScreen.classList.remove('hidden');
-    options.innerHTML = '';
-
-    if (category === 'gat') {
-        title.innerText = "TGAT (GAT) - เลือกพาร์ทที่ต้องการทดสอบ";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('gat_eng', 'TGAT1: การสื่อสารภาษาอังกฤษ')">พาร์ท 1: การสื่อสารภาษาอังกฤษ (สุ่มโจทย์)</button>
-            <button class="btn" onclick="startQuiz('gat_reasoning', 'TGAT2: การคิดอย่างมีเหตุผล')">พาร์ท 2: การคิดอย่างมีเหตุผล (สุ่มโจทย์)</button>
-            <button class="btn" onclick="startQuiz('gat_work', 'TGAT3: สมรรถนะการทำงาน')">พาร์ท 3: สมรรถนะการทำงานอนาคต (สุ่มโจทย์)</button>
-        `;
-    } else if (category === 'pat') {
-        title.innerText = "TPAT (PAT) - เลือกวิชา";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('pat_engineering', 'TPAT3: ความถนัดวิศวกรรมศาสตร์')">TPAT3: ความถนัดวิทยาศาสตร์ เทคโนโลยี วิศวกรรมศาสตร์</button>
-        `;
-    } else if (category === 'alevel') {
-        title.innerText = "A-Level - เลือกวิชา";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('alevel_math', 'A-Level: คณิตศาสตร์ประยุกต์')">คณิตศาสตร์ประยุกต์ (สุ่มโจทย์)</button>
-        `;
-    }
-}
-
-function startQuiz(partKey, partName) {
-    selectedPart = partKey;
-    document.getElementById('sub-category-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    document.getElementById('quiz-info-title').innerText = partName;
-    
-    // ดึงโจทย์มาแล้วทำการสุ่มใหม่ทุกครั้งที่กดเล่น
-    if (quizData[partKey] && quizData[partKey].length > 0) {
-        currentQuestions = shuffle(JSON.parse(JSON.stringify(quizData[partKey])));
-        
-        // 💡 หมายเหตุ: หากในคลังคุณมี 100 ข้อ แต่ต้องการให้สอบแค่ 60 ข้อ
-        // สามารถเปิดใช้งานบรรทัดข้างล่างนี้เพื่อตัดให้เหลือแค่ 60 ข้อได้เลยจ้า:
-        // if(currentQuestions.length > 60) currentQuestions = currentQuestions.slice(0, 60);
-        
-    } else {
-        alert("ขออภัย ข้อมูลข้อสอบพาร์ทนี้กำลังจัดทำจ้า");
-        goBack('category-screen');
-        return;
-    }
-
-    currentQuestionIndex = 0;
-    score = 0;
-    showQuestion();
-}
-
-function showQuestion() {
-    document.getElementById('next-btn').classList.add('hidden');
-    document.getElementById('explanation-container').classList.add('hidden');
-    
-    const qData = currentQuestions[currentQuestionIndex];
-    document.getElementById('question-number').innerText = `ข้อที่ ${currentQuestionIndex + 1}/${currentQuestions.length}`;
-    
-    // อัปเดต Progress Bar
-    const progressPercent = ((currentQuestionIndex) / currentQuestions.length) * 100;
-    document.getElementById('progress').style.width = `${progressPercent}%`;
-
-    document.getElementById('question-text').innerText = qData.q;
-    
-    const choicesContainer = document.getElementById('choices-container');
-    choicesContainer.innerHTML = '';
-    
-    qData.c.forEach((choice, index) => {
-        const button = document.createElement('button');
-        button.className = 'btn choice-btn';
-        button.innerText = `${index + 1}. ${choice}`;
-        button.onclick = () => checkAnswer(index, button);
-        choicesContainer.appendChild(button);
-    });
-}
-
-function checkAnswer(selectedIndex, selectedButton) {
-    const qData = currentQuestions[currentQuestionIndex];
-    const choicesContainer = document.getElementById('choices-container');
-    const buttons = choicesContainer.getElementsByClassName('choice-btn');
-    
-    // ปิดการคลิกช้อยส์อื่นหลังจากตอบแล้ว
-    for (let btn of buttons) {
-        btn.disabled = true;
-    }
-    
-    if (selectedIndex === qData.a) {
-        selectedButton.classList.add('correct');
-        score++;
-    } else {
-        selectedButton.classList.add('wrong');
-        buttons[qData.a].classList.add('correct'); // แสดงข้อที่ถูกให้เห็น
-    }
-    
-    // แสดงเฉลยละเอียด
-    document.getElementById('explanation-text').innerText = qData.exp || "ไม่มีคำอธิบายเพิ่มเติม";
-    document.getElementById('explanation-container').classList.remove('hidden');
-    
-    document.getElementById('next-btn').classList.remove('hidden');
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < currentQuestions.length) {
-        showQuestion();
-    } else {
-        showResult();
-    }
-}
-
-function showResult() {
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.remove('hidden');
-    
-    document.getElementById('final-score').innerText = `${score} / ${currentQuestions.length} คะแนน`;
-    
-    const percent = (score / currentQuestions.length) * 100;
-    let evalText = "";
-    if(percent >= 80) evalText = "🔥 สุดยอดมาก! โอกาสติดคณะในฝันสูงมากจ้า";
-    else if(percent >= 50) evalText = "👍 ผ่านเกณฑ์ครึ่งหนึ่ง! ฟิตเพิ่มอีกนิดติดแน่นอน";
-    else evalText = "📚 เป็นกำลังใจให้นะจ๊ะ ทบทวนเพิ่มเติมแล้วมาลองสุ่มทำใหม่ได้ตลอดเวลาเลย";
-    
-    document.getElementById('evaluation-text').innerText = evalText;
-}
-
-function restartQuiz() {
-    document.getElementById('result-screen').classList.add('hidden');
-    startQuiz(selectedPart, document.getElementById('quiz-info-title').innerText);
-}
-
-function goBack(screenId) {
-    document.getElementById('sub-category-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.add('hidden');
-    document.getElementById(screenId).classList.remove('hidden');
-}
-</script>
-
-</body>
-</html>
+    alevel_physics: [
+        { q: "A-Level ฟิสิกส์: วัตถุเคลื่อนที่ด้วยความเร็วคงที่ แรงลัพธ์ที่กระทำต่อวัตถุมีค่าเท่าใด?", c: ["มีค่ามากกว่าศูนย์", "มีค่าน้อยกว่าศูนย์", "มีค่าเท่ากับศูนย์", "บอกไม่ได้"], a: 2, exp: "ตามกฎข้อที่ 1 ของนิวตัน ถ้ายืนยันว่าความเร็วคงที่ (ความเร่งเป็นศูนย์) แรงลัพธ์ (ΣF) จะต้องเท่ากับศูนย์" }
+    ],
+    alevel_chemistry: [
+        { q: "A-Level เคมี: สารในข้อใดมีสมบัติเป็นเบส?", c: ["HCl", "NaOH", "H2SO4", "NaCl"], a: 1, exp: "NaOH (โซเดียมไฮดรอกไซด์) ละลายน้ำแล้วให้ไฮดรอกไซด์ไอออน มีสมบัติเป็นเบส" }
+    ],
+    alevel_biology: [
+        { q: "A-Level ชีววิทยา: ออร์แกเนลล์ใดทำหน้าที่ผลิตพลังงาน (ATP) ให้แก่เซลล์?", c: ["ไรโบโซม", "ไมโทคอนเดรีย", "ไลโซโซม", "คลอโรพลาสต์"], a: 1, exp: "ไมโทคอนเดรีย (Mitochondria) เปรียบเสมือนโรงไฟฟ้าของเซลล์ ทำหน้าที่สร้างพลังงาน ATP" }
+    ],
+    alevel_math_basic:
