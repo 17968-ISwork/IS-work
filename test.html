@@ -151,7 +151,7 @@
 <div class="container">
     <div id="category-screen">
         <h1>ระบบคลังข้อสอบจำลอง TCAS</h1>
-        <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">📝 ชุดละ 30 ข้อ | ครั้งที่ 1-10 (ระดับกลาง) ➡️ ครั้งที่ 11 ขึ้นไปปรับเป็น (ระดับยาก) อัตโนมัติเพื่อพัฒนาฝีมือเด็กๆ</p>
+        <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">📝 ชุดละ 30 ข้อ | ครั้งที่ 1-10 (ระดับกลาง) ➡️ ครั้งที่ 11 ขึ้นไปปรับเป็น (ระดับยาก) อัตโนมัติ</p>
         <button class="btn btn-center" onclick="showSubCategory('gat')">TGAT (GAT)</button>
         <button class="btn btn-center" onclick="showSubCategory('pat')">TPAT (PAT 1)</button>
         <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level (สายศิลป์-คำนวณ)</button>
@@ -196,50 +196,9 @@
 </div>
 
 <script>
-// คลังข้อสอบคุณภาพคัดกรองแนวข้อสอบจริง (ตัดหมวดวิทยาศาสตร์ออกตามสั่งเรียบร้อยจ้า)
+// คลังข้อสอบจริงอัปเดตโจทย์เพิ่มเพียบ ป้องกันโจทย์ซ้ำซากจ้า!
 const quizData = {
     gat_eng: {
         medium: [
-            { q: "Situation: At a coffee shop.\nBarista: What can I get for you today?\nCustomer: __________. Can I get an iced Americano, please?", c: ["I’m not sure yet.", "I’d like to sit inside.", "Just a moment, please.", "Give me the usual."], a: 2, exp: "Customer สั่งกาแฟต่อทันที การพูดว่า Just a moment, please. (ขอเวลาสักครู่ครับ) จึงเป็นบริบทที่สุภาพและเหมาะสมที่สุดในการเริ่มสั่ง" },
-            { q: "Situation: Two friends talking about a movie.\nJane: I thought the new sci-fi movie was a bit overrated.\nMark: __________. The plot didn't make any sense at all.", c: ["I couldn't agree more.", "I beg to differ.", "That’s not the case.", "You must be joking."], a: 0, exp: "Mark ขยายความเชิงลบเกี่ยวกับหนัง แสดงว่าเห็นด้วยกับ Jane ที่บอกว่าหนังถูกอวยเกินจริง สำนวน I couldn't agree more แปลว่า เห็นด้วยอย่างยิ่ง" },
-            { q: "The manager decided to _________ the weekly meeting due to the power outage.", c: ["cancel", "postpone", "resume", "organize"], a: 1, exp: "จากบริบทเพราะไฟดับจึงต้อง เลื่อน (postpone) การประชุมออกไป ส่วน cancel แปลว่ายกเลิก" },
-            { q: "The presentation _________ by the marketing team before the CEO arrived.", c: ["had been completed", "has completed", "was completing", "completes"], a: 0, exp: "ใช้ Past Perfect เพราะเหตุการณ์ทำสไลด์เสร็จเกิดก่อน CEO มา (Past Simple) และเป็นประธานถูกกระทำต้องใช้รูป Passive Voice" }
-        ],
-        hard: [
-            { q: "In a business negotiation, if a party is described as 'adamant', it means they are _________.", c: ["flexible and open to compromises", "refusing to change their mind", "incapable of understanding terms", "indifferent to the final outcome"], a: 1, exp: "Adamant เป็นคำศัพท์ระดับสูง แปลว่า ยืนกราน มั่นคง ไม่ยอมเปลี่ยนใจเด็ดขาด ตรงกับ refusing to change their mind" },
-            { q: "Not only _________ the prestigious award, but she also donated the entire prize money to charity.", c: ["she won", "did she win", "she had won", "has she won"], a: 1, exp: "ตามหลักไวยากรณ์ขั้นสูง (Inversion) เมื่อขึ้นต้นประโยคด้วย Not only ต้องสลับกริยาช่วยมาไว้หน้าประธาน ในอดีตจึงใช้ did she win" }
-        ]
-    },
-    gat_reasoning: {
-        medium: [
-            { q: "ถ้าหากกำหนดให้ 'นักเรียนทุกคนที่ขยันจะสอบผ่าน' และ 'สมชายสอบไม่ผ่าน' ข้อใดสรุปได้ถูกต้องตามหลักตรรกศาสตร์?", c: ["สมชายไม่ขยัน", "สมชายขยันแต่ประมาท", "ข้อสอบยากเกินไป", "สรุปไม่ได้"], a: 0, exp: "ถ้าขยันแล้วต้องสอบผ่าน แต่สมชายไม่ผ่าน แสดงว่าสมชายไม่ได้อยู่ในกลุ่มคนขยันตามเงื่อนไขที่กำหนด" }
-        ],
-        hard: [
-            { q: "พิจารณาเงื่อนไข: สาร A มีพิษร้ายแรงกว่าสาร B, สาร C มีพิษน้อยกว่าสาร B แต่ร้ายแรงกว่าสาร D ข้อใดคือสารที่มีพิษน้อยที่สุด?", c: ["สาร A", "สาร B", "สาร C", "สาร D"], a: 3, exp: "เรียงลำดับจากพิษมากไปน้อยจะได้: A > B > C > D ดังนั้นสาร D มีพิษน้อยที่สุด" }
-        ]
-    },
-    gat_work: {
-        medium: [
-            { q: "หากคุณพบว่าเพื่อนร่วมงานแอบนำข้อมูลลับของบริษัทไปเผยแพร่ สิ่งแรกที่คุณควรทำตามสมรรถนะการทำงานในอนาคตคืออะไร?", c: ["แจ้งหัวหน้างานพร้อมหลักฐาน", "โพสต์เตือนภัยในโซเชียล", "ไปต่อว่าเพื่อนร่วมงานทันที", "นิ่งเฉยเพราะไม่ใช่เรื่องของเรา"], a: 0, exp: "การแก้ปัญหาอย่างเป็นมืออาชีพและถูกต้องตามสมรรถนะการทำงานคือตรวจสอบ รวบรวมหลักฐาน และแจ้งผู้บังคับบัญชาตามขั้นตอน" }
-        ],
-        hard: [
-            { q: "ในฐานะหัวหน้าทีม เมื่อเกิดความขัดแย้งอย่างรุนแรงระหว่างสมาชิกร่วมทีม 2 คนเกี่ยวกับแนวทางการทำโปรเจกต์ คุณจะจัดการอย่างไรเพื่อให้เกิดประสิทธิภาพสูงสุด?", c: ["ตัดสินใจเลือกแนวทางคนใดคนหนึ่งทันที", "จัดประชุมด่วนให้ทั้งคู่เคลียร์และร่วมกันหาจุดกึ่งกลางที่ผสานจุดเด่นของทั้งสองแนวทาง", "ย้ายคนใดคนหนึ่งออกจากทีม", "ปล่อยให้สู้กันเองจนกว่าจะได้ข้อสรุป"], a: 1, exp: "สมรรถนะการบริหารคนขั้นสูงเน้นการจัดการความขัดแย้งเชิงบวก (Conflict Management) โดยดึงจุดเด่นของทั้งสองฝ่ายมาบูรณาการ" }
-        ]
-    },
-    pat_1: {
-        medium: [
-            { q: "กำหนดให้เซต A มีสมาชิก 4 ตัว จำนวนสับเซตทั้งหมดของเซต A มีค่าเท่ากับเท่าใด?", c: ["4", "8", "16", "32"], a: 2, exp: "สูตรจำนวนสับเซตทั้งหมดคือ 2^n โดยที่ n คือจำนวนสมาชิก จะได้ 2^4 = 16" }
-        ],
-        hard: [
-            { q: "ถ้าเส้นตรง y = mx + c ขนานกับเส้นตรง 2x - y + 5 = 0 และผ่านจุด (1, 3) แล้วค่าของ c เท่ากับเท่าใด?", c: ["1", "2", "3", "5"], a: 0, exp: "เส้นตรงขนานกันความชัน (m) จะเท่ากัน จาก 2x - y + 5 = 0 จัดรูปได้ y = 2x + 5 แปลว่า m = 2 แทนจุด (1,3) ใน y = 2x + c จะได้ 3 = 2(1) + c ดังนั้น c = 1" }
-        ]
-    },
-    alevel_math_basic: {
-        medium: [
-            { q: "ค่าสถิติตัวใดต่อไปนี้ ที่มีค่าน้อยที่สุดหรือมากที่สุดได้ โดยไม่จำเป็นต้องอยู่กึ่งกลางข้อมูลเสมอไป?", c: ["มัธยฐาน", "ฐานนิยม", "เปอร์เซ็นไทล์ที่ 50", "ควอไทล์ที่ 2"], a: 1, exp: "ฐานนิยม (Mode) คือข้อมูลที่มีความถี่ซ้ำกันมากที่สุด ซึ่งอาจจะเป็นเลขคณิตค่าที่มากสุดหรือน้อยสุดก็ได้ แตกต่างจากตัวอื่นที่เป็นค่าวัดตำแหน่งกึ่งกลาง" }
-        ],
-        hard: [
-            { q: "กล่องใบหนึ่งมีลูกบอลสีแดง 3 ลูก สีขาว 2 ลูก สุ่มหยิบลูกบอลพร้อมกัน 2 ลูก ความน่าจะเป็นที่จะได้ลูกบอลสีเดียวกันเท่ากับเท่าใด?", c: ["2/5", "3/10", "4/10", "1/2"], a: 2, exp: "วิธีทั้งหมด = 5C2 = 10 วิธี, ได้สีเดียวกันคือ แดงคู่ (3C2 = 3) หรือ ขาวคู่ (2C2 = 1) รวมเป็น 3 + 1 = 4 วิธี ความน่าจะเป็นคือ 4/10" }
-        ]
-    },
-    alevel_
+            { q: "Situation: At a coffee shop.\nBarista: What can I get for you today?\nCustomer: __________. Can I get an iced Americano, please?", c:
+                
