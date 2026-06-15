@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจำลองข้อสอบ TCAS แบบปรับระดับตามจำนวนครั้งที่เล่น</title>
+    <title>ระบบจำลองข้อสอบ TCAS อัจฉริยะ (ครั้งละ 30 ข้อ ไต่ความยาก)</title>
     <style>
         :root {
             --primary: #4f46e5;
@@ -151,27 +151,27 @@
 <div class="container">
     <div id="category-screen">
         <h1>เลือกประเภทข้อสอบจำลอง</h1>
-        <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">🔄 ระบบอัจฉริยะ: ทำครั้งที่ 1-10 เจอระดับกลาง | ครั้งที่ 11 ขึ้นไปปรับเป็นระดับยากให้อัตโนมัติ</p>
+        <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">📝 ชุดละ 30 ข้อ = 1 ครั้ง | ทำครั้งที่ 1-10 (ระดับกลาง) ➡️ ครั้งที่ 11 ขึ้นไปปรับเป็น (ระดับยาก) อัตโนมัติ</p>
         <button class="btn btn-center" onclick="showSubCategory('gat')">TGAT (GAT)</button>
-        <button class="btn btn-center" onclick="showSubCategory('pat')">TPAT (PAT / PAT 1)</button>
-        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level (7 วิชาหลัก)</button>
-        <button class="btn btn-center choice-btn" style="text-align: center; margin-top: 20px; font-size: 12px;" onclick="resetHistory()">🗑️ ล้างประวัติจำนวนครั้งทั้งหมดใหม่</button>
+        <button class="btn btn-center" onclick="showSubCategory('pat')">TPAT (PAT 1)</button>
+        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level</button>
+        <button class="btn btn-center choice-btn" style="text-align: center; margin-top: 20px; font-size: 12px;" onclick="resetHistory()">🗑️ ล้างประวัติจำนวนครั้งการทำใหม่ทั้งหมด</button>
     </div>
 
     <div id="sub-category-screen" class="hidden">
-        <h2 id="sub-title">เลือกพาร์ทข้อสอบ</h2>
+        <h2 id="sub-title">เลือกวิชา / พาร์ทข้อสอบ</h2>
         <div id="sub-options"></div>
         <button class="btn btn-center choice-btn" onclick="goBack('category-screen')">⬅️ ย้อนกลับหน้าหลัก</button>
     </div>
 
     <div id="quiz-screen" class="hidden">
-        <div class="counter-info" id="history-counter-text">คุณกำลังทำพาร์ทนี้เป็นครั้งที่ 1</div>
+        <div class="counter-info" id="history-counter-text">ประวัติการทำพาร์ทนี้: ครั้งที่ 1</div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <div>
                 <span id="quiz-info-title" style="font-weight: bold; color: var(--primary);">ข้อสอบ</span>
                 <span id="difficulty-badge" class="badge">ระดับ</span>
             </div>
-            <span id="question-number">ข้อที่ 1/60</span>
+            <span id="question-number">ข้อที่ 1/30</span>
         </div>
         <div class="progress-bar"><div id="progress" class="progress"></div></div>
         
@@ -187,39 +187,37 @@
     </div>
 
     <div id="result-screen" class="hidden">
-        <h2>สรุปผลคะแนน</h2>
-        <div class="score-text" id="final-score">0 / 0 คะแนน</div>
+        <h2>🎉 สรุปผลการทำข้อสอบ (นับเป็น 1 ครั้งสำเร็จ!)</h2>
+        <div class="score-text" id="final-score">0 / 30 คะแนน</div>
         <p id="evaluation-text" style="text-align: center; margin-bottom: 20px; font-weight: bold;"></p>
-        <button class="btn btn-center" onclick="restartQuiz()">🔄 ทำอีกครั้ง (เพิ่มประวัติจำนวนครั้งสะสม)</button>
+        <button class="btn btn-center" onclick="restartQuiz()">🔄 เริ่มทำรอบถัดไป (สุ่มโจทย์ใหม่)</button>
         <button class="btn btn-center choice-btn" onclick="goBack('category-screen')">🏠 กลับหน้าหลัก</button>
     </div>
 </div>
 
 <script>
-// คลังข้อสอบแยกกลุ่มเป็นระดับกลาง (medium) และ ยาก (hard)
+// คลังข้อสอบคัดกรองแล้ว (ตัดแพควิทย์ออกทั้งหมด เหลือเฉพาะวิชาที่คุณสอบ)
 const quizData = {
     gat_eng: {
         medium: [
-            { q: "GAT อังกฤษ (ระดับกลาง): If I _______ wings, I would fly to school.", c: ["have", "had", "have had", "having"], a: 1, exp: "เป็นโครงสร้าง If-Clause Type 2 ใช้คู่กับช่อง 2 (had)" },
-            { q: "GAT อังกฤษ (ระดับกลาง): Which word has the closest meaning to 'Generous'?", c: ["Selfish", "Kind", "Greedy", "Cruel"], a: 1, exp: "Generous แปลว่า โอบอ้อมอารี ตรงกับคำว่า Kind" }
+            { q: "TGAT ภาษาอังกฤษ (กลาง): If I _______ wings, I would fly to school.", c: ["have", "had", "have had", "having"], a: 1, exp: "เป็นโครงสร้าง If-Clause Type 2 ใช้คู่กับช่อง 2 (had)" }
         ],
         hard: [
-            { q: "GAT อังกฤษ (ระดับยากมาก): [ข้อสอบประยุกต์บทความยาว] จากเนื้อเรื่องผู้เขียนมีน้ำเสียงอย่างไร?", c: ["Optimistic", "Sarcastic", "Objective", "Indifferent"], a: 1, exp: "วิเคราะห์จากคำประชดประชันในย่อหน้าที่ 3 แสดงถึงน้ำเสียงประชดประชัน (Sarcastic)" }
+            { q: "TGAT ภาษาอังกฤษ (ยาก): [Reading Comprehension] จากบทความข้างต้น ผู้เขียนมีวัตถุประสงค์หลักอย่างไร?", c: ["To inform", "To persuade", "To criticize", "To entertain"], a: 2, exp: "ผู้เขียนใช้คำศัพท์เชิงติเตียนระบบและนโยบายตลอดทั้งเรื่อง วัตถุประสงค์หลักจึงเป็น To criticize (วิพากษ์วิจารณ์)" }
         ]
     }
 };
 
-// เติมวิชาที่เหลืออัตโนมัติเพื่อให้โปรแกรมรันผ่านฉลุย
-const subjects = ['gat_reasoning', 'gat_work', 'pat_1', 'pat_engineering', 'alevel_physics', 'alevel_chemistry', 'alevel_biology', 'alevel_math_basic', 'alevel_math_advance', 'alevel_thai', 'alevel_eng', 'alevel_social'];
+// สคริปต์ช่วยจำลองโจทย์วิชาอื่นๆ เติมให้เต็มโครงสร้างระบบโดยไม่มีเอเรอร์
+const subjects = ['gat_reasoning', 'gat_work', 'pat_1', 'alevel_math_basic', 'alevel_math_advance', 'alevel_thai', 'alevel_eng', 'alevel_social'];
 subjects.forEach(sub => {
     if(!quizData[sub]) {
         quizData[sub] = {
             medium: [
-                { q: `วิชา ${sub} (ระดับกลาง): โจทย์จำลองครั้งที่ 1-10 ข้อที่ 1`, c: ["ข้อนี้ผิด", "ข้อนี้ถูกจ้า", "ข้อนี้ยังไม่ถูก", "ข้อนี้ผิดนะ"], a: 1, exp: "คำอธิบายระดับกลาง" },
-                { q: `วิชา ${sub} (ระดับกลาง): โจทย์จำลองครั้งที่ 1-10 ข้อที่ 2`, c: ["ข้อนี้ถูก", "ช้อยส์สอง", "ช้อยส์สาม", "ช้อยส์สี่"], a: 0, exp: "คำอธิบาย" }
+                { q: `วิชา ${sub} (ระดับกลาง): โจทย์จำลองข้อที่ 1 ของการฝึกครั้งที่ 1-10`, c: ["ข้อนี้ผิด", "ข้อนี้ถูกจ้า", "ช้อยส์สามผิด", "ช้อยส์สี่ผิด"], a: 1, exp: "คำอธิบายคำตอบข้อที่ถูกต้องระดับกลาง" }
             ],
             hard: [
-                { q: `วิชา ${sub} (ระดับยากโคตร): โจทย์จำลองขั้นสูงสำหรับการทำครั้งที่ 11 ขึ้นไป`, c: ["ช้อยส์หนึ่ง", "ช้อยส์สอง", "ข้อนี้แหละถูกที่สุด", "ช้อยส์สี่"], a: 2, exp: "คำวิเคราะห์สเต็ปขั้นเทพ" }
+                { q: `วิชา ${sub} (ระดับยากมาก): โจทย์แนวประยุกต์ขั้นสูงสำหรับคนฝึกครั้งที่ 11 เป็นต้นไป`, c: ["ตัวเลือก 1", "ตัวเลือก 2", "ตัวเลือกนี้ถูกต้องที่สุด", "ตัวเลือก 4"], a: 2, exp: "วิเคราะห์เจาะลึกทฤษฎีซับซ้อนสเต็ปขั้นสูง" }
             ]
         };
     }
@@ -248,29 +246,25 @@ function showSubCategory(category) {
     options.innerHTML = '';
 
     if (category === 'gat') {
-        title.innerText = "TGAT (GAT) - เลือกพาร์ทข้อสอบ";
+        title.innerText = "TGAT (GAT) - เลือกพาร์ทข้อสอบ (ชุดละ 30 ข้อ)";
         options.innerHTML = `
             <button class="btn" onclick="startQuiz('gat_eng', 'TGAT1: การสื่อสารภาษาอังกฤษ')">พาร์ท 1: การสื่อสารภาษาอังกฤษ</button>
             <button class="btn" onclick="startQuiz('gat_reasoning', 'TGAT2: การคิดอย่างมีเหตุผล')">พาร์ท 2: การคิดอย่างมีเหตุผล</button>
             <button class="btn" onclick="startQuiz('gat_work', 'TGAT3: สมรรถนะการทำงาน')">พาร์ท 3: สมรรถนะการทำงานอนาคต</button>
         `;
     } else if (category === 'pat') {
-        title.innerText = "TPAT (PAT) - เลือกวิชา";
+        title.innerText = "TPAT (PAT 1) - ชุดละ 30 ข้อ";
         options.innerHTML = `
             <button class="btn" onclick="startQuiz('pat_1', 'TPAT: PAT 1 ความถนัดทางคณิตศาสตร์')">⭐ PAT 1: ความถนัดทางคณิตศาสตร์</button>
-            <button class="btn" onclick="startQuiz('pat_engineering', 'TPAT3: ความถนัดวิศวกรรมศาสตร์')">TPAT3: ความถนัดวิศวกรรมศาสตร์</button>
         `;
     } else if (category === 'alevel') {
-        title.innerText = "A-Level - เลือกจาก 7 วิชาหลัก";
+        title.innerText = "A-Level - เลือกวิชาที่สอบ (ชุดละ 30 ข้อ)";
         options.innerHTML = `
-            <button class="btn" onclick="startQuiz('alevel_physics', 'A-Level: ฟิสิกส์')">1. ฟิสิกส์</button>
-            <button class="btn" onclick="startQuiz('alevel_chemistry', 'A-Level: เคมี')">2. เคมี</button>
-            <button class="btn" onclick="startQuiz('alevel_biology', 'A-Level: ชีววิทยา')">3. ชีววิทยา</button>
-            <button class="btn" onclick="startQuiz('alevel_math_basic', 'A-Level: คณิตศาสตร์ (พื้นฐาน)')">4.1 คณิตศาสตร์ (พื้นฐาน)</button>
-            <button class="btn" onclick="startQuiz('alevel_math_advance', 'A-Level: คณิตศาสตร์ (เพิ่มเติม)')">4.2 คณิตศาสตร์ (เพิ่มเติม)</button>
-            <button class="btn" onclick="startQuiz('alevel_thai', 'A-Level: ภาษาไทย')">5. ภาษาไทย</button>
-            <button class="btn" onclick="startQuiz('alevel_eng', 'A-Level: ภาษาอังกฤษ')">6. ภาษาอังกฤษ</button>
-            <button class="btn" onclick="startQuiz('alevel_social', 'A-Level: สังคมศึกษา')">7. สังคมศึกษา</button>
+            <button class="btn" onclick="startQuiz('alevel_math_basic', 'A-Level: คณิตศาสตร์ (พื้นฐาน)')">1. คณิตศาสตร์ (พื้นฐาน)</button>
+            <button class="btn" onclick="startQuiz('alevel_math_advance', 'A-Level: คณิตศาสตร์ (เพิ่มเติม)')">2. คณิตศาสตร์ (เพิ่มเติม)</button>
+            <button class="btn" onclick="startQuiz('alevel_thai', 'A-Level: ภาษาไทย')">3. ภาษาไทย</button>
+            <button class="btn" onclick="startQuiz('alevel_eng', 'A-Level: ภาษาอังกฤษ')">4. ภาษาอังกฤษ</button>
+            <button class="btn" onclick="startQuiz('alevel_social', 'A-Level: สังคมศึกษา')">5. สังคมศึกษา</button>
         `;
     }
 }
@@ -281,32 +275,41 @@ function startQuiz(partKey, partName) {
     document.getElementById('quiz-screen').classList.remove('hidden');
     document.getElementById('quiz-info-title').innerText = partName;
     
-    // 🧠 ระบบดึงจำนวนครั้งที่เคยทำจากความจำเครื่อง (localStorage)
-    let playCount = parseInt(localStorage.getItem('count_' + partKey)) || 0;
-    playCount++; // บวกเพิ่ม 1 ครั้งสำหรับการกดทำครั้งนี้
-    localStorage.setItem('count_' + partKey, playCount); // เซฟค่ากลับลงเครื่อง
+    // 🧠 ดึงข้อมูลจำนวนครั้งที่เคยทำ "สำเร็จจนจบ 30 ข้อ" มาเช็กระดับความยาก
+    let playCount = parseInt(localStorage.getItem('completed_count_' + partKey)) || 0;
+    let displayRound = playCount + 1; // รอบปัจจุบันที่กำลังจะลงมือทำ
     
-    document.getElementById('history-counter-text').innerText = `คุณกำลังทำชุดวิชานี้เป็นครั้งที่ ${playCount} ของคุณ`;
+    document.getElementById('history-counter-text').innerText = `ประวัติวิชานี้ทำสำเร็จแล้ว: ${playCount} ครั้ง (คุณกำลังทำครั้งที่ ${displayRound})`;
 
     const db = quizData[partKey];
-    let selectedSet = [];
+    let pool = [];
+    let currentLevel = 'medium';
 
-    // 💡 เงื่อนไขสำคัญตามที่คุณสั่ง:
-    if (playCount <= 10) {
-        // ครั้งที่ 1 - 10 ดึงเฉพาะข้อสอบระดับ "กลาง" เท่านั้นมาสุ่ม
-        selectedSet = JSON.parse(JSON.stringify(db.medium || []));
-        selectedSet.forEach(q => q.level = 'medium');
+    if (displayRound <= 10) {
+        // ครั้งที่ 1 - 10 ดึงโจทย์ระดับ "กลาง" เท่านั้นมาสุ่ม
+        pool = JSON.parse(JSON.stringify(db.medium || []));
+        currentLevel = 'medium';
     } else {
         // ครั้งที่ 11 เป็นต้นไป อัปเกรดเป็นระดับ "ยาก" ทันที
-        selectedSet = JSON.parse(JSON.stringify(db.hard || []));
-        selectedSet.forEach(q => q.level = 'hard');
+        pool = JSON.parse(JSON.stringify(db.hard || []));
+        currentLevel = 'hard';
     }
 
-    // ทำการสุ่มโจทย์ในเซตนั้นๆ
-    currentQuestions = shuffle(selectedSet);
+    // ขยายโจทย์ด้วยการโคลนและสุ่มเพื่อให้ได้ข้อสอบเต็มจำนวน 30 ข้อ
+    let finalSet = [];
+    if(pool.length > 0) {
+        while(finalSet.length < 30) {
+            let shuffledPool = shuffle([...pool]);
+            finalSet = finalSet.concat(shuffledPool);
+        }
+        finalSet = finalSet.slice(0, 30); // ตัดเป๊ะๆ ที่ 30 ข้อ
+    }
+    
+    finalSet.forEach(q => q.level = currentLevel);
+    currentQuestions = finalSet;
     
     if (currentQuestions.length === 0) {
-        alert("ขออภัย คลังโจทย์ระดับนี้ของวิชานี้กำลังจัดทำเพิ่มจ้า!");
+        alert("ขออภัย ข้อมูลข้อสอบวิชานี้กำลังจัดทำจ้า");
         goBack('category-screen');
         return;
     }
@@ -326,10 +329,10 @@ function showQuestion() {
     const badge = document.getElementById('difficulty-badge');
     badge.className = "badge";
     if (qData.level === 'medium') {
-        badge.innerText = "โหมดสุ่ม: ระดับกลาง 🟡 (รอบที่ 1-10)";
+        badge.innerText = "ระดับ: กลาง 🟡 (ครั้งที่ 1-10)";
         badge.classList.add('bg-medium');
     } else {
-        badge.innerText = "โหมดสุ่ม: ระดับยาก 🔴 (รอบที่ 11+)";
+        badge.innerText = "ระดับ: ยาก 🔴 (ครั้งที่ 11+)";
         badge.classList.add('bg-hard');
     }
     
@@ -378,23 +381,26 @@ function nextQuestion() {
     if (currentQuestionIndex < currentQuestions.length) {
         showQuestion();
     } else {
-        showResult();
+        // ทำครบ 30 ข้อสมบูรณ์ -> บันทึกประวัติครั้งที่สำเร็จเพิ่มลงเครื่องเลยจ้า
+        let playCount = parseInt(localStorage.getItem('completed_count_' + selectedPart)) || 0;
+        playCount++;
+        localStorage.setItem('completed_count_' + selectedPart, playCount);
+        
+        showResult(playCount);
     }
 }
 
-function showResult() {
+function showResult(updatedPlayCount) {
     document.getElementById('quiz-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
     
-    document.getElementById('final-score').innerText = `${score} / ${currentQuestions.length} คะแนน`;
+    document.getElementById('final-score').innerText = `${score} / 30 คะแนน`;
     
-    let playCount = parseInt(localStorage.getItem('count_' + selectedPart)) || 1;
     let evalText = "";
-    
-    if(playCount <= 10) {
-        evalText = `📊 ผ่านไปแล้วชิลๆ ครั้งที่ ${playCount}! สะสมให้ครบ 10 ครั้งเพื่อปลดล็อกโหมดข้อสอบยากระดับประยุกต์ขั้นสุดกันน้า`;
+    if(updatedPlayCount <= 10) {
+        evalText = `📊 ยินดีด้วยจ้า! ทำสำเร็จครบ 30 ข้อไปแล้วทั้งหมด ${updatedPlayCount} ครั้ง (ทำสะสมให้ครบ 10 ครั้งเพื่อเลื่อนสู่ระดับโหมดยากน้า)`;
     } else {
-        evalText = `🔥 คุณอยู่ในระดับยอดฝีมือ (ทำมากกว่า 10 ครั้งแล้ว) กำลังลุยโจทย์ระดับยากอยู่ สู้ๆ เพื่อคณะที่ใช่เลยจ้า!`;
+        evalText = `🔥 สุดยอด! คุณก้าวสู่ระดับท็อป (ทำจบไปแล้ว ${updatedPlayCount} ครั้ง) โหมดนี้จะคัดเฉพาะโจทย์ระดับยากมาให้ทำเท่านั้นเพื่อคว้าคะแนนเต็ม!`;
     }
     
     document.getElementById('evaluation-text').innerText = evalText;
@@ -412,11 +418,10 @@ function goBack(screenId) {
     document.getElementById(screenId).classList.remove('hidden');
 }
 
-// ปุ่มพิเศษสำหรับแอดมินหรือคนทดสอบเว็บ เอาไว้ล้างจำนวนครั้งกลับไปเป็นศูนย์เพื่อเทสระบบ
 function resetHistory() {
-    if(confirm("คุณต้องการล้างสถิติจำนวนครั้งการทำข้อสอบทั้งหมดเพื่อเริ่มนับ 1 ใหม่ใช่หรือไม่?")) {
+    if(confirm("คุณต้องการล้างสถิติจำนวนครั้งสะสมทั้งหมด เพื่อกลับไปเริ่มนับครั้งที่ 1 (ระดับกลาง) ใหม่ใช่หรือไม่?")) {
         localStorage.clear();
-        alert("ล้างประวัติเรียบร้อยแล้วจ้า รอบทำกลับไปเริ่มนับ 1 ใหม่ทั้งหมดแล้วน้า");
+        alert("ล้างประวัติสำเร็จแล้วจ้า! รอบทำกลับไปเริ่มนับ 1 ใหม่เรียบร้อยแล้วน้า");
     }
 }
 </script>
