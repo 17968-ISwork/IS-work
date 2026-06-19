@@ -214,7 +214,6 @@
 </div>
 
 <script>
-// ฟังก์ชันสำหรับแรนดอมตัวเลขในช่วงที่กำหนด
 function getRandomArbitrary(min, max, decimals = 0) {
     let rand = Math.random() * (max - min) + min;
     return parseFloat(rand.toFixed(decimals));
@@ -238,17 +237,14 @@ const quizData = {
         name: "การวัดปริมาณสาร, อุปกรณ์ และเลขนัยสำคัญ",
         questions: [
             { static: true, q: "หากต้องการตวงสารละลายมาตรฐานปริมาตร 25.00 cm³ เพื่อทำการไทเทรต ควรใช้อุปกรณ์ใดจึงจะเหมาะสมและแม่นยำที่สุด?", c: ["ปิเปตต์แบบปริมาตร (Volumetric pipette)", "บีกเกอร์ (Beaker)", "กระบอกตวง (Graduated cylinder)", "ขวดรูปกรวย (Erlenmeyer flask)"], a: 0, exp: "ปิเปตต์แบบปริมาตร (Volumetric pipette) ออกแบบมาเพื่อจ่ายของเหลวที่มีปริมาตรแน่นอนเพียงค่าเดียวด้วยความแม่นยำทศนิยมสองตำแหน่ง" },
-            // ⭐️ สุ่มโจทย์เลขนัยสำคัญและคำนวณเปลี่ยนตัวเลข
             {
                 static: false,
                 generator: function() {
                     let a = getRandomArbitrary(10.05, 15.95, 2);
                     let b = getRandomArbitrary(2.1, 2.9, 1);
                     let c = getRandomArbitrary(1.100, 1.900, 3);
-                    
                     let mul = parseFloat((a * b).toPrecision(2)); 
                     let ans = Math.round(mul + c); 
-                    
                     return {
                         q: `ผลลัพธ์ของการคำนวณตามหลักเลขนัยสำคัญของ (${a} × ${b}) + ${c} มีค่าเท่ากับข้อใด?`,
                         c: [`${ans}`, `${(a*b+c).toFixed(3)}`, `${(a*b+c).toFixed(2)}`, `${(a*b+c).toFixed(1)}`],
@@ -262,7 +258,6 @@ const quizData = {
     chem_units: {
         name: "หน่วยวัดระบบ SI และแฟกเตอร์เปลี่ยนหน่วย",
         questions: [
-            // ⭐️ สุ่มโจทย์ความหนาแน่น g/mL เป็น kg/m³ เปลี่ยนตัวเลข
             {
                 static: false,
                 generator: function() {
@@ -293,7 +288,6 @@ const quizData = {
     chem_isotopes: {
         name: "อนุภาคในอะตอม เลขอะตอม เลขมวล และไอโซโทป",
         questions: [
-            // ⭐️ สุ่มไอออนแทรนซิชัน หาโปรตอน นิวตรอน อิเล็กตรอน เปลี่ยนตัวเลข
             {
                 static: false,
                 generator: function() {
@@ -308,4 +302,197 @@ const quizData = {
                     let n = pick.m - pick.p;
                     let e = pick.p - pick.ion;
                     return {
-                        q: `ไอออนของธาตุ
+                        q: `ไอออนของธาตุแทรนซิชันสุ่มสภาวะคือ ⁵⁶₂₆${pick.name} ${pick.ion === 2 ? '²⁺' : pick.ion === 3 ? '³⁺' : '⁴⁺'} (กำหนดเลขมวล=${pick.m}, เลขอะตอม=${pick.p}) จะมีจำนวนโปรตอน นิวตรอน และอิเล็กตรอน ตามลำดับเท่าใด?`,
+                        c: [`${pick.p}, ${n}, ${e}`, `${pick.p}, ${n}, ${pick.p}`, `${pick.m}, ${n}, ${e}`, `${e}, ${n}, ${pick.p}`],
+                        a: 0,
+                        exp: `วิธีคิดอนุภาคพื้นฐาน: \n- โปรตอน = เลขอะตอม = ${pick.p} \n- นิวตรอน = เลขมวล - เลขอะตอม = ${pick.m} - ${pick.p} = ${n} \n- อิเล็กตรอน = ตัวประจุบวกหมายถึงเสียอิเล็กตรอนไป จะได้ ${pick.p} - ${pick.ion} = ${e}`
+                    };
+                }
+            }
+        ]
+    },
+    chem_electrons: {
+        name: "การจัดเรียงอิเล็กตรอน (ระดับพลังงานหลัก/ย่อย/ออร์บิทัล)",
+        questions: [
+            { static: true, q: "ธาตุโครเมียม (₂₄Cr) มีการจัดเรียงอิเล็กตรอนในระดับพลังงานย่อยในสภาวะพื้น (Ground state) ตรงกับข้อใด? (ระวังข้อยกเว้น สอวน.)", c: ["1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹ 3d⁵", "1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁴", "1s² 2s² 2p⁶ 3s² 3p⁶ 4s⁰ 3d⁶", "1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁵"], a: 0, exp: "Cr (Z=24) และ Cu (Z=29) เป็นข้อยกเว้นเนื่องจากเสถียรภาพของการจัดเรียงแบบครึ่ง (Half-filled/Filled d-orbital) Cr จึงจัดเป็น 4s¹ 3d⁵" }
+        ]
+    },
+    chem_periodic_table: {
+        name: "ตารางธาตุและแนวโน้มสมบัติของธาตุหมู่หลัก",
+        questions: [
+            { static: true, q: "ธาตุที่มีค่าอิเล็กโทรเนกาติวิตี (Electronegativity: EN) สูงที่สุดในตารางธาตุคือธาตุใด?", c: ["F", "Cs", "Fr", "He"], a: 0, exp: "ฟลูออรีน (F) อยู่มุมบนขวาของตารางธาตุ (ไม่นับแก๊สเฉื่อย) มีความสามารถในการดึงดูดอิเล็กตรอนในพันธะเคมีได้สูงที่สุด" }
+        ]
+    },
+    chem_transition: {
+        name: "ธาตุแทรนซิชันและสมบัติเฉพาะตัว",
+        questions: [
+            { static: true, q: "ข้อใดไม่ใช่สมบัติทั่วไปของธาตุแทรนซิชันเมื่อเปรียบเทียบกับธาตุหมู่หลัก?", c: ["มีขนาดอะตอมลดลงอย่างรวดเร็วมากเมื่อเลขอะตอมเพิ่มขึ้นในคาบเดียวกัน", "มีเลขออกซิเดชันได้หลายค่าในสารประกอบ", "สารประกอบและไอออนมักมีสีเข้มเด่นชัด", "สามารถเกิดสารประกอบเชิงซ้อนได้ดี"], a: 0, exp: "ธาตุแทรนซิชันในคาบเดียวกันจะมีขนาดอะตอมใกล้เคียงกัน ไม่ลดลงฮวบฮาบเนื่องจากอิเล็กตรอนวงในช่วยกันแรงดึงดูดไว้" }
+        ]
+    },
+    chem_radioactive: {
+        name: "ธาตุกัมมันตรังสี, ครึ่งชีวิต และปฏิกิริยานิวเคลียร์",
+        questions: [
+            {
+                static: false,
+                generator: function() {
+                    let halfLife = getRandomArbitrary(5, 15, 0); 
+                    let periods = Math.floor(getRandomArbitrary(2, 4, 0)); 
+                    let totalDays = halfLife * periods;
+                    let percentRemaining = (1 / Math.pow(2, periods)) * 100;
+                    let percentDecayed = 100 - percentRemaining;
+                    return {
+                        q: `ไอโซโทปกัมมันตรังสีชนิดหนึ่งมีครึ่งชีวิตเท่ากับ ${halfLife} วัน ถ้าหากเก็บสารตัวอย่างนี้ไว้เป็นเวลาทั้งหมด ${totalDays} วัน สารนี้จะสลายตัวไปแล้วคิดเป็นร้อยละเท่าใดของปริมาณเริ่มต้น?`,
+                        c: [`${percentDecayed.toFixed(2)}%`, `${percentRemaining.toFixed(2)}%`, `${(percentDecayed/2).toFixed(2)}%`, `100.00%`],
+                        a: 0,
+                        exp: `วิธีคิดครึ่งชีวิต: \n- เวลาผ่านไป ${totalDays} วัน / ครึ่งชีวิต ${halfLife} วัน = ผ่านไป ${periods} รอบ\n- สารจะเหลือร้อยละ = (1/2)^${periods} × 100 = ${percentRemaining.toFixed(2)}%\n- ดังนั้นสารสลายตัวไปแล้ว = 100% - ${percentRemaining.toFixed(2)}% = ${percentDecayed.toFixed(2)}%`
+                    };
+                }
+            },
+            { static: true, q: "ปฏิกิริยานิวเคลียร์แบบที่นิวเคลียสขนาดใหญ่แตกตัวออกเป็นนิวเคลียสที่เล็กลงพร้อมปลดปล่อยพลังงานมหาศาล เรียกว่าปฏิกิริยาประเภทใด?", c: ["นิวเคลียร์ฟิสชัน (Nuclear Fission)", "นิวเคลียร์ฟิวชัน (Nuclear Fusion)", "การสลายตัวให้บีตา", "ปฏิกิริยาลูกโซ่เคมี"], a: 0, exp: "Fission คือการแยก/แตกตัวของนิวเคลียสใหญ่ เช่น ในโรงไฟฟ้านิวเคลียร์" }
+        ]
+    },
+    chem_benefits: {
+        name: "การนำธาตุไปใช้ประโยชน์และผลกระทบต่อสิ่งแวดล้อม",
+        questions: [
+            { static: true, q: "ไอโซโทปกัมมันตรังสี Iodine-131 (I-131) นิยมนำมาใช้ประโยชน์ทางการแพทย์ในด้านใด?", c: ["ตรวจวินิจฉัยและรักษาโรคต่อมไทรอยด์เป็นพิษ", "รักษามะเร็งกระดูก", "คำนวณหาอายุวัตถุโบราณ", "ใช้เป็นตัวติดตามในการเกษตร"], a: 0, exp: "ธาตุไอโอดีนจะสะสมที่ต่อมไทรอยด์ แพทย์จึงใช้ I-131 ในการตรวจและรักษาโรคต่อมไทรอยด์" }
+        ]
+    }
+};
+
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let selectedPart = '';
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function startQuiz(partKey) {
+    selectedPart = partKey;
+    document.getElementById('category-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    document.getElementById('quiz-info-title').innerText = quizData[partKey].name;
+    
+    const db = quizData[partKey].questions;
+    let pool = [];
+    
+    db.forEach(item => {
+        if(item.static) {
+            pool.push(JSON.parse(JSON.stringify(item)));
+        } else {
+            pool.push(item.generator()); 
+        }
+    });
+    
+    let finalSet = shuffle([...pool]);
+    while(finalSet.length < 10) {
+        db.forEach(item => {
+            if(item.static) {
+                finalSet.push(JSON.parse(JSON.stringify(item)));
+            } else {
+                finalSet.push(item.generator());
+            }
+        });
+        finalSet = shuffle(finalSet);
+    }
+    
+    currentQuestions = finalSet.slice(0, 10);
+    currentQuestionIndex = 0;
+    score = 0;
+    showQuestion();
+}
+
+function showQuestion() {
+    document.getElementById('next-btn').classList.add('hidden');
+    document.getElementById('explanation-container').classList.add('hidden');
+    
+    const qData = currentQuestions[currentQuestionIndex];
+    document.getElementById('question-number').innerText = `ข้อที่ ${currentQuestionIndex + 1}/10`;
+    document.getElementById('progress').style.width = `${(currentQuestionIndex / 10) * 100}%`;
+    document.getElementById('question-text').innerText = qData.q;
+    
+    let rawChoices = qData.c.map((text, idx) => ({ text, isCorrect: idx === qData.a }));
+    let shuffledChoices = shuffle([...rawChoices]);
+    
+    const choicesContainer = document.getElementById('choices-container');
+    choicesContainer.innerHTML = '';
+    
+    shuffledChoices.forEach((choice, index) => {
+        const button = document.createElement('button');
+        button.className = 'btn choice-btn';
+        button.innerText = `${index + 1}. ${choice.text}`;
+        button.onclick = () => checkAnswer(choice.isCorrect, button, shuffledChoices);
+        choicesContainer.appendChild(button);
+    });
+}
+
+function checkAnswer(isCorrect, selectedButton, choicesList) {
+    const choicesContainer = document.getElementById('choices-container');
+    const buttons = choicesContainer.getElementsByClassName('choice-btn');
+    
+    for (let btn of buttons) {
+        btn.disabled = true;
+    }
+    
+    if (isCorrect) {
+        selectedButton.classList.add('correct');
+        score++;
+    } else {
+        selectedButton.classList.add('wrong');
+        choicesList.forEach((c, idx) => {
+            if (c.isCorrect) {
+                buttons[idx].classList.add('correct');
+            }
+        });
+    }
+    
+    const qData = currentQuestions[currentQuestionIndex];
+    document.getElementById('explanation-text').innerText = qData.exp;
+    document.getElementById('explanation-container').classList.remove('hidden');
+    document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < 10) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    document.getElementById('final-score').innerText = `${score} / 10 คะแนน`;
+    
+    let evalText = "";
+    if(score >= 8) {
+        evalText = "🏆 ยอดเยี่ยมระดับเหรียญทองสอวน.! ความรู้แม่นยำมาก ลุยทำบทอื่นต่อเลยจ้า";
+    } else if(score >= 5) {
+        evalText = "👍 ผ่านเกณฑ์พื้นฐานค่าย 1! ทบทวนจุดที่ผิดและกดสุ่มทำใหม่อีกรอบเพื่อความเป๊ะนะจ๊ะ";
+    } else {
+        evalText = "📖 พยายามอีกนิดน้า ข้อสอบสอวน. เน้นหลอกวิเคราะห์ ลองอ่านคำอธิบายด้านบนแล้วสุ่มลุยใหม่อีกรอบได้เลย!";
+    }
+    document.getElementById('evaluation-text').innerText = evalText;
+}
+
+function restartQuiz() {
+    document.getElementById('result-screen').classList.add('hidden');
+    startQuiz(selectedPart);
+}
+
+function goBack(screenId) {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById(screenId).classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>
