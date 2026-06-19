@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบคลังข้อสอบจำลอง สอวน. เคมี (ค่าย 1)</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --background: #f0fdf4;
+            --card: #ffffff;
+            --text: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'ChulaCharasNew', 'Sarabun', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e2e8f0;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .unit-section {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .unit-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateX(4px);
+        }
+
+        .btn-center {
+            text-align: center;
+        }
+        .btn-center:hover {
+            transform: none;
+        }
+
+        .choice-btn {
+            background-color: #f8fafc;
+            color: var(--text);
+            border: 2px solid #e2e8f0;
+        }
+
+        .choice-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .correct {
+            background-color: var(--success) !important;
+            color: white;
+            border-color: var(--success);
+        }
+
+        .wrong {
+            background-color: var(--danger) !important;
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #e2e8f0;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: var(--success);
+            transition: width 0.3s;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            border-radius: 4px;
+        }
+
+        .score-text {
+            font-size: 24px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            background-color: #6366f1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="category-screen">
+        <h1>🧪 ระบบคลังข้อสอบจำลอง สอวน. เคมี (ค่าย 1)</h1>
+        <p style="text-align:center; margin-bottom: 25px; color: #64748b;">🎯 ฝึกฝนรายบทเรียน ชุดละ 10 ข้อ ระบบจะสุ่มโจทย์ใหม่ให้ทำได้เรื่อยๆ ไม่จำกัด!</p>
+        
+        <div class="unit-section">
+            <div class="unit-title">หน่วยที่ 1: ความปลอดภัยและทักษะในปฏิบัติการเคมี</div>
+            <button class="btn" onclick="startQuiz('chem_safety')">▫️ ความปลอดภัยในการทำงานกับสารเคมีและการกำจัดสาร</button>
+            <button class="btn" onclick="startQuiz('chem_accident')">▫️ อุบัติเหตุจากสารเคมีและการปฐมพยาบาล</button>
+            <button class="btn" onclick="startQuiz('chem_measurement')">▫️ การวัดปริมาณสาร, อุปกรณ์ และเลขนัยสำคัญ</button>
+            <button class="btn" onclick="startQuiz('chem_units')">▫️ หน่วยวัดระบบ SI และแฟกเตอร์เปลี่ยนหน่วย</button>
+            <button class="btn" onclick="startQuiz('chem_method')">▫️ วิธีการทางวิทยาศาสตร์ในทางเคมี</button>
+        </div>
+
+        <div class="unit-section">
+            <div class="unit-title">หน่วยที่ 2: อะตอมและสมบัติของธาตุ</div>
+            <button class="btn" onclick="startQuiz('chem_models')">▫️ แบบจำลองอะตอม (ดอลตัน - กลุ่มหมอก)</button>
+            <button class="btn" onclick="startQuiz('chem_isotopes')">▫️ อนุภาคในอะตอม เลขอะตอม เลขมวล และไอโซโทป</button>
+            <button class="btn" onclick="startQuiz('chem_electrons')">▫️ การจัดเรียงอิเล็กตรอน (ระดับพลังงานหลัก/ย่อย/ออร์บิทัล)</button>
+            <button class="btn" onclick="startQuiz('chem_periodic_table')">▫️ ตารางธาตุและแนวโน้มสมบัติของธาตุหมู่หลัก</button>
+            <button class="btn" onclick="startQuiz('chem_transition')">▫️ ธาตุแทรนซิชันและสมบัติเฉพาะตัว</button>
+            <button class="btn" onclick="startQuiz('chem_radioactive')">▫️ ธาตุกัมมันตรังสี, ครึ่งชีวิต และปฏิกิริยานิวเคลียร์</button>
+            <button class="btn" onclick="startQuiz('chem_benefits')">▫️ การนำธาตุไปใช้ประโยชน์และผลกระทบต่อสิ่งแวดล้อม</button>
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div>
+                <span id="quiz-info-title" style="font-weight: bold; color: var(--primary);">วิชาเคมี</span>
+                <span class="badge">สอวน. ค่าย 1</span>
+            </div>
+            <span id="question-number">ข้อที่ 1/10</span>
+        </div>
+        <div class="progress-bar"><div id="progress" class="progress"></div></div>
+        
+        <h3 id="question-text" style="text-align: left; color: var(--text); margin-bottom: 20px; white-space: pre-line;">โจทย์กำลังโหลด...</h3>
+        
+        <div id="choices-container"></div>
+        
+        <div id="explanation-container" class="explanation hidden">
+            <strong>💡 เฉลยละเอียด:</strong> <span id="explanation-text"></span>
+        </div>
+        
+        <button id="next-btn" class="btn btn-center hidden" onclick="nextQuestion()" style="margin-top: 20px; background-color: var(--success);">ข้อถัดไป ➡️</button>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h2>🎉 ทำข้อสอบเสร็จสิ้น!</h2>
+        <div class="score-text" id="final-score">0 / 10 คะแนน</div>
+        <p id="evaluation-text" style="text-align: center; margin-bottom: 20px; font-weight: bold; color: #475569;"></p>
+        <button class="btn btn-center" onclick="restartQuiz()" style="background-color: var(--primary);">🔄 สุ่มโจทย์ใหม่ทำอีกรอบ (ทำได้เรื่อยๆ)</button>
+        <button class="btn btn-center choice-btn" onclick="goBack('category-screen')">🏠 กลับหน้าเลือกบทเรียน</button>
+    </div>
+</div>
+
+<script>
+// 📌 คลังข้อสอบจริงตามโครงสร้างหลักสูตร สอวน. เคมี ค่าย 1 แบบเน้นคิดวิเคราะห์
+const quizData = {
+    chem_safety: {
+        name: "ความปลอดภัยในการทำงานกับสารเคมีและการกำจัดสาร",
+        questions: [
+            { q: "สารเคมีที่มีสัญลักษณ์รูปไฟบนวงกลม (Oxidizing Amgents) ควรจัดเก็บและดูแลอย่างไรจึงจะปลอดภัยที่สุด?", c: ["เก็บรวมกับสารไวไฟเพื่อประหยัดพื้นที่", "เก็บให้ห่างจากสารไวไฟและสารลด (Reducing agents)", "เก็บในภาชนะเปิดเพื่อระบายความดัน", "แช่ในน้ำตลอดเวลา"], a: 1, exp: "สารออกซิไดซ์สามารถให้ออกซิเจนแก่ปฏิกิริยาได้ดี จึงต้องเก็บแยกห่างจากสารไวไฟและสารลดเพื่อป้องกันการเกิดไฟไหม้หรือระเบิด" },
+            { q: "เมื่อทำการทดลองเสร็จสิ้นแล้วเหลือสารละลายกรดแก่และเบสแก่เข้มข้นปริมาณเล็กน้อย ข้อใดคือวิธีกำจัดที่ถูกต้องตามหลักห้องปฏิบัติการ?", c: ["เททิ้งลงอ่างน้ำทันทีแล้วเปิดน้ำตามมากๆ", "เทรวมกันในขวดสารอินทรีย์ไวไฟ", "ทำปฏิกิริยาสะเทินให้เป็นกลางก่อน แล้วจึงเจือจางด้วยน้ำเพื่อเททิ้ง", "นำไปเททิ้งในถังขยะแห้งทั่วไป"], a: 2, exp: "กรดและเบสแก่ต้องนำมาสะเทิน (Neutralization) ให้ได้ pH ใกล้เคียงเป็นกลางก่อน แล้วจึงระบายทิ้งอย่างปลอดภัย" },
+            { q: "สารเคมีประเภทใดต่อไปนี้ที่ห้ามทิ้งลงในอ่างน้ำของห้องปฏิบัติการโดยเด็ดขาดแม้จะเจือจางแล้ว?", c: ["สารละลายโซเดียมคลอไรด์", "สารละลายกลูโคส", "โลหะโซเดียมและตัวทำละลายอินทรีย์ไม่ละลายน้ำ", "น้ำกลั่นที่เหลือใช้"], a: 2, exp: "โลหะโซเดียมทำปฏิกิริยารุนแรงกับน้ำเกิดแก๊สไฮโดรเจนและระเบิดได้ ส่วนสารอินทรีย์ไม่ละลายน้ำจะอุดตันและทำลายสิ่งแวดล้อม" },
+            { q: "สัญลักษณ์ GHS รูปแผ่นอกมีดวงดาวสีขาวกระจายอยู่ข้างใน หมายถึงสารเคมีประเภทใด?", c: ["สารไวไฟ", "สารเป็นพิษต่อสุขภาพระยะยาวหรือก่อมะเร็ง", "สารกัดกร่อน", "แก๊สภายใต้ความดัน"], a: 1, exp: "สัญลักษณ์รูปคนมีดวงดาวที่อก (Health Hazard) แสดงว่าเป็นสารที่เป็นอันตรายต่อสุขภาพอย่างร้ายแรง เช่น ก่อมะเร็ง หรือเป็นพิษต่อระบบทางเดินหายใจ" },
+            { q: "หากต้องการต้มสารละลายที่ไวไฟสูงในห้องปฏิบัติการ อุปกรณ์ให้ความร้อนชนิดใดปลอดภัยที่สุด?", c: ["ตะเกียงแอลกอฮอล์", "หัวตะเกียงแก๊สบุนเซน", "อ่างน้ำร้อน (Water bath) หรือแผ่นความร้อนไฟฟ้า (Hot plate)", "การจุดไฟเผาโดยตรง"], a: 2, exp: "สารไวไฟสูงห้ามโดนเปลวไฟโดยตรง การใช้ Hot plate หรือ Water bath ช่วยลดความเสี่ยงการติดไฟจากไอของสาร" }
+        ]
+    },
+    chem_accident: {
+        name: "อุบัติเหตุจากสารเคมีและการปฐมพยาบาล",
+        questions: [
+            { q: "หากสารละลายกรดเข้มข้นกระเด็นเข้าตา สิ่งที่ต้องทำเป็นอันดับแรกสุดคือข้อใด?", c: ["หาสารละลายเบสอ่อนๆ มาล้างเพื่อสะเทินกรด", "ล้างตาด้วยน้ำสะอาดปริมาณมากๆ ทันทีอย่างน้อย 15 นาที", "ใช้ผ้าสะอาดเช็ดตาให้แห้งสนิท", "ไปพบแพทย์ทันทีโดยไม่ล้างน้ำ"], a: 1, exp: "เมื่อสารเคมีเข้าตา ต้องล้างออกด้วยน้ำสะอาดปริมาณมากๆ ทันทีเพื่อเจือจางสารให้เร็วที่สุด ห้ามใช้กรดหรือเบสอื่นไปสะเทินในตาเด็ดขาดเพราะจะเกิดความร้อนซ้ำซ้อน" },
+            { q: "หากผิวหนังสัมผัสกับโลหะโซเดียม (Sodium metal) โดยอุบัติเหตุ วิธีการปฐมพยาบาลข้อใดถูกต้อง?", c: ["ราดน้ำสะอาดปริมาณมากๆ ใส่แผลทันที", "ใช้แอลกอฮอล์ล้างแผลราดลงไป", "ใช้คีมคีบชิ้นโลหะออก ซับด้วยน้ำมัน แล้วรีบเช็ดออก ห้ามล้างน้ำโดยตรงทันที", "ทายาหม่องทับทันที"], a: 2, exp: "โลหะโซเดียมทำปฏิกิริยากับน้ำอย่างรุนแรงและเกิดความร้อนสูงมาก ดังนั้นห้ามใช้น้ำราดทันที ต้องคีบออกและเช็ดออกก่อน" },
+            { q: "เกิดเหตุไฟไหม้สารเคมีที่เป็นของเหลวไวไฟอินทรีย์ (Class B) ไม่ควรใช้สิ่งใดในการดับไฟ?", c: ["ถังดับเพลิงชนิดผงเคมีแห้ง", "น้ำเปล่าจากสายยางราดโดยตรง", "ถังดับเพลิงแก๊สคาร์บอนไดออกไซด์", "ทรายแห้ง"], a: 1, exp: "ของเหลวอินทรีย์มักมีความหนาแน่นน้อยกว่าน้ำและไม่ละลายน้ำ การราดน้ำจะทำให้สารเคมีลอยตัวและกระจายวงกว้างทำให้ไฟลามมากกว่าเดิม" },
+            { q: "สูดดมแก๊สคลอรีน (Chlorine gas) เข้าไปปริมาณมากจนรู้สึกแน่นหน้าอก ควรปฐมพยาบาลอย่างไร?", c: ["ให้ดื่มน้ำมะนาวมากๆ", "ย้ายผู้ป่วยไปที่ที่มีอากาศบริสุทธิ์และถ่ายเทสะดวกทันที", "ให้ผู้ป่วยออกกำลังกายเพื่อขับแก๊สออก", "ผายปอดทันทีโดยไม่เช็คระบบทางเดินหายใจ"], a: 1, exp: "เมื่อสูดดมแก๊สพิษ ต้องย้ายผู้ประสบอุบัติเหตุออกไปยังบริเวณที่มีอากาศบริสุทธิ์โดยเร็วที่สุด" }
+        ]
+    },
+    chem_measurement: {
+        name: "การวัดปริมาณสาร, อุปกรณ์ และเลขนัยสำคัญ",
+        questions: [
+            { q: "หากต้องการตวงสารละลายมาตรฐานปริมาตร 25.00 cm³ เพื่อทำการไทเทรต ควรใช้อุปกรณ์ใดจึงจะเหมาะสมและแม่นยำที่สุด?", c: ["บีกเกอร์ (Beaker)", "กระบอกตวง (Graduated cylinder)", "ปิเปตต์แบบปริมาตร (Volumetric pipette)", "ขวดรูปกรวย (Erlenmeyer flask)"], a: 2, exp: "ปิเปตต์แบบปริมาตร (Volumetric pipette) ออกแบบมาเพื่อจ่ายของเหลวที่มีปริมาตรแน่นอนเพียงค่าเดียวด้วยความแม่นยำทศนิยมสองตำแหน่ง" },
+            { q: "ผลลัพธ์ของคำนวณตามหลักเลขนัยสำคัญของ (12.55 * 2.1) + 1.254 มีค่าเท่ากับข้อใด?", c: ["27.609", "27.61", "27.6", "28"], a: 2, exp: "12.55 (นัยสำคัญ 4 ตัว) * 2.1 (นัยสำคัญ 2 ตัว) ผลลัพธ์ต้องมีนัยสำคัญ 2 ตัว คือ 26 จากนั้นนำ 26 + 1.254 (ยึดทศนิยมตำแหน่งน้อยสุดคือไม่มีทศนิยม) จึงได้ 27 แต่ถ้าคิดละเอียดจะได้ 26.355 + 1.254 = 27.609 ปัดให้สอดคล้องหลักการคูณและการบวกจะได้ 27.6" },
+            { q: "ข้อใดกล่าวถูกต้องเกี่ยวกับความแม่น (Accuracy) และความเที่ยง (Precision) ในการชั่งมวลสาร?", c: ["ความแม่นคือค่าที่ชั่งได้ใกล้เคียงกันทุกครั้ง", "ความเที่ยงคือค่าเฉลี่ยที่ได้ใกล้เคียงกับค่าจริง", "ความแม่นคือความใกล้เคียงของค่าจริง ส่วนความเที่ยงคือความใกล้เคียงกันของข้อมูลที่วัดซ้ำ", "ทั้งสองคำมีความหมายเหมือนกันทุกประการ"], a: 2, exp: "Accuracy (ความแม่น) คือความใกล้เคียงค่าจริง ส่วน Precision (ความเที่ยง) คือความคงเส้นคงวา วัดซ้ำแล้วได้ค่าใกล้เคียงกันเอง" }
+        ]
+    },
+    chem_units: {
+        name: "หน่วยวัดระบบ SI และแฟกเตอร์เปลี่ยนหน่วย",
+        questions: [
+            { q: "ความหนาแน่นของสารละลายชนิดหนึ่งเท่ากับ 1.25 g/mL หากต้องการเปลี่ยนเป็นหน่วยมาตรฐาน SI (kg/m³) จะมีค่าเท่าใด?", c: ["1.25 * 10⁻³ kg/m³", "1.25 * 10³ kg/m³", "1.25 kg/m³", "125 kg/m³"], a: 1, exp: "1.25 g/mL = (1.25 * 10⁻³ kg) / (10⁻⁶ m³) = 1.25 * 10³ kg/m³ หรือเท่ากับ 1,250 kg/m³" },
+            { q: "ข้อใดคือหน่วยฐาน (Base Units) ในระบบ SI ทั้งหมด?", c: ["เมตร, กิโลกรัม, วินาที, โมล", "เซนติเมตร, กรัม, นาที, โมล", "เมตร, ลิตร, วินาที, เคลวิน", "กิโลกรัม, ลิตร, วินาที, แอมแปร์"], a: 0, exp: "หน่วยฐาน SI ประกอบด้วย เมตร(ความยาว), กิโลกรัม(มวล), วินาที(เวลา), แอมแปร์(กระแสไฟฟ้า), เคลวิน(อุณหภูมิ), โมล(ปริมาณสาร), แคนเดลา(ความเข้มการส่องสว่าง) ลิตรไม่ใช่หน่วยฐาน" }
+        ]
+    },
+    chem_method: {
+        name: "วิธีการทางวิทยาศาสตร์ในทางเคมี",
+        questions: [
+            { q: "นักเรียนคนหนึ่งสังเกตว่า 'เมื่อต้มน้ำเกลือจะใช้เวลานานกว่าน้ำบริสุทธิ์ในการเดือด' ขั้นตอนถัดไปตามวิธีการทางวิทยาศาสตร์ที่เหมาะสมที่สุดคือข้อใด?", c: ["สรุปผลการทดลองทันที", "ตั้งสมมติฐาน เช่น สารละลายที่มีตัวถูกละลายจะมีจุดเดือดสูงกว่าตัวทำละลายบริสุทธิ์", "เขียนรายงานส่งอาจารย์", "ออกแบบตารางบันทึกผลการทดลอง"], a: 1, exp: "หลังจากเกิดการสังเกตและตั้งปัญหาแล้ว ขั้นตอนถัดไปตามกระบวนการทางวิทยาศาสตร์คือการตั้งสมมติฐานเพื่อคาดคะเนคำตอบก่อนทำการทดลอง" }
+        ]
+    },
+    chem_models: {
+        name: "แบบจำลองอะตอม (ดอลตัน - กลุ่มหมอก)",
+        questions: [
+            { q: "การทดลองยิงอนุภาคแอลฟาไปยังแผ่นทองคำบางของรัทเทอร์ฟอร์ด ทำให้เกิดการเปลี่ยนแปลงความเชื่อจากแบบจำลองอะตอมของทอมสันอย่างไร?", c: ["พบว่าอะตอมเป็นทรงกลมตันไม่มีประจุ", "พบว่าประจุบวกและลบกระจายอยู่เท่าๆ กัน", "พบว่าประจุบวกเกาะรวมกันหนาแน่นตรงกลางเป็นนิวเคลียสขนาดเล็กมาก และมีพื้นที่ว่างส่วนใหญ่", "พบว่าอิเล็กตรอนวิ่งเป็นวงโคจรคล้ายระบบสุริยะ"], a: 2, exp: "รัทเทอร์ฟอร์ดพบว่าอนุภาคแอลฟาส่วนใหญ่ทะลุผ่านเป็นเส้นตรง มีส่วนน้อยที่เบนหรือสะท้อนกลับ จึงสรุปว่าอะตอมมีนิวเคลียสที่หนาแน่นและมีประจุบวกอยู่ตรงกลาง" },
+            { q: "ข้อจำกัดสำคัญของแบบจำลองอะตอมของนีลส์ โบร์ (Niels Bohr) ที่ทำให้ต้องมีการพัฒนาเป็นแบบจำลองกลุ่มหมอกคือข้อใด?", c: ["ไม่สามารถอธิบายสเปกตรัมของอะตอมที่มีหลายอิเล็กตรอนได้ดี", "ไม่เชื่อว่าอะตอมมีนิวเคลียส", "อธิบายเกี่ยวกับระดับพลังงานไม่ได้", "ไม่พบอนุภาคนิวตรอน"], a: 0, exp: "แบบจำลองอะตอมของโบร์อธิบายเส้นสเปกตรัมของไฮโดรเจน (ซึ่งมี 1 อิเล็กตรอน) ได้แม่นยำมาก แต่ไม่สามารถอธิบายระบบที่มีอิเล็กตรอนจำนวนมากได้อย่างถูกต้อง" }
+        ]
+    },
+    chem_isotopes: {
+        name: "อนุภาคในอะตอม เลขอะตอม เลขมวล และไอโซโทป",
+        questions: [
+            { q: "ไอออนของธาตุยอดฮิตในข้อสอบ สอวน. คือ ⁵⁶₂₆Fe³⁺ จะมีจำนวนโปรตอน นิวตรอน และอิเล็กตรอน ตามลำดับเท่าใด?", c: ["26, 30, 26", "26, 30, 23", "29, 27, 26", "23, 30, 26"], a: 1, exp: "โปรตอน = เลขอะตอมด้านล่าง = 26, นิวตรอน = เลขมวล - โปรตอน = 56 - 26 = 30, อิเล็กตรอนเดิมมี 26 แต่ติดประจุ +3 เสียไป 3 ตัว จึงเหลือ 23" },
+            { q: "ธาตุคู่ใดต่อไปนี้จัดว่าเป็น 'ไอโซโทป (Isotope)' ต่อกันและกัน?", c: ["¹⁴₆C กับ ¹⁴₇N", "¹²₆C กับ ¹³₆C", "¹⁸₈O กับ ¹⁶₈O²⁻", "²⁴₁₁Na กับ ²⁴₁₂Mg"], a: 1, exp: "Isotope คือธาตุชนิดเดียวกันที่มีจำนวนโปรตอนเท่ากัน (เลขล่างเท่า) แต่จำนวนนิวตรอนหรือเลขมวลต่างกัน (เลขบนต่าง)" }
+        ]
+    },
+    chem_electrons: {
+        name: "การจัดเรียงอิเล็กตรอน (ระดับพลังงานหลัก/ย่อย/ออร์บิทัล)",
+        questions: [
+            { q: "ธาตุโครเมียม (₂₄Cr) มีการจัดเรียงอิเล็กตรอนในระดับพลังงานย่อยในสภาวะพื้น (Ground state) ตรงกับข้อใด? (ระวังข้อยกเว้น สอวน.)", c: ["1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁴", "1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹ 3d⁵", "1s² 2s² 2p⁶ 3s² 3p⁶ 4s⁰ 3d⁶", "1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁵"], a: 1, exp: "Cr (Z=24) และ Cu (Z=29) เป็นข้อยกเว้นเนื่องจากเสถียรภาพของการจัดเรียงแบบครึ่ง (Half-filled d-orbital) Cr จึงจัดเป็น 4s¹ 3d⁵ แทนที่จะเป็น 4s² 3d⁴" },
+            { q: "ตามหลักการกีดกันของเพาลี (Pauli Exclusion Principle) ได้ระบุเงื่อนไขเกี่ยวกับอิเล็กตรอนในออร์บิทัลไว้ว่าอย่างไร?", c: ["อิเล็กตรอนต้องบรรจุในออร์บิทัลพลังงานต่ำสุดก่อน", "ในหนึ่งออร์บิทัลจะมีอิเล็กตรอนได้มากที่สุด 2 ตัว และต้องมีทิศทางการหมุน (Spin) ตรงข้ามกัน", "ต้องบรรจุอิเล็กตรอนเดี่ยวให้เต็มทุกออร์บิทัลก่อนจับคู่", "อิเล็กตรอนวิ่งวนเป็นวงกลม"], a: 1, exp: "หลักของเพาลีระบุว่าไม่มีอิเล็กตรอนสองตัวใดๆ ในอะตอมเดียวกันที่มีเลขควอนตัมทั้งสี่เหมือนกัน ส่งผลให้ออร์บิทัลหนึ่งจุได้ 2 ตัวและสปินต้องต่างกัน" }
+        ]
+    },
+    chem_periodic_table: {
+        name: "ตารางธาตุและแนวโน้มสมบัติของธาตุหมู่หลัก",
+        questions: [
+            { q: "พิจารณาธาตุ ₁₁Na, ₁₂Mg, ₁₉K ข้อใดเรียงลำดับพลังงานไอออไนเซชันลำดับที่ 1 (IE₁) จากน้อยไปมากได้ถูกต้อง?", c: ["Na < Mg < K", "K < Na < Mg", "Mg < Na < K", "K < Mg < Na"], a: 1, exp: "ตามแนวโน้มตารางธาตุ IE₁ จะเพิ่มขึ้นจากซ้ายไปขวา และลดลงจากบนลงล่าง K อยู่คาบล่างสุดจึงน้อยสุด ส่วน Mg อยู่ขวาสุดของคาบ 3 จึงมีค่า IE₁ มากกว่า Na" },
+            { q: "ธาตุที่มีค่าอิเล็กโทรเนกาติวิตี (Electronegativity: EN) สูงที่สุดในตารางธาตุคือธาตุใด?", c: ["Cs", "Fr", "He", "F"], a: 3, exp: "ฟลูออรีน (F) อยู่มุมบนขวาของตารางธาตุ (ไม่นับแก๊สเฉื่อย) มีความสามารถในการดึงดูดอิเล็กตรอนในพันธะเคมีได้สูงที่สุด" }
+        ]
+    },
+    chem_transition: {
+        name: "ธาตุแทรนซิชันและสมบัติเฉพาะตัว",
+        questions: [
+            { q: "ข้อใดไม่ใช่สมบัติทั่วไปของธาตุแทรนซิชันเมื่อเปรียบเทียบกับธาตุหมู่หลัก (Representative elements)?", c: ["มีเลขออกซิเดชันได้หลายค่าในสารประกอบ", "สารประกอบและไอออนมักมีสีเข้มเด่นชัด", "มีขนาดอะตอมลดลงอย่างรวดเร็วมากเมื่อเลขอะตอมเพิ่มขึ้นในคาบเดียวกัน", "สามารถเกิดสารประกอบเชิงซ้อนได้ดี"], a: 2, exp: "ธาตุแทรนซิชันในคาบเดียวกันจะมีขนาดอะตอมใกล้เคียงกัน ไม่ลดลงฮวบฮาบเนื่องจากอิเล็กตรอนที่เพิ่มเข้าไปใน d-subshell ชั้นในช่วยกำบังแรงดึงดูดจากนิวเคลียส" }
+        ]
+    },
+    chem_radioactive: {
+        name: "ธาตุกัมมันตรังสี, ครึ่งชีวิต และปฏิกิริยานิวเคลียร์",
+        questions: [
+            { q: "ไอโซโทปกัมมันตรังสีชนิดหนึ่งมีครึ่งชีวิต (t_1/2) เท่ากับ 12 วัน ถ้าเก็บสารนี้ไว้เป็นเวลา 48 วัน สารนี้จะสลายตัวไปแล้วร้อยละเท่าใดของปริมาณเริ่มต้น?", c: ["6.25%", "25.0%", "75.0%", "93.75%"], a: 3, exp: "เวลาผ่านไป 48 วัน คิดเป็น 48/12 = 4 ครึ่งชีวิต สารจะเหลืออยู่ = (1/2)⁴ = 1/16 = 6.25% ดังนั้นส่วนที่สลายตัวไปแล้วคือ 100 - 6.25 = 93.75%" },
+            { q: "ปฏิกิริยานิวเคลียร์แบบที่นิวเคลียสขนาดใหญ่แตกตัวออกเป็นนิวเคลียสที่เล็กลงพร้อมปลดปล่อยพลังงานมหาศาล เรียกว่าปฏิกิริยาประเภทใด?", c: ["นิวเคลียร์ฟิวชัน (Nuclear Fusion)", "นิวเคลียร์ฟิสชัน (Nuclear Fission)", "การสลายตัวให้บีตา", "ปฏิกิริยาลูกโซ่เคมี"], a: 1, exp: "Fission คือการแยก/แตกตัวของนิวเคลียสใหญ่ เช่น ในโรงไฟฟ้านิวเคลียร์ ส่วน Fusion คือการหลอมรวมนิวเคลียสเบา เช่น บนดวงอาทิตย์" }
+        ]
+    },
+    chem_benefits: {
+        name: "การนำธาตุไปใช้ประโยชน์และผลกระทบต่อสิ่งแวดล้อม",
+        questions: [
+            { q: "ไอโซโทปกัมมันตรังสี Iodine-131 (I-131) นิยมนำมาใช้ประโยชน์ทางการแพทย์ในด้านใด?", c: ["รักษามะเร็งกระดูก", "ตรวจวินิจฉัยและรักษาโรคต่อมไทรอยด์เป็นพิษ", "คำนวณหาอายุวัตถุโบราณ", "ใช้เป็นตัวติดตามในการเกษตร"], a: 1, exp: "ธาตุไอโอดีนจะสะสมที่ต่อมไทรอยด์ แพทย์จึงใช้ I-131 ในการตรวจและรักษาความผิดปกติของต่อมไทรอยด์" }
+        ]
+    }
+};
+
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let selectedPart = '';
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function startQuiz(partKey) {
+    selectedPart = partKey;
+    document.getElementById('category-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    document.getElementById('quiz-info-title').innerText = quizData[partKey].name;
+    
+    const db = quizData[partKey].questions;
+    
+    // ระบบสุ่มโจทย์วนทำเรื่อยๆ: ก๊อปปี้คลังโจทย์มาสับไพ่สุ่ม
+    let pool = JSON.parse(JSON.stringify(db));
+    let finalSet = shuffle([...pool]);
+    
+    // หากข้อสอบในคลังมีน้อยกว่า 10 ข้อ ระบบจะสุ่มซ้ำให้ครบ 10 ข้อสร้าง Mock Exam เสมือนจริง
+    while(finalSet.length < 10) {
+        finalSet = finalSet.concat(shuffle([...pool]));
+    }
+    currentQuestions = finalSet.slice(0, 10);
+
+    currentQuestionIndex = 0;
+    score = 0;
+    showQuestion();
+}
+
+function showQuestion() {
+    document.getElementById('next-btn').classList.add('hidden');
+    document.getElementById('explanation-container').classList.add('hidden');
+    
+    const qData = currentQuestions[currentQuestionIndex];
+    document.getElementById('question-number').innerText = `ข้อที่ ${currentQuestionIndex + 1}/10`;
+    
+    const progressPercent = ((currentQuestionIndex) / 105) * 100; // คิดสัดส่วนแถบความคืบหน้า
+    document.getElementById('progress').style.width = `${(currentQuestionIndex/10)*100}%`;
+
+    document.getElementById('question-text').innerText = qData.q;
+    
+    const choicesContainer = document.getElementById('choices-container');
+    choicesContainer.innerHTML = '';
+    
+    qData.c.forEach((choice, index) => {
+        const button = document.createElement('button');
+        button.className = 'btn choice-btn';
+        button.innerText = `${index + 1}. ${choice}`;
+        button.onclick = () => checkAnswer(index, button);
+        choicesContainer.appendChild(button);
+    });
+}
+
+function checkAnswer(selectedIndex, selectedButton) {
+    const qData = currentQuestions[currentQuestionIndex];
+    const choicesContainer = document.getElementById('choices-container');
+    const buttons = choicesContainer.getElementsByClassName('choice-btn');
+    
+    for (let btn of buttons) {
+        btn.disabled = true;
+    }
+    
+    // แสดงผลเฉลย ถูก/ผิด ทันทีตามที่ต้องการ
+    if (selectedIndex === qData.a) {
+        selectedButton.classList.add('correct');
+        score++;
+    } else {
+        selectedButton.classList.add('wrong');
+        buttons[qData.a].classList.add('correct');
+    }
+    
+    document.getElementById('explanation-text').innerText = qData.exp;
+    document.getElementById('explanation-container').classList.remove('hidden');
+    document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < 10) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    
+    document.getElementById('final-score').innerText = `${score} / 10 คะแนน`;
+    
+    let evalText = "";
+    if(score >= 8) {
+        evalText = "🏆 ยอดเยี่ยมระดับเหรียญทองสอวน.! ความรู้แม่นยำมาก ลุยทำบทอื่นต่อเลยจ้า";
+    } else if(score >= 5) {
+        evalText = "👍 ผ่านเกณฑ์พื้นฐานค่าย 1! ทบทวนจุดที่ผิดและกดสุ่มทำใหม่อีกรอบเพื่อความเป๊ะนะจ๊ะ";
+    } else {
+        evalText = "📖 พยายามอีกนิดน้า ข้อสอบสอวน. เน้นหลอกวิเคราะห์ ลองอ่านคำอธิบายด้านบนแล้วสุ่มลุยใหม่อีกรอบได้เลย!";
+    }
+    document.getElementById('evaluation-text').innerText = evalText;
+}
+
+function restartQuiz() {
+    document.getElementById('result-screen').classList.add('hidden');
+    startQuiz(selectedPart);
+}
+
+function goBack(screenId) {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById(screenId).classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>
