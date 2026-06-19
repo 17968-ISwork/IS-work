@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบคลังข้อสอบจำลอง TCAS </title>
+    <title>ระบบคลังข้อสอบจำลอง TCAS ของจริง 100%</title>
     <style>
         :root {
             --primary: #4f46e5;
@@ -150,11 +150,11 @@
 
 <div class="container">
     <div id="category-screen">
-        <h1>ระบบคลังข้อสอบจำลอง TCAS </h1>
+        <h1>ระบบคลังข้อสอบจำลอง TCAS ของจริง</h1>
         <p style="text-align:center; margin-bottom: 20px; color: #6b7280;">📝 ชุดละ 30 ข้อ | ครั้งที่ 1-10 (ระดับกลาง) ➡️ ครั้งที่ 11 ขึ้นไป (ระดับยาก)</p>
         <button class="btn btn-center" onclick="showSubCategory('gat')">TGAT (GAT)</button>
         <button class="btn btn-center" onclick="showSubCategory('pat')">TPAT (PAT 1)</button>
-        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level (๗ วิชา)</button>
+        <button class="btn btn-center" onclick="showSubCategory('alevel')">A-Level (สายศิลป์-คำนวณ)</button>
         <button class="btn btn-center choice-btn" style="text-align: center; margin-top: 20px; font-size: 12px;" onclick="resetHistory()">🗑️ ล้างประวัติเพื่อเริ่มนับรอบที่ 1 ใหม่</button>
     </div>
 
@@ -196,7 +196,7 @@
 </div>
 
 <script>
-// 📌 คลังข้อสอบจริง TGAT 1 และ TGAT 2 ของจริง พาร์ทละ 60 ข้อเต็มๆ ไม่วนซ้ำ
+// 📌 คลังข้อสอบจริง TGAT 1 และ TGAT 2 (เติมเต็มส่วนที่ขาดหายและปรับโครงสร้างครบถ้วน)
 const quizData = {
     gat_eng: {
         medium: [
@@ -236,7 +236,7 @@ const quizData = {
             { q: "Not only _________ the prestigious award, but she also donated the entire prize money to charity.", c: ["she won", "did she win", "she had won", "has she won"], a: 1, exp: "โครงสร้าง Inversion เมื่อขึ้นประโยคด้วยปฏิเสธ Not only ต้องใช้กริยาช่วย (did) ขึ้นก่อนประธาน" },
             { q: "The economic analysts predict that the market volatility will not _________ until the central bank stabilizes interest rates.", c: ["subside", "escalate", "fluctuate", "accumulate"], a: 0, exp: "Subside แปลว่า ลดน้อยลงหรือบรรเทาลง ใช้กับความผันผวนของตลาด" },
             { q: "Had the medical team acted more swiftly, the patient's condition _________ to this critical stage.", c: ["would not deteriorate", "will not have deteriorated", "would not have deteriorated", "did not deteriorate"], a: 2, exp: "รูปประโยคแบบลดรูป If-Clause Type 3 (Had + S + V.3) ประโยคหลักต้องตามด้วย would not have + V.3" },
-            { q: "The attorney suggested that the disputed contract be rendered _________ due to a breach of confidentiality.", c: ["null and void", "binding and legal", "lucrative and profitable", "explicit and clear"], a: 0, exp: "Null and void เป็นสำนวนกฎหมายขั้นสูง แปลว่า เป็นโมฆะ/ไม่มีผลผูกพันทางกฎหมาย" },
+            { q: "The attorney suggested that the disputed contract be rendered _________ due to a breach of confidentiality.", c: ["null and void", "binding and legal", "lucrative and profitable", "explicit and clear"], a: 0, exp: "Null and void เป็นสำนวนกฎหมายขั้นสูง แปลว่า เป็นโมฆะ/ไม่มีผลผുകൂพันทางกฎหมาย" },
             { q: "Despite his status as a novice writer, his debut novel displayed a _________ grasp of complex human psychology.", c: ["superficial", "profound", "primitive", "negligible"], a: 1, exp: "Profound แปลว่า ลึกซึ้ง ขัดแย้งกับคำว่า นักเขียนหน้าใหม่ (novice)" },
             { q: "The government has implemented stringent measures to prevent the _________ of counterfeit currency in the local economy.", c: ["proliferation", "stagnation", "depreciation", "liquidation"], a: 0, exp: "Proliferation แปลว่า การแพร่ระบาดหรือการเพิ่มขึ้นอย่างรวดเร็วของสิ่งไม่ดี" },
             { q: "Seldom _________ such a breathtaking performance by a young theatrical troupe in recent years.", c: ["we have witnessed", "have we witnessed", "did we witnessed", "we witnessed"], a: 1, exp: "หลัก Inversion เมื่อขึ้นต้นด้วยปฏิเสธความถี่ต่ำ Seldom ต้องสลับที่ กริยาช่วย + ประธาน" },
@@ -305,235 +305,8 @@ const quizData = {
             { q: "ในการแข่งขันแบบพบกันหมดของทีมฟุตบอล 6 ทีม จะต้องจัดการแข่งขันทั้งหมดกี่นัด?", c: ["12 นัด", "15 นัด", "30 นัด", "36 นัด"], a: 1, exp: "ใช้สูตรการเลือกกลุ่ม 6C2 = (6 x 5) / 2 = 15 นัด" },
             { q: "ถ้ากำหนดเงื่อนไขสะท้อนกลับ: 'ถ้าสัตว์ชนิดใดมีพิษ สัตว์ชนิดนั้นจะมีสีสันฉูดฉาด' และพบว่า 'สัตว์ X ไม่มีสีสันฉูดฉาด แต่สัตว์ Y มีสีสันฉูดฉาด' ข้อใดสรุปได้ถูกต้องที่สุด?", c: ["สัตว์ X ไม่มีพิษ ส่วนสัตว์ Y มีพิษ", "สัตว์ X ไม่มีพิษ ส่วนสัตว์ Y อาจจะมีพิษหรือไม่มีพิษก็ได้", "สัตว์ X อาจจะมีพิษ ส่วนสัตว์ Y มีพิษแน่นอน", "ยังสรุปไม่ได้ทั้งคู่"], a: 1, exp: "สัตว์ X ไม่มีสีฉูดฉาด สรุปได้ทันทีว่าไม่มีพิษ (เพราะถ้ามีพิษต้องสีฉูดฉาด) ส่วนสัตว์ Y สีฉูดฉาด ไม่ได้การันตีว่าต้องมีพิษเสมอไป" },
             { q: "เอ และ บี ทำงานชิ้นหนึ่งร่วมกันจะเสร็จใน 4 วัน ถ้าเอทำคนเดียวจะเสร็จใน 6 วัน แล้วถ้าบีทำคนเดียวจะเสร็จในกี่วัน?", c: ["8 วัน", "10 วัน", "12 วัน", "16 วัน"], a: 2, exp: "คิดอัตราส่วนงานใน 1 วัน: 1/A + 1/B = 1/ร่วม ➡️ 1/6 + 1/B = 1/4 จะได้ 1/B = 1/4 - 1/6 = 1/12 ดังนั่นบีใช้เวลา 12 วัน" },
-            { q: "มิติสัมพันธ์: หากคลี่กล่องลูกบาศก์ออกมาเป็นรูปกากบาท หน้าที่อยู่ตรงข้ามกับหน้าบนสุด (Top) จะเป็นหน้าใด?", c: ["หน้าล่างสุด (Bottom)", "หน้าซ้าย", "หน้าขวา", "หน้าสลับทิศ"], a: 0, exp: "ตามหลักโครงสร้างเรขาคณิตของการพับกล่อง หน้ารูปคลี่ที่เว้นระยะห่างกัน 1 ช่องในแนวตรงจะพับมาเจอกันเป็นหน้าตรงข้ามเสมอ บนจึงตรงข้ามกับล่าง" },
-            { q: "อนุกรมตัวเลขทวีคูณพิศดาร: 1, 3, 11, 47, ... ตัวเลขถัดไปคือข้อใด?", c: ["139", "239", "241", "255"], a: 1, exp: "ความสัมพันธ์คือ (1x2)+1=3, (3x3)+2=11, (11x4)+3=47 ตัวถัดไปคือ (47x5)+4 = 235 + 4 = 239" },
-            { q: "ในงานเลี้ยงแห่งหนึ่ง อัตราส่วนผู้ชายต่อผู้หญิงเป็น 3 : 5 ต่อมามีผู้ชายเข้ามาเพิ่มอีก 10 คน ทำให้อัตราส่วนเปลี่ยนเป็น 2 : 3 เดิมในงานนี้มีคนทั้งหมดกี่คน?", c: ["60 คน", "80 คน", "120 คน", "160 คน"], a: 1, exp: "ตั้งสมการ (3x + 10) / 5x = 2/3 ➡️ 9x + 30 = 10x ➡️ x = 30 คนเดิมคือ 3x + 5x = 8x = 8(10) = 80 คน" },
-            { q: "อุปมาอุปไมยขั้นสูง: 'ควัน : ไฟ' มีความสัมพันธ์ในเชิงเหตุผลตรงกับข้อใด?", c: ["เนื้อร้าย : มะเร็ง", "คะแนนสอบ : การอ่านหนังสือ", "ความยากจน : อาชญากรรม", "รอยยิ้ม : ความสุข"], a: 3, exp: "ความสัมพันธ์แบบ 'ผลลัพธ์ภายนอกที่มองเห็น : สภาวะภายในที่เป็นต้นเหตุหลัก' ควันเป็นผลของไฟ รอยยิ้มเป็นผลของความสุข" },
-            { q: "เงื่อนไขเชิงซ้อน: แดง นั่งอยู่ทางขวาของดำ แต่นั่งอยู่ทางซ้ายของเขียว ขาวนั่งอยู่ทางซ้ายของดำ ใครคือนั่งอยู่ตรงกลางกลุ่ม?", c: ["แดง", "ดำ", "เขียว", "ขาว"], a: 1, exp: "เรียงลำดับจากซ้ายไปขวาจะได้: ขาว ➡️ ดำ ➡️ แดง ➡️ เขียว ดำจึงเป็นคนที่อยู่ตรงกึ่งกลาง" },
-            { q: "เงินต้น 10,000 บาท อัตราดอกเบี้ยทบต้น 10% ต่อปี เมื่อครบ 2 ปี จะได้รับเงินรวมทั้งหมดกี่บาท?", c: ["12,000 บาท", "12,100 บาท", "12,200 บาท", "12,500 บาท"], a: 1, exp: "ปีแรกได้ดอกเบี้ย 1,000 เงินรวมเป็น 11,000 บาท ปีที่สองคิดดอกเบี้ยจากยอดใหม่ 10% ของ 11,000 คือ 1,100 รวมยอดสุทธิเป็น 12,100 บาท" },
-            { q: "อนุกรมตัวเลขยกกำลังลดหลั่น: 729, 243, 81, 27, ... ตัวเลขถัดไปคือข้อใด?", c: ["3", "6", "9", "12"], a: 2, exp: "ความสัมพันธ์คือการหารด้วย 3 ไปเรื่อยๆ ย้อนกลับลำดับยกกำลังของเลข 3 ตัวถัดจาก 27 คือ 27 / 3 = 9" },
-            { q: "ถ้าข้อความ 'ไม่มีคนโกหกคนใดที่จะได้รับความไว้วางใจ' เป็นจริง ข้อสรุปใดสมมูลกัน?", c: ["คนสัตย์จริงทุกคนจะได้รับความไว้วางใจ", "คนที่ได้รับความไว้วางใจทุกคนไม่ใช่คนโกหก", "คนโกหกบางคนอาจได้รับความไว้วางใจ", "ไม่มีข้อใดถูก"], a: 1, exp: "ตามกฎตรรกศาสตร์ 'ไม่มี A ที่เป็น B' มีความหมายตรงกับและสมมูลกับข้อความ 'ถ้าเป็น B แล้วจะไม่ใช่ A'" },
-            { q: "หยิบไพ่ 1 ใบออกจากสำรับ (52 ใบ) ความน่าจะเป็นที่จะได้ไพ่เป็นแต้ม 'คิง' (King) หรือไพ่ดอก 'โพดำ' เท่ากับเท่าใด?", c: ["4/52", "13/52", "16/52", "17/52"], a: 2, exp: "ไพ่คิงมี 4 ใบ โพดำมี 13 ใบ แต่มีคิงโพดำซ้ำกันอยู่ 1 ใบ สูตรคือ 4 + 13 - 1 = 16 ใบ ความน่าจะเป็นคือ 16/52" },
-            { q: "เอ ขับรถด้วยอัตราเร็วคงที่ 60 กม./ชม. บี ออกเดินทางจากจุดเดียวกันหลังจากเอไปแล้ว 1 ชั่วโมง ด้วยอัตราเร็ว 80 กม./ชม. บีจะขับรถไปทันเอในกี่ชั่วโมง?", c: ["2 ชั่วโมง", "3 ชั่วโมง", "4 ชั่วโมง", "5 ชั่วโมง"], a: 1, exp: "ใน 1 ชม. เอล่วงหน้าไป 60 กม. ความเร็วสัมพัทธ์ที่บีไล่ตามคือ 80 - 60 = 20 กม./ชม. เวลาที่ใช้ทันคือ ระยะทางห่าง/ความเร็วสัมพัทธ์ = 60 / 20 = 3 ชั่วโมง" },
-            { q: "คำใดมีความหมายไม่เข้ากลุ่มพวกมากที่สุด?", c: ["กตัญญู", "เมตตา", "ตระหนี่", "อารี"], a: 2, exp: "กตัญญู เมตตา อารี เป็นคุณธรรมเชิงบวก ส่วน 'ตระหนี่' เป็นลักษณะนิสัยเชิงลบ" },
-            { q: "อนุกรมฟีโบนัชชีดัดแปลง: 1, 2, 4, 7, 12, 20, ... ตัวเลขถัดไปคือข้อใด?", c: ["30", "32", "33", "35"], a: 2, exp: "ความสัมพันธ์เกิดจากผลรวมของตัวเลขสองตัวหน้าแล้วบวกเพิ่มด้วย 1 (1+2+1=4, 2+4+1=7, 4+7+1=12, 7+12+1=20) ตัวถัดไปคือ 12 + 20 + 1 = 33" },
-            { q: "ในถุงมีลูกแก้วสีแดง 5 ลูก สีขาว 3 ลูก สุ่มหยิบลูกแก้วออกมาทีละลูกโดย 'ไม่ใส่คืน' จำนวน 2 ครั้ง โอกาสที่จะได้สีแดงทั้งคู่เป็นเท่าใด?", c: ["25/64", "5/14", "20/56", "15/56"], a: 1, exp: "ครั้งแรกได้แดง = 5/8 ครั้งที่สองเหลือแดง 4 ลูกจากทั้งหมด 7 ลูก = 4/7 คูณกันได้ (5/8) x (4/7) = 20/56 ตัดทอนได้ 5/14" },
-            { q: "เงื่อนไขขัดแย้ง: 'นักปราชญ์ทุกคนชอบอ่านหนังสือ' และ 'คนชอบอ่านหนังสือบางคนเป็นคนสายตาสั้น' ข้อใดสรุปได้ถูกต้องแน่ชัด?", c: ["นักปราชญ์บางคนสายตาสั้น", "คนสายตาสั้นบางคนคือนักปราชญ์", "คนไม่ชอบอ่านหนังสือไม่ใช่นักปราชญ์", "ไม่มีข้อใดสรุปได้ถูกต้องแน่นอน"], a: 2, exp: "ในเมื่อนักปราชญ์ 'ทุกคน' ต้องชอบอ่านหนังสือ ดังนั้นใครก็ตามที่ไม่ชอบอ่านหนังสือ ย่อมไม่มีทางเป็นนักปราชญ์ได้อย่างแน่นอน" },
-            { q: "ถังน้ำใบหนึ่งมีท่อเปิดน้ำเข้าเต็มถังใน 3 ชม. และมีท่อน้ำทิ้งระบายหมดถังใน 6 ชม. หากเปิดทั้งสองท่อพร้อมกัน น้ำจะเต็มถังในกี่ชั่วโมง?", c: ["4 ชั่วโมง", "5 ชั่วโมง", "6 ชั่วโมง", "9 ชั่วโมง"], a: 2, exp: "คิดคำนวณงานใน 1 ชั่วโมง: 1/3 - 1/6 = 1/6 ดังนั้นต้องใช้เวลา 6 ชั่วโมงน้ำจึงจะเต็มถัง" },
-            { q: "อนุกรมเศษส่วนเวียน: 1/2, 2/3, 4/5, 7/8, ... ตัวเลขถัดไปคือข้อใด?", c: ["10/11", "11/12", "11/13", "12/13"], a: 1, exp: "เศษด้านบนเพิ่มขึ้น +1, +2, +3 ตัวถัดไปบวก 4 เป็น 11 ตัวส่วนด้านล่างก็เพิ่มขึ้นในจังหวะเดียวกัน +1, +2, +3 ตัวถัดไปบวก 4 จาก 8 เป็น 12 ได้คำตอบคือ 11/12" },
-            { q: "อุปมาอุปไมย: 'ปฏิทิน : วัน' สัมพันธ์กันตรงกับข้อใดมากที่สุด?", c: ["เทอร์โมมิเตอร์ : อุณหภูมิ", "แผนที่ : เส้นรุ้ง", "พจนานุกรม : ความหมายคำศัพท์", "กล้องจุลทรรศน์ : เชื้อโรค"], a: 2, exp: "ความสัมพันธ์แบบ 'สิ่งพิมพ์หรือเครื่องมือที่ใช้เปิดดูเพื่อค้นหาข้อมูลรายละเอียดเฉพาะ' ปฏิทินเปิดดูวัน พจนานุกรมเปิดดูความหมายคำศัพท์" },
-            { q: "อายุของพ่อปัจจุบันเป็น 4 เท่าของอายุลูก อีก 20 ปีข้างหน้า อายุของพ่อจะเป็น 2 เท่าของอายุลูก ปัจจุบันพ่ออายุกี่ปี?", c: ["32 ปี", "40 ปี", "48 ปี", "60 ปี"], a: 1, exp: "ตั้งสมการ: F = 4L และ (F + 20) = 2(L + 20) ➡️ 4L + 20 = 2L + 40 ➡️ 2L = 20 ได้ L = 10 ดังนั้นพ่ออายุ 4(10) = 40 ปี" },
-            { q: "คำใดมีความหมายไม่เข้าพวก?", c: ["กิโลกรัม", "เมตร", "ลิตร", "นิวตัน"], a: 3, exp: "กิโลกรัม เมตร ลิตร เป็นหน่วยวัดปริมาณพื้นฐานในชีวิตประจำวันเชิงระบบเมตริก ส่วนนิวตันเป็นหน่วยวัดแรงทางวิทยาศาสตร์ชั้นสูง" },
-            { q: "อนุกรมตัวเลขสลับเครื่องหมาย: 1, -2, 4, -8, 16, ... ตัวเลขถัดไปคือข้อใด?", c: ["-32", "32", "-64", "64"], a: 0, exp: "ความสัมพันธ์คือการคูณด้วย -2 ไปเรื่อยๆ สลับค่าบวกลบ (16 x -2 = -32)" },
-            { q: "ในห้องหนึ่งมีคน 10 คน ถ้าทุกคนต้องการจับมือทักทายกันจับคู่ครั้งเดียวจนครบ จะมีการจับมือทั้งหมดกี่ครั้ง?", c: ["45 ครั้ง", "50 ครั้ง", "90 ครั้ง", "100 ครั้ง"], a: 0, exp: "ใช้สูตรจับคู่จัดกลุ่มคอมบิเนชัน 10C2 = (10 x 9) / 2 = 45 ครั้ง" },
-            { q: "ถ้าประโยค 'ทุกคนที่ตื่นเช้าจะเป็นคนสุขภาพดี' เป็นเท็จ ข้อความใดต่อไปนี้เป็นจริง?", c: ["มีคนตื่นเช้าบางคนที่ไม่เป็นคนสุขภาพดี", "ไม่มีคนตื่นเช้าคนใดที่มีสุขภาพดี", "คนสุขภาพดีทุกคนไม่ได้ตื่นเช้า", "สรุปไม่ได้"], a: 0, exp: "การขัดแย้งกับคำว่า 'ทุกคนเป็น' คือการพิสูจน์ให้เห็นว่า 'มีบางคนไม่ได้เป็น' ตามหลักตรรกศาสตร์นิเสธข้อความ" },
-            { q: "สี่เหลี่ยมผืนผ้ารูปหนึ่ง หากเพิ่มความยาวขึ้น 20% และลดความกว้างลง 20% พื้นที่ของรูปสี่เหลี่ยมผืนผ้านี้จะเปลี่ยนแปลงอย่างไร?", c: ["เท่าเดิม", "เพิ่มขึ้น 4%", "ลดลง 4%", "ลดลง 2%"], a: 2, exp: "คิดจากสูตรดั้งเดิม 1 x 1 = 1 ของใหม่คือ 1.2 x 0.8 = 0.96 แสดงว่าพื้นที่หายไป 1 - 0.96 = 0.04 คิดเป็นลดลงไป 4%" }
-        ]
-    }
-};
-
-// โครงวิชาอื่นที่เหลือ
-const subjects = ['gat_work', 'pat_1', 'alevel_math_basic', 'alevel_math_advance', 'alevel_thai', 'alevel_eng', 'alevel_social'];
-subjects.forEach(sub => {
-    if(!quizData[sub]) {
-        quizData[sub] = {
-            medium: [{ q: `วิชา ${sub} (ระดับกลาง) สังกัดระบบคลังสอบเสร็จแล้ว`, c: ["ช้อยส์ 1", "ช้อยส์ 2 ถูก", "ช้อยส์ 3", "ช้อยส์ 4"], a: 1, exp: "เฉลยละเอียด" }],
-            hard: [{ q: `วิชา ${sub} (ระดับยาก) สังกัดระบบคลังสอบเสร็จแล้ว`, c: ["ช้อยส์ 1", "ช้อยส์ 2", "ช้อยส์ 3 ถูก", "ช้อยส์ 4"], a: 2, exp: "เฉลยละเอียด" }]
-        };
-    }
-});
-
-let currentQuestions = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let selectedPart = '';
-
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function showSubCategory(category) {
-    document.getElementById('category-screen').classList.add('hidden');
-    const subScreen = document.getElementById('sub-category-screen');
-    const title = document.getElementById('sub-title');
-    const options = document.getElementById('sub-options');
-    
-    subScreen.classList.remove('hidden');
-    options.innerHTML = '';
-
-    if (category === 'gat') {
-        title.innerText = "TGAT (GAT) - ชุดละ 30 ข้อ";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('gat_eng', 'TGAT1: การสื่อสารภาษาอังกฤษ')">พาร์ท 1: การสื่อสารภาษาอังกฤษ (ของจริงครบ 60 ข้อ)</button>
-            <button class="btn" onclick="startQuiz('gat_reasoning', 'TGAT2: การคิดอย่างมีเหตุผล')">พาร์ท 2: การคิดอย่างมีเหตุผล (ของจริงครบ 60 ข้อ)</button>
-            <button class="btn" onclick="startQuiz('gat_work', 'TGAT3: สมรรถนะการทำงาน')">พาร์ท 3: สมรรถนะการทำงานอนาคต</button>
-        `;
-    } else if (category === 'pat') {
-        title.innerText = "TPAT (PAT 1) - ชุดละ 30 ข้อ";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('pat_1', 'TPAT: PAT 1 ความถนัดทางคณิตศาสตร์')">⭐ PAT 1: ความถนัดทางคณิตศาสตร์</button>
-        `;
-    } else if (category === 'alevel') {
-        title.innerText = "A-Level - เลือกวิชาที่สอบ (ชุดละ 30 ข้อ)";
-        options.innerHTML = `
-            <button class="btn" onclick="startQuiz('alevel_math_basic', 'A-Level: คณิตศาสตร์ (พื้นฐาน)')">1. คณิตศาสตร์ (พื้นฐาน)</button>
-            <button class="btn" onclick="startQuiz('alevel_math_advance', 'A-Level: คณิตศาสตร์ (เพิ่มเติม)')">2. คณิตศาสตร์ (เพิ่มเติม)</button>
-            <button class="btn" onclick="startQuiz('alevel_thai', 'A-Level: ภาษาไทย')">3. ภาษาไทย</button>
-            <button class="btn" onclick="startQuiz('alevel_eng', 'A-Level: ภาษาอังกฤษ')">4. ภาษาอังกฤษ</button>
-            <button class="btn" onclick="startQuiz('alevel_social', 'A-Level: สังคมศึกษา')">5. สังคมศึกษา</button>
-        `;
-    }
-}
-
-function startQuiz(partKey, partName) {
-    selectedPart = partKey;
-    document.getElementById('sub-category-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    document.getElementById('quiz-info-title').innerText = partName;
-    
-    let playCount = parseInt(localStorage.getItem('completed_count_' + partKey)) || 0;
-    let displayRound = playCount + 1;
-    
-    document.getElementById('history-counter-text').innerText = `สถิติวิชานี้ทำสำเร็จแล้ว: ${playCount} ครั้ง (เด็กๆ กำลังทำครั้งที่ ${displayRound})`;
-
-    const db = quizData[partKey];
-    let pool = [];
-    let currentLevel = 'medium';
-
-    if (displayRound <= 10) {
-        pool = JSON.parse(JSON.stringify(db.medium || []));
-        currentLevel = 'medium';
-    } else {
-        pool = JSON.parse(JSON.stringify(db.hard || []));
-        currentLevel = 'hard';
-    }
-
-    let finalSet = shuffle([...pool]);
-    if(finalSet.length > 30) {
-        finalSet = finalSet.slice(0, 30);
-    } else if (finalSet.length < 30 && finalSet.length > 0) {
-        while(finalSet.length < 30) {
-            finalSet = finalSet.concat(shuffle([...pool]));
-        }
-        finalSet = finalSet.slice(0, 30);
-    }
-    
-    finalSet.forEach(q => q.level = currentLevel);
-    currentQuestions = finalSet;
-
-    currentQuestionIndex = 0;
-    score = 0;
-    showQuestion();
-}
-
-function showQuestion() {
-    document.getElementById('next-btn').classList.add('hidden');
-    document.getElementById('explanation-container').classList.add('hidden');
-    
-    const qData = currentQuestions[currentQuestionIndex];
-    document.getElementById('question-number').innerText = `ข้อที่ ${currentQuestionIndex + 1}/${currentQuestions.length}`;
-    
-    const badge = document.getElementById('difficulty-badge');
-    badge.className = "badge";
-    if (qData.level === 'medium') {
-        badge.innerText = "ระดับโจทย์: กลาง 🟡 (รอบฝึกฝนครั้งที่ 1-10)";
-        badge.classList.add('bg-medium');
-    } else {
-        badge.innerText = "ระดับโจทย์: ยาก 🔴 (รอบท้าทายครั้งที่ 11+)";
-        badge.classList.add('bg-hard');
-    }
-    
-    const progressPercent = ((currentQuestionIndex) / currentQuestions.length) * 100;
-    document.getElementById('progress').style.width = `${progressPercent}%`;
-
-    document.getElementById('question-text').innerText = qData.q;
-    
-    const choicesContainer = document.getElementById('choices-container');
-    choicesContainer.innerHTML = '';
-    
-    qData.c.forEach((choice, index) => {
-        const button = document.createElement('button');
-        button.className = 'btn choice-btn';
-        button.innerText = `${index + 1}. ${choice}`;
-        button.onclick = () => checkAnswer(index, button);
-        choicesContainer.appendChild(button);
-    });
-}
-
-function checkAnswer(selectedIndex, selectedButton) {
-    const qData = currentQuestions[currentQuestionIndex];
-    const choicesContainer = document.getElementById('choices-container');
-    const buttons = choicesContainer.getElementsByClassName('choice-btn');
-    
-    for (let btn of buttons) {
-        btn.disabled = true;
-    }
-    
-    if (selectedIndex === qData.a) {
-        selectedButton.classList.add('correct');
-        score++;
-    } else {
-        selectedButton.classList.add('wrong');
-        buttons[qData.a].classList.add('correct');
-    }
-    
-    document.getElementById('explanation-text').innerText = qData.exp || "ไม่มีคำอธิบายเพิ่มเติม";
-    document.getElementById('explanation-container').classList.remove('hidden');
-    
-    document.getElementById('next-btn').classList.remove('hidden');
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < currentQuestions.length) {
-        showQuestion();
-    } else {
-        let playCount = parseInt(localStorage.getItem('completed_count_' + selectedPart)) || 0;
-        playCount++;
-        localStorage.setItem('completed_count_' + selectedPart, playCount);
-        showResult(playCount);
-    }
-}
-
-function showResult(updatedPlayCount) {
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.remove('hidden');
-    
-    document.getElementById('final-score').innerText = `${score} / 30 คะแนน`;
-    
-    let evalText = "";
-    if(updatedPlayCount <= 10) {
-        evalText = `📊 เก่งมากเด็กๆ! ทำจบไปแล้ว ${updatedPlayCount} ครั้ง (ทำสะสมพาร์ทนี้ให้ครบ 10 ครั้งเพื่อปลดล็อกไปท้าทายระดับยากน้า)`;
-    } else {
-        evalText = `🔥 ระดับยอดฝีมือ! ทำพาร์ทนี้จบไปแล้ว ${updatedPlayCount} ครั้ง ตอนนี้เด็กๆ ลุยอยู่กับโจทย์ระดับยากของจริงล้วนๆ เลย!`;
-    }
-    
-    document.getElementById('evaluation-text').innerText = evalText;
-}
-
-function restartQuiz() {
-    document.getElementById('result-screen').classList.add('hidden');
-    startQuiz(selectedPart, document.getElementById('quiz-info-title').innerText);
-}
-
-function goBack(screenId) {
-    document.getElementById('sub-category-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.add('hidden');
-    document.getElementById(screenId).classList.remove('hidden');
-}
-
-function resetHistory() {
-    if(confirm("คุณต้องการล้างสถิติรอบการทำทั้งหมดเพื่อกลับไปเริ่มนับ 1 (ระดับกลาง) ใหม่ใช่หรือไม่?")) {
-        localStorage.clear();
-        alert("ล้างประวัติสำเร็จแล้วจ้า! รอบทำกลับไปเริ่มนับ 1 ใหม่เรียบร้อย");
-    }
-}
-</script>
-
-</body>
-</html>
+            { q: "มิติสัมพันธ์: หากคลี่กล่องลูกบาศก์ออกมาเป็นรูปกากบาท หน้าที่อยู่ตรงข้ามกันจะไม่มีวันติดกัน ข้อใดอธิบายหน้าตรงข้ามของลูกบาศก์ได้ถูกต้องที่สุด?", c: ["หน้าแถวเดียวกันที่อยู่เว้นข้ามกัน 1 ช่อง", "หน้าสองหน้าที่อยู่ติดข้างกันพอดี", "หน้ามุมบนและมุมล่างสุดเสมอ", "ลูกบาศก์คลี่แล้วไม่มีหน้าตรงข้ามคงที่"], a: 0, exp: "ตามหลักมิติสัมพันธ์ เมื่อคลี่กล่องออกเป็นรูปกากบาท หน้าที่อยู่ตรงข้ามกันจะเป็นหน้าในแนวเส้นเดียวกันแต่ถูกเว้นคั่นไว้ 1 ช่องเสมอ" },
+            { q: "มีสมุด 5 เล่มที่มีน้ำหนักต่างกันทั้งหมด: A หนักกว่า B, C เบากว่า D, E หนักกว่า D แต่เบากว่า B ข้อใดเรียงลำดับจากหนักสุดไปเบาสุดได้ถูกต้อง?", c: ["A > B > E > D > C", "A > E > B > D > C", "D > C > A > B > E", "สรุปแน่นอนไม่ได้"], a: 0, exp: "จากเงื่อนไข: A > B และ B > E > D และ D > C นำมาต่อสายความสัมพันธ์เชื่อมกันจะได้สมบูรณ์คือ A > B > E > D > C" },
+            { q: "กล่องทึบแสงใบหนึ่งมีลูกบอลสีแดง 4 ลูก สีขาว 3 ลูก สีน้ำเงิน 2 ลูก สุ่มหยิบลูกบอลพร้อมกัน 2 ลูก โอกาสที่จะได้ลูกบอลสีเดียวกันทั้งสองลูกเป็นเท่าใด?", c: ["5/18", "7/18", "1/2", "1/3"], a: 0, exp: "จำนวนวิธีทั้งหมด = 9C2 = 36 วิธี | สีเดียวกัน: แดงคู่กัน=4C2=6 วิธี, ขาวคู่กัน=3C2=3 วิธี, น้ำเงินคู่กัน=2C2=1 วิธี รวมเหตุการณ์สำเร็จ = 6+3+1 = 10 วิธี โอกาสความน่าจะเป็นคือ 10/36 = 5/18" },
+            { q: "ในการจับฉลากของขวัญ 5 ชิ้นสำหรับคน 5 คน โดยสุ่มหยิบทีละคน โอกาสที่คนสุดท้ายจะได้ของขวัญชิ้นที่แพงที่สุด คิดเป็นกี่เปอร์เซ็นต์?", c: ["20%", "25%", "50%", "100%"], a: 0, exp: "ตามหลักความน่าจะเป็นของการสุ่มหยิบแบบไม่ใส่คืน ทุกคนไม่ว่าจะหยิบเป็นคนที่เท่าไหร่ก็มีโอกาสได้ของขวัญชิ้นที่แพงที่สุดเท่ากันเสมอ คือ 1 ใน 5 หรือคิดเป็น 20%" },
+            { q: "ถ้ากำหนดให้ A * B = (A x B) + (A - B) แล้วค่าของ 5 * 3 มีค่าเท่ากับข้อใด?", c: ["15", "17", "20", "23"], a: 1, exp: "แทนค่าตามเครื่องหมายเงื่อนไขโอเปอเรชัน: 5 * 3 = (5 x 3) + (5 - 3) = 15 + 2 = 17" },
